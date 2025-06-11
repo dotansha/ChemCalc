@@ -770,21 +770,21 @@
     // A database of common ion charges used for the optional charge balance check.
     const commonIonCharges = {
         // Cations (+1)
-        'H': 1, 'Li': 1, 'Na': 1, 'K': 1, 'Rb': 1, 'Cs': 1, 'Ag': 1, 'Cu': [1, 2], 'NH4': 1, 'Hg2': 2,
+        'H': 1,  'H3O': 1, 'Li': 1, 'Na': 1, 'K': 1, 'Rb': 1, 'Cs': 1, 'Fr': 1, 'Ag': 1, 'Cu': [1, 2], 'NH4': 1, 'Hg2': 2,
         // Cations (+2)
-        'Be': 2, 'Mg': 2, 'Ca': 2, 'Sr': 2, 'Ba': 2, 'Zn': 2, 'Cd': 2, 'Mn': [2, 3, 4, 6, 7], 'Fe': [2, 3], 
-        'Co': [2, 3], 'Ni': 2, 'Pb': [2, 4], 'Sn': [2, 4], 'Hg': [1,2],
+        'Be': 2, 'Mg': 2, 'Ca': 2, 'Sr': 2, 'Ba': 2, 'Ra': 2, 'Zn': 2, 'Cd': 2, 'Mn': [2, 3, 4, 6, 7], 'Fe': [2, 3], 
+        'Co': [2, 3], 'Ni': 2, 'Pb': [2, 4], 'Sn': [2, 4], 'Hg': [1,2], 'Mn': [2, 4],
         // Cations (+3)
-        'Al': 3, 'Cr': [2, 3, 6], 'Bi': [3, 5], 'Sc': 3, 'Y': 3, 'La': 3,
+        'Al': 3, 'Cr': [2, 3, 6], 'Bi': [3, 5], 'Sc': 3, 'Y': 3, 'La': 3, 'Au': [1,3], 'Ti': [3,4],
         // Anions (-1)
-        'F': -1, 'Cl': -1, 'Br': -1, 'I': -1, 'OH': -1, 'CN': -1, 'SCN': -1, 'NO3': -1, 'NO2': -1, 
-        'MnO4': -1, 'ClO': -1, 'ClO2': -1, 'ClO3': -1, 'ClO4': -1, 'HCO3': -1, 'HSO4': -1, 'H2PO4': -1,
-        'CH3COO': -1, 'C2H3O2': -1,
+        'F': -1, 'Cl': -1, 'Br': -1, 'I': -1,  'At': -1,'OH': -1, 'CN': -1, 'SCN': -1, 'NO3': -1, 'NO2': -1, 
+        'MnO4': -1, 'ClO': -1, 'ClO2': -1, 'ClO3': -1, 'ClO4': -1, 'HCO3': -1, 'HSO4': -1,  'HSO3': -1, 'HS': -1,'H2PO4': -1,
+        'CH3COO': -1, 'C2H3O2': -1,'C6H5COO': -1, 'CNO': -1 , 'IO3': -1,'IO4': -1,
         // Anions (-2)
-        'O': -2, 'S': -2, 'SO4': -2, 'SO3': -2, 'CO3': -2, 'CrO4': -2, 'Cr2O7': -2, 'S2O3': -2, 'HPO4': -2,
-        'C2O4': -2,
+        'O': -2, 'O2': -2, 'S': -2, 'SO4': -2, 'SO3': -2, 'CO3': -2, 'CrO4': -2, 'Cr2O7': -2, 'S2O3': -2, 'HPO4': -2,
+        'C2O4': -2, 'Te': -2,'Se': -2,
         // Anions (-3)
-        'N': -3, 'P': -3, 'PO4': -3, 'AsO4': -3, 'BO3': -3,
+        'N': -3, 'P': -3,'As': -3, 'PO4': -3, 'AsO4': -3, 'BO3': -3,'ASO3': -3, 'BrO3': -3, 'SiO4': -4,
     };
    
     const extendedIonChargeDatabase = {
