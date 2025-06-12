@@ -86,7 +86,7 @@ Contributions are welcome! Please open an issue or pull request with suggestions
 
 ## License
 
-This project is licensed under the Creative Commons (CC) license.  
+This project is licensed under the Apache License 2.0.  
 See the [LICENSE](LICENSE) file for details.
 
 ---
