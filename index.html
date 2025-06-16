@@ -676,7 +676,6 @@
         </div>
       </div>
       
-      <!-- Dilution Calculator Section -->
       <div id="dilutionCalculatorSection" class="calculator-section">
         <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
         <div class="flex-inputs">
@@ -718,8 +717,7 @@
         </div>
         <button id="calculateDilutionBtn" class="calculate-btn dilution-calc-btn" style="margin-top:1.5rem;">Calculate Dilution</button>
         <div id="dilutionResultOutput" class="dilution-output-panel output-panel hidden">
-            <!-- Dilution results will be shown here -->
-        </div>
+            </div>
          <span id="dilutionCalcError" class="dilution-error-message"></span>
       </div>
 
@@ -738,8 +736,7 @@
       </div>
 
       <div id="outputPanel" class="output-panel hidden">
-        <!-- ChemSwap results will be dynamically inserted here -->
-      </div>
+        </div>
       <div id="errorDisplay" class="message-box error-message hidden"></div>
 
     </div>
@@ -749,14 +746,13 @@
     <div class="footer-content">
         <p>ChemCalc is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
         
-        <!-- AdSense Placeholder -->
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
      crossorigin="anonymous"></script>
 
         <div class="footer-links">
             <a href="mailto:dotansh@bgu.ac.il?subject=ChemCalc%20Feedback">Report an Issue</a>
             <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-            <span>ChemCalc v1.0</span>
+            <span>ChemCalc v1.2</span>
         </div>
     </div>
   </footer>
@@ -858,6 +854,16 @@
     });
     document.getElementById('addHydrationOriginal').addEventListener('click', () => addHydration('originalFormula'));
     document.getElementById('addHydrationReplacement').addEventListener('click', () => addHydration('replacementFormula'));
+    
+    // Global listener to hide suggestions when clicking away
+    document.addEventListener('click', (e) => {
+        if (!originalFormulaInput.contains(e.target) && !originalSuggestionsDiv.contains(e.target)) {
+            originalSuggestionsDiv.classList.add('hidden');
+        }
+        if (!replacementFormulaInput.contains(e.target) && !replacementSuggestionsDiv.contains(e.target)) {
+            replacementSuggestionsDiv.classList.add('hidden');
+        }
+    });
 
 
     // --- UI & HELPER FUNCTIONS ---
@@ -904,12 +910,12 @@
     }
 
     function selectSuggestion(inputId, suggestion, suggestionsId) {
-  const inputField = document.getElementById(inputId);
-  inputField.value = suggestion;
-  document.getElementById(suggestionsId).classList.add('hidden'); // This line was added
-  const event = new Event('input', { bubbles: true, cancelable: true });
-  inputField.dispatchEvent(event);
-}
+      const inputField = document.getElementById(inputId);
+      inputField.value = suggestion;
+      document.getElementById(suggestionsId).classList.add('hidden');
+      const event = new Event('input', { bubbles: true, cancelable: true });
+      inputField.dispatchEvent(event);
+    }
     
     const subscriptMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
     const superscriptMap = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9'};
