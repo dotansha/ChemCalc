@@ -1,6 +1,4 @@
-Here’s a professional `README.md` template for your ChemCalc project, tailored to your answers and best GitHub practices. You can further edit it as needed.
 
----
 
 # ChemCalc
 
