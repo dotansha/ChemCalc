@@ -904,12 +904,12 @@
     }
 
     function selectSuggestion(inputId, suggestion, suggestionsId) {
-      const inputField = document.getElementById(inputId);
-      inputField.value = suggestion;
-      document.getElementById(suggestionsId).classList.add('hidden');
-      const event = new Event('input', { bubbles: true, cancelable: true });
-      inputField.dispatchEvent(event);
-    }
+  const inputField = document.getElementById(inputId);
+  inputField.value = suggestion;
+  document.getElementById(suggestionsId).classList.add('hidden'); // This line was added
+  const event = new Event('input', { bubbles: true, cancelable: true });
+  inputField.dispatchEvent(event);
+}
     
     const subscriptMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
     const superscriptMap = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9'};
