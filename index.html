@@ -765,25 +765,25 @@
     const atomicWeights = { H:1.008,He:4.0026,Li:6.94,Be:9.0122,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.95,Tc:98,Ru:101.07,Rh:102.91,Pd:106.42,Ag:107.87,Cd:112.41,In:114.82,Sn:118.71,Sb:121.76,Te:127.60,I:126.90,Xe:131.29,Cs:132.91,Ba:137.33,La:138.91,Ce:140.12,Pr:140.91,Nd:144.24,Pm:145,Sm:150.36,Eu:151.96,Gd:157.25,Tb:158.93,Dy:162.50,Ho:164.93,Er:167.26,Tm:168.93,Yb:173.05,Lu:174.97,Hf:178.49,Ta:180.95,W:183.84,Re:186.21,Os:190.23,Ir:192.22,Pt:195.08,Au:196.97,Hg:200.59,Tl:204.38,Pb:207.2,Bi:208.98,Po:209,At:210,Rn:222,Fr:223,Ra:226,Ac:227,Th:232.04,Pa:231.04,U:238.03,Np:237,Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,Lr:262};
     const commonIonCharges = {
         // Cations (+1)
-        'H': 1,  'H3O': 1, 'Li': 1, 'Na': 1, 'K': 1, 'Rb': 1, 'Cs': 1, 'Fr': 1, 'Ag': 1, 'Cu': [1, 2], 'NH4': 1, 'Hg2': 2,
+        'H': 1,  'H₃O': 1, 'Li': 1, 'Na': 1, 'K': 1, 'Rb': 1, 'Cs': 1, 'Fr': 1, 'Ag': 1, 'Cu': [1, 2], 'NH₄': 1, 'Hg₂': 2,
         // Cations (+2)
         'Be': 2, 'Mg': 2, 'Ca': 2, 'Sr': 2, 'Ba': 2, 'Ra': 2, 'Zn': 2, 'Cd': 2, 'Mn': [2, 3, 4, 6, 7], 'Fe': [2, 3], 
         'Co': [2, 3], 'Ni': 2, 'Pb': [2, 4], 'Sn': [2, 4], 'Hg': [1,2],
         // Cations (+3)
         'Al': 3, 'Cr': [2, 3, 6], 'Bi': [3, 5], 'Sc': 3, 'Y': 3, 'La': 3, 'Au': [1,3], 'Ti': [3,4],
         // Anions (-1)
-        'F': -1, 'Cl': -1, 'Br': -1, 'I': -1,  'At': -1,'OH': -1, 'CN': -1, 'SCN': -1, 'NO3': -1, 'NO2': -1, 
-        'MnO4': -1, 'ClO': -1, 'ClO2': -1, 'ClO3': -1, 'ClO4': -1, 'HCO3': -1, 'HSO4': -1,  'HSO3': -1, 'HS': -1,'H2PO4': -1,
-        'CH3COO': -1, 'C2H3O2': -1,'C6H5COO': -1, 'CNO': -1 , 'IO3': -1,'IO4': -1, 'N3': -1, 'OCN': -1, 
+        'F': -1, 'Cl': -1, 'Br': -1, 'I': -1,  'At': -1,'OH': -1, 'CN': -1, 'SCN': -1, 'NO₃': -1, 'NO₂': -1, 
+        'MnO₄': -1, 'ClO': -1, 'ClO₂': -1, 'ClO₃': -1, 'ClO₄': -1, 'HCO₃': -1, 'HSO₄': -1,  'HSO₃': -1, 'HS': -1,'H₂PO₄': -1,
+        'CH₃COO': -1, 'C2H₃O₂': -1,'C6H5COO': -1, 'CNO': -1 , 'IO₃': -1,'IO₄': -1, 'N₃': -1, 'OCN': -1, 
         // Anions (-2)
-        'O': -2, 'O2': -2, 'S': -2, 'SO4': -2, 'SO3': -2, 'CO3': -2, 'CrO4': -2, 'Cr2O7': -2, 'S2O3': -2, 'HPO4': -2,
-        'C2O4': -2, 'Te': -2,'Se': -2,
+        'O': -2, 'O₂': -2, 'S': -2, 'SO₄': -2, 'SO₃': -2, 'CO₃': -2, 'CrO₄': -2, 'Cr₂O7': -2, 'S₂O₃': -2, 'HPO₄': -2,
+        'C₂O₄': -2, 'Te': -2,'Se': -2,
         // Anions (-3)
-        'N': -3, 'P': -3,'As': -3, 'PO4': -3, 'AsO4': -3, 'BO3': -3,'ASO3': -3, 'BrO3': -3, 'SiO4': -4,
+        'N': -3, 'P': -3,'As': -3, 'PO₄': -3, 'AsO₄': -3, 'BO₃': -3,'ASO₃': -3, 'BrO₃': -3, 'SiO₄': -4,
         'VO2': 1,   // Vanadyl
         'UO2': 2,   // Uranyl
     };
-    const commonCompounds = ['Ca(NO₃)₂', 'CaCl₂', 'NaCl', 'H₂O', 'KCl', 'MgSO₄', 'AlK(SO₄)₂', 'NaSO₄', 'NaH2PO4', 'Na2HPO4', 'CaCO3', 'NaHCO3', 'H2SO4', 'Al2O3', 'CH3COOH', 'H3PO4', 'K₂Cr₂O₇', 'NaHCO3', 'Na₂CO₃', 'NaHSO₄', 'CaSO₄', 'Na₂SO₄', '(NH4)2SO4' ];
+    const commonCompounds = ['Ca(NO₃)₂', 'CaCl₂', 'NaCl', 'H₂O', 'KCl', 'MgSO₄', 'AlK(SO₄)₂', 'NaSO₄', 'NaH₂PO₄', 'Na₂HPO₄', 'CaCO₃', 'NaHCO₃', 'H₂SO₄', 'Al₂O₃', 'CH₃COOH', 'H₃PO₄', 'K₂Cr₂O₇', 'NaHCO₃', 'Na₂CO₃', 'NaHSO₄', 'CaSO₄', 'Na₂SO₄', '(NH₄)₂SO₄' ];
     
     // Global State
     let selectedIon = null;
@@ -1299,7 +1299,7 @@
         }
         
         if (unlistedIons.length > 0) {
-             feedbackEl.innerHTML = `ℹ️ Unrecognized ion(s): ${unlistedIons.join(', ')}. Try searching online.`;
+             feedbackEl.innerHTML = `ℹ️ Unrecognized ion(s): ${unlistedIons.join(', ')}.`;
              feedbackEl.classList.add('info');
         } else if (hasAmbiguousCharge) {
             feedbackEl.textContent = `⚠️ Balance ambiguous due to multi-valent ions (e.g., Fe, Cu).`;
