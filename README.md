@@ -15,7 +15,7 @@
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [What's New in Version 1.3](#What's New in Version 1.3)
+- [Version_1.3](#Version_1.3)
 - [License](#license)
 - [Contact](#contact)
 
@@ -83,7 +83,7 @@ No installation or dependencies required.
 Contributions are welcome! Please open an issue or pull request with suggestions or improvements.
 
 ---
-## What's New in Version 1.3
+## Version_1.3
 Version 1.3 is a major update focused on user experience and intelligent input, making the calculator faster, more intuitive, and more powerful to use.
 
 ✨ Key Features & Improvements
