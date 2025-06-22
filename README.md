@@ -15,6 +15,7 @@
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [Version 1.3] (# What's New in Version 1.3)
 - [License](#license)
 - [Contact](#contact)
 
@@ -80,6 +81,30 @@ No installation or dependencies required.
 ## Contributing
 
 Contributions are welcome! Please open an issue or pull request with suggestions or improvements.
+
+---
+## What's New in Version 1.3
+Version 1.3 is a major update focused on user experience and intelligent input, making the calculator faster, more intuitive, and more powerful to use.
+
+✨ Key Features & Improvements
+Intelligent Name-to-Formula Translation:
+You can now type common chemical names (e.g., "Sodium chloride" or "Iron(II) Sulfate Heptahydrate") directly into the formula fields. The application will instantly recognize the complete name and automatically replace it with its corresponding chemical formula (e.g., "NaCl" or "FeSO₄·7H₂O").
+
+Smarter "Patient" Validation:
+The annoying bug that showed "unrecognized letter" errors while in the middle of typing a known chemical name has been eliminated. The real-time validation is now smart enough to recognize when you are typing a name from the library and will patiently wait for you to finish, providing a much smoother input experience.
+
+Enhanced UI & Accessibility:
+The main "Analyze Compounds" and "Clear All" buttons are now available in three convenient locations on the page:
+
+Directly under the compound input boxes.
+After the solution parameters section.
+In their original position at the bottom of the main panel. All three button sets are always perfectly in sync.
+Expanded Chemical Library:
+The internal dictionary of common compounds and their corresponding ion charges has been significantly updated from a new library of materials. This improves the accuracy of suggestions, calculations, and the new name-to-formula feature.
+
+🛠️ Technical Refinements
+JavaScript Refactoring: The core logic for handling button clicks was refactored from using unique id attributes to a more robust and scalable class-based system.
+Modern Event Handling: The application now uses a single, universal event listener (event delegation) to efficiently manage all user actions on the main buttons, replacing multiple individual listeners.
 
 ---
 
