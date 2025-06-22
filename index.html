@@ -645,7 +645,12 @@
           <div id="replacementSuggestions" class="suggestions hidden"></div>
         </div>
       </div>
-
+<div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
+    <button class="calculate-btn main-action-btn" style="flex: 1;">
+        <span class="btn-text">Analyze Compounds</span>
+    </button>
+    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
+</div>
       <div class="calculator-section molarity-volume-section">
         <h3><span class="molecule-icon" style="font-size:14px;">🧪</span>Solution Parameters (Original Compound)</h3>
         <div class="flex-inputs">
@@ -677,7 +682,12 @@
           💡 Provide Original Amount, <strong>OR</strong> Molarity & Volume. If Original Amount is given with Molarity <strong>OR</strong> Volume, the missing parameter will be calculated.
         </div>
       </div>
-      
+      <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
+    <button class="calculate-btn main-action-btn" style="flex: 1;">
+        <span class="btn-text">Analyze Compounds</span>
+    </button>
+    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
+      </div>
       <div id="dilutionCalculatorSection" class="calculator-section">
         <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
         <div class="flex-inputs">
@@ -724,11 +734,11 @@
       </div>
 
 
-      <div class="action-buttons-container">
-        <button class="calculate-btn" id="mainActionBtn">
-            <span id="btnText">Analyze Compounds</span>
-        </button>
-        <button class="secondary-btn" id="clearAllBtn">Clear All</button>
+      <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
+    <button class="calculate-btn main-action-btn" style="flex: 1;">
+        <span class="btn-text">Analyze Compounds</span>
+    </button>
+    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
       </div>
 
       <div id="ionSelectionPanel" class="ion-selection-panel hidden">
@@ -754,7 +764,7 @@
         <div class="footer-links">
             <a href="mailto:dotansh@bgu.ac.il?subject=ChemCalc%20Feedback">Report an Issue</a>
             <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-            <span>ChemCalc v1.2</span>
+            <span>ChemCalc v1.3</span>
         </div>
     </div>
   </footer>
@@ -765,28 +775,135 @@
     
     // --- DATA CONSTANTS ---
     const atomicWeights = { H:1.008,He:4.0026,Li:6.94,Be:9.0122,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.95,Tc:98,Ru:101.07,Rh:102.91,Pd:106.42,Ag:107.87,Cd:112.41,In:114.82,Sn:118.71,Sb:121.76,Te:127.60,I:126.90,Xe:131.29,Cs:132.91,Ba:137.33,La:138.91,Ce:140.12,Pr:140.91,Nd:144.24,Pm:145,Sm:150.36,Eu:151.96,Gd:157.25,Tb:158.93,Dy:162.50,Ho:164.93,Er:167.26,Tm:168.93,Yb:173.05,Lu:174.97,Hf:178.49,Ta:180.95,W:183.84,Re:186.21,Os:190.23,Ir:192.22,Pt:195.08,Au:196.97,Hg:200.59,Tl:204.38,Pb:207.2,Bi:208.98,Po:209,At:210,Rn:222,Fr:223,Ra:226,Ac:227,Th:232.04,Pa:231.04,U:238.03,Np:237,Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,Lr:262};
-    const commonIonCharges = {
-        // Cations (+1)
-        'H': 1,  'H3O': 1, 'Li': 1, 'Na': 1, 'K': 1, 'Rb': 1, 'Cs': 1, 'Fr': 1, 'Ag': 1, 'Cu': [1, 2], 'NH4': 1, 'Hg2': 2,
-        // Cations (+2)
-        'Be': 2, 'Mg': 2, 'Ca': 2, 'Sr': 2, 'Ba': 2, 'Ra': 2, 'Zn': 2, 'Cd': 2, 'Mn': [2, 3, 4, 6, 7], 'Fe': [2, 3], 
-        'Co': [2, 3], 'Ni': 2, 'Pb': [2, 4], 'Sn': [2, 4], 'Hg': [1,2],
-        // Cations (+3)
-        'Al': 3, 'Cr': [2, 3, 6], 'Bi': [3, 5], 'Sc': 3, 'Y': 3, 'La': 3, 'Au': [1,3], 'Ti': [3,4],
-        // Anions (-1)
-        'F': -1, 'Cl': -1, 'Br': -1, 'I': -1,  'At': -1,'OH': -1, 'CN': -1, 'SCN': -1, 'NO3': -1, 'NO2': -1, 
-        'MnO4': -1, 'ClO': -1, 'ClO2': -1, 'ClO3': -1, 'ClO4': -1, 'HCO3': -1, 'HSO4': -1,  'HSO3': -1, 'HS': -1,'H2PO4': -1,
-        'CH3COO': -1, 'C2H3O3': -1,'C6H5COO': -1, 'CNO': -1 , 'IO3': -1,'IO4': -1, 'N3': -1, 'OCN': -1, 
-        // Anions (-2)
-        'O': -2, 'O2': -2, 'S': -2, 'SO4': -2, 'SO3': -2, 'CO3': -2, 'CrO4': -2, 'Cr2O7': -2, 'S2O3': -2, 'HPO4': -2,
-        'C2O4': -2, 'Te': -2,'Se': -2,
-        // Anions (-3)
-        'N': -3, 'P': -3,'As': -3, 'PO4': -3, 'AsO4': -3, 'BO3': -3,'ASO3': -3, 'BrO3': -3, 'SiO4': -4,
-        'VO2': 1,   // Vanadyl
-        'UO2': 2,   // Uranyl
+   // --- PASTE THIS ENTIRE OBJECT IN YOUR SCRIPT ---
+    const compoundNameToFormulaMap = {
+        'acetic acid': 'CH₃COOH',     
+        'ammonium acetate': 'NH₄CH₃COO',
+        'ammonium chloride': 'NH₄Cl',
+        'ammonium dihydrogen phosphate': 'NH₄H₂PO₄',
+        'ammonium molybdate tetrahydrate': '(NH₄)₂MoO₄·4H₂O',
+        'ammonium phosphate dibasic': '(NH₄)₂HPO₄',
+        'ammonium sulfate': '(NH₄)₂SO₄',    
+        'bicine': 'C₆H₁₃NO₄',
+        'boric acid': 'H₃BO₃',
+        'calcium chloride anhydrous': 'CaCl₂',
+        'calcium chloride dihydrate': 'CaCl₂·2H₂O',
+        'calcium nitrate tetrahydrate': 'Ca(NO₃)₂·4H₂O',
+        'calcium sulfate anhydrous': 'CaSO₄',
+        'calcium sulfate dihydrate': 'CaSO₄·2H₂O',       
+        'charcoal': 'C',      
+        'citric acid - anhydrous': 'C₆H₈O₇',
+        'citric acid monohydrate': 'C₆H₈O₇·H₂O',
+        'cobalt(ii) chloride': 'CoCl₂',
+        'copper(ii) chloride': 'CuCl₂',
+        'copper(ii) sulfate pentahydrate': 'CuSO₄·5H₂O',
+        'copper(ii) sulfate anhydrous': 'CuSO₄',
+        'd-glucose monohydrate': 'C₆H₁₂O₆·H₂O',
+        'd-sorbitol': 'C₆H₁₄O₆',
+        'diatomaceous earth': 'SiO₂',
+        'edta': 'C₁₀H₁₆N₂O₈',
+        'ethanolamine': 'C₂H₇NO',
+        'ethylene glycol': 'C₂H₆O₂',
+        'ferric ammonium citrate': 'Fe(NH₄)C₆H₅O₇',
+        'ferric citrate': 'FeC₆H₅O₇',
+        'glycerol': 'C₃H₈O₃',
+        'glycine': 'C₂H₅NO₂',
+        'guanidine hydrochloride': 'CH₅N₃·HCl',
+        'hydrochloric acid': 'HCl',
+        'iodine': 'I₂',
+        'iptg': 'C₉H₁₈O₅S',
+        'iron(ii) sulfate heptahydrate': 'FeSO₄·7H₂O',
+        'iron(iii) citrate': 'FeC₆H₅O₇',
+        'kanamycin sulfate': 'C₁₈H₃₆N₄O₁₁·H₂SO₄',
+        'l - arginine': 'C₆H₁₄N₄O₂',
+        'l - histidine': 'C₆H₉N₃O₂',
+        'l - lysine': 'C₆H₁₄N₂O₂',
+        'l - methionine': 'C₅H₁₁NO₂S',
+        'l-2-aminobutyric acid': 'C₄H₉NO₂',
+        'lactose monohydrate': 'C₁₂H₂₂O₁₁·H₂O',
+        'lithium chloride': 'LiCl',
+        'magnesium chloride anhydrous': 'MgCl₂',
+        'magnesium chloride hexahydrate': 'MgCl₂·6H₂O',
+        'magnesium sulfate heptahydrate': 'MgSO₄·7H₂O',
+        'manganese(ii) chloride tetrahydrate': 'MnCl₂·4H₂O',
+        'manganese(ii) sulfate monohydrate': 'MnSO₄·H₂O',
+        'manganese sulphate': 'MnSO₄',
+        'phosphoric acid': 'H₃PO₄',
+        'potassium chloride': 'KCl',
+        'potassium citrate tribasic monohydrate': 'K₃C₆H₅O₇·H₂O',
+        'potassium hydroxide pellets': 'KOH',
+        'potassium phosphate monobasic': 'KH₂PO₄',
+        'potassium sulfate': 'K₂SO₄',
+        'propylene glycol': 'C₃H₈O₂',
+        'sodium acetate trihydrate': 'CH₃COONa·3H₂O',
+        'sodium azide': 'NaN₃',
+        'sodium bicarbonate': 'NaHCO₃',
+        'sodium dihydrogen phospate monohydrate': 'NaH₂PO₄·H₂O',
+        'sodium hydrogen phosphate heptahydrate': 'Na₂HPO₄·7H₂O',
+        'sodium hydroxide': 'NaOH',
+        'sodium iodide': 'NaI',
+        'sodium molybdate': 'Na₂MoO₄',
+        'sodium periodate': 'NaIO₄',
+        'sodium phosphate dibasic anhydrose': 'Na₂HPO₄',
+        'sodium phosphate monobasic anhydrous': 'NaH₂PO₄',
+        'sodium sulfate anhydrous': 'Na₂SO₄',
+        'sulfuric acid': 'H₂SO₄',
+        'zinc acetate': 'Zn(CH₃COO)₂',
+        'zinc chloride': 'ZnCl₂',
+        'zinc sulfate heptahydrate': 'ZnSO₄·7H₂O'
     };
-    const commonCompounds = ['NaOH', 'HCl', 'LiCl', 'Ca(NO₃)₂', 'CaCl₂', 'NaCl', 'H₂O', 'KCl', 'MgSO₄', 'AlK(SO₄)₂', 'NaSO₄', 'NaH₂PO₄', 'Na₂HPO₄', 'CaCO₃', 'NaHCO₃', 'H₂SO₄', 'Al₂O₃', 'CH₃COOH', 'H₃PO₄', 'K₂Cr₂O₇', 'NaHCO₃', 'Na₂CO₃', 'NaHSO₄', 'CaSO₄', 'Na₂SO₄', '(NH₄)₂SO₄' ];
-    
+   
+    const commonIonCharges = {
+    // Cations (+1)
+    'H': 1,  'H3O': 1, 'Li': 1, 'Na': 1, 'K': 1, 'Rb': 1, 'Cs': 1, 'Fr': 1, 'Ag': 1, 'Cu': [1, 2], 'NH4': 1,
+    // Cations (+2)
+    'Be': 2, 'Mg': 2, 'Ca': 2, 'Sr': 2, 'Ba': 2, 'Ra': 2, 'Zn': 2, 'Cd': 2, 'Mn': [2, 3, 4, 6, 7], 'Fe': [2, 3], 
+    'Co': [2, 3], 'Ni': 2, 'Pb': [2, 4], 'Sn': [2, 4], 'Hg': [1,2], 'Hg2': 2,
+    // Cations (+3)
+    'Al': 3, 'Cr': [2, 3, 6], 'Bi': [3, 5], 'Sc': 3, 'Y': 3, 'La': 3, 'Au': [1,3], 'Ti': [3,4],
+    // Anions (-1)
+    'F': -1, 'Cl': -1, 'Br': -1, 'I': -1,  'At': -1, 'OH': -1, 'CN': -1, 'SCN': -1, 'NO3': -1, 'NO2': -1, 
+    'MnO4': -1, 'ClO': -1, 'ClO2': -1, 'ClO3': -1, 'ClO4': -1, 'HCO3': -1, 'HSO4': -1, 'HSO3': -1, 'HS': -1, 'H2PO4': -1,
+    'CH3COO': -1, 'C2H3O3': -1, 'C6H5COO': -1, 'CNO': -1, 'IO3': -1, 'IO4': -1, 'N3': -1, 'OCN': -1,
+    // Anions (-2)
+    'O': -2, 'O2': -2, 'S': -2, 'SO4': -2, 'SO3': -2, 'CO3': -2, 'CrO4': -2, 'Cr2O7': -2, 'S2O3': -2, 'HPO4': -2,
+    'C2O4': -2, 'Te': -2, 'Se': -2, 'MoO4': -2,
+    // Anions (-3)
+    'N': -3, 'P': -3, 'As': -3, 'PO4': -3, 'AsO4': -3, 'BO3': -3, 'ASO3': -3, 'BrO3': -3, 'C6H5O7': -3,
+    // Anions (-4)
+    'SiO4': -4,
+    // Special Cations
+    'VO2': 1,   // Vanadyl
+    'UO2': 2,   // Uranyl
+    };
+    const commonCompounds = [
+    'Acetic acid',  'AlK(SO₄)₂', 'Al₂O₃', 'Ammonium Acetate', 
+    'Ammonium Chloride', 'Ammonium dihydrogen phosphate', 'Ammonium Molybdate Tetrahydrate', 
+    'Ammonium Phosphate Dibasic', 'Ammonium Sulfate', '(NH₄)₂SO₄', 'Bicine', 'Boric Acid', 
+    'Calcium chloride anhydrous', 'Calcium chloride dihydrate', 'Calcium nitrate tetrahydrate', 
+    'Calcium Sulfate anhydrous', 'Calcium Sulfate dihydrate', 'CaCO₃', 'CaSO₄',  
+    'Charcoal', 'CH₃COOH', 'Citric Acid - anhydrous', 'Citric acid monohydrate', 
+    'Cobalt(II) chloride', 'Copper(II) chloride', 'Copper(II) sulfate pentahydrate', 
+    'Copper(II) sulfate anhydrous', 'D-Glucose monohydrate', 'D-sorbitol', 'Diatomaceous Earth', 
+    'EDTA', 'Ethanolamine', 'Ethylene glycol', 'Ferric Ammonium Citrate', 'Ferric citrate', 
+    'Glycerol', 'Glycine', 'Guanidine hydrochloride', 'H₂O', 'H₂SO₄', 'H₃PO₄', 'HCl', 
+    'Hydrochloric acid', 'Iodine', 'IPTG', 'Iron(II) Sulfate Heptahydrate', 
+    'Iron(III) citrate', 'K₂Cr₂O₇', 'Kanamycin sulfate', 'KCl', 'L - Arginine', 
+    'L - Histidine', 'L - Lysine', 'L - Methionine', 'L-2-Aminobutyric acid', 
+    'Lactose monohydrate', 'LiCl', 'Lithium chloride', 'Magnesium chloride anhydrous', 
+    'Magnesium chloride hexahydrate', 'Magnesium Sulfate Heptahydrate', 'MgSO₄', 
+    'Malt Extract', 'Manganese(II) chloride tetrahydrate', 'Manganese(II) Sulfate monohydrate', 
+    'Manganese sulphate', 'NaCl', 'Na₂CO₃', 'Na₂HPO₄', 'Na₂SO₄', 'NaHCO₃', 'NaH₂PO₄', 
+    'NaHSO₄', 'NaOH', 'Peptone', 'Phosphoric Acid', 'Potassium chloride', 
+    'Potassium citrate tribasic monohydrate', 'Potassium Hydroxide pellets', 
+    'Potassium phosphate monobasic', 'Potassium Sulfate', 'Propylene Glycol', 
+    'Sodium acetate trihydrate', 'Sodium azide', 'Sodium bicarbonate', 
+    'Sodium dihydrogen phospate monohydrate', 'Sodium hydrogen phosphate heptahydrate', 
+    'Sodium hydroxide', 'Sodium iodide', 'Sodium molybdate', 'Sodium periodate', 
+    'Sodium phosphate dibasic anhydrose', 'Sodium phosphate monobasic anhydrous', 
+    'Sodium sulfate anhydrous', 'Sulfuric acid',  
+    'Zinc acetate', 'Zinc Chloride', 'Zinc Sulfate Heptahydrate'
+].sort();
     // Global State
     let selectedIon = null;
     let compoundData = { originalParsed: null, replacementParsed: null }; 
@@ -804,11 +921,8 @@
     const molarityUnitSelect = document.getElementById('molarityUnit');
     const volumeInput = document.getElementById('volume');
     const volumeUnitSelect = document.getElementById('volumeUnit');
-    const clearAllBtn = document.getElementById('clearAllBtn');
     const ionSelectionPanel = document.getElementById('ionSelectionPanel');
-    const ionButtonsDiv = document.getElementById('ionButtons');
-    const mainActionBtn = document.getElementById('mainActionBtn');
-    const btnTextSpan = document.getElementById('btnText');
+    const ionButtonsDiv = document.getElementById('ionButtons'); 
     const outputPanel = document.getElementById('outputPanel'); 
     const errorDisplayDiv = document.getElementById('errorDisplay');
     const originalSuggestionsDiv = document.getElementById('originalSuggestions');
@@ -822,18 +936,56 @@
     const calculateDilutionBtn = document.getElementById('calculateDilutionBtn');
     const dilutionResultOutputEl = document.getElementById('dilutionResultOutput');
     const dilutionCalcErrorEl = document.getElementById('dilutionCalcError');
+// Universal Event Listener for Action Buttons
+document.addEventListener('click', function(event) {
+    // Check if an 'Analyze' or 'Calculate' button was clicked
+    const mainBtn = event.target.closest('.main-action-btn');
+    if (mainBtn) {
+        // The action is now determined by the function that sets the button state.
+        // We will call a single handler function that decides what to do.
+        handleMainAction();
+    }
 
+    // This part checks if any 'Clear All' button was clicked.
+    if (event.target.closest('.clear-all-btn')) {
+        clearAll();
+    }
+});
     // --- EVENT LISTENERS ---
-    originalFormulaInput.addEventListener('input', (e) => {
-        validateFormulaInput(e.target, originalFormulaFeedbackEl, checkChargeOriginalBtn);
-        showSuggestions('originalFormula', 'originalSuggestions', e.target.value);
-    });
-    replacementFormulaInput.addEventListener('input', (e) => {
-        validateFormulaInput(e.target, replacementFormulaFeedbackEl, checkChargeReplacementBtn);
-        showSuggestions('replacementFormula', 'replacementSuggestions', e.target.value);
-    });
-    mainActionBtn.addEventListener('click', handleMainAction);
-    clearAllBtn.addEventListener('click', clearAll);
+
+
+/**
+ * Handles input for the formula fields, performing immediate name-to-formula
+ * translation and then running validation.
+ * @param {Event} event - The input event object.
+ */
+function handleFormulaInput(event) {
+    const inputElement = event.target;
+    const suggestionsId = (inputElement.id === 'originalFormula') ? 'originalSuggestions' : 'replacementSuggestions';
+    const feedbackElement = (inputElement.id === 'originalFormula') ? originalFormulaFeedbackEl : replacementFormulaFeedbackEl;
+    const chargeCheckBtn = (inputElement.id === 'originalFormula') ? checkChargeOriginalBtn : checkChargeReplacementBtn;
+    
+    const text = inputElement.value.trim().toLowerCase();
+    
+    // Check for an exact name match for immediate replacement
+    if (compoundNameToFormulaMap[text]) {
+        inputElement.value = compoundNameToFormulaMap[text];
+        // Now that it's a formula, hide suggestions and validate the new formula
+        document.getElementById(suggestionsId).classList.add('hidden');
+        validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn);
+    } else {
+        // If no exact match, just validate and show suggestions as usual
+        validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn);
+        showSuggestions(inputElement.id, suggestionsId, inputElement.value);
+    }
+}
+
+// Assign the new handler to the 'input' event for both fields
+originalFormulaInput.addEventListener('input', handleFormulaInput);
+replacementFormulaInput.addEventListener('input', handleFormulaInput);
+
+// --- END OF NEW CODE ---
+   
     calculateDilutionBtn.addEventListener('click', handleCalculateDilution);
     checkChargeOriginalBtn.addEventListener('click', () => handleChargeCheck('original'));
     checkChargeReplacementBtn.addEventListener('click', () => handleChargeCheck('replacement'));
@@ -1211,14 +1363,17 @@
     }
     
     function handleMainAction() {
-        hideError(); 
+        hideError();
         originalFormulaFeedbackEl.textContent = '';
         originalFormulaInput.classList.remove('input-error');
         replacementFormulaFeedbackEl.textContent = '';
         replacementFormulaInput.classList.remove('input-error');
-        
-        hideOutput(); 
-        const currentAction = mainActionBtn.dataset.action || 'analyze';
+        hideOutput();
+
+    // To find the current action, we check the dataset of the *first* button.
+    // Since all buttons are in sync, they will all have the same action.
+    const firstMainBtn = document.querySelector('.main-action-btn');
+    const currentAction = firstMainBtn.dataset.action || 'analyze';
 
         if (currentAction === 'analyze') {
             analyzeCompounds();
@@ -1227,38 +1382,63 @@
         }
     }
 
-    function validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn) {
-        const formula = inputElement.value.trim();
-        feedbackElement.textContent = ''; 
-        feedbackElement.className = 'formula-feedback-message'; 
-        chargeCheckBtn.classList.add('hidden');
+function validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn) {
+    const text = inputElement.value.trim();
+    feedbackElement.textContent = ''; 
+    feedbackElement.className = 'formula-feedback-message'; 
+    chargeCheckBtn.classList.add('hidden');
 
-
-        if (!formula) { 
-            inputElement.classList.remove('input-error');
-            return true; 
-        }
-        const parsed = parseFormula(formula);
-        if (parsed.unknownElements.length > 0 || (parsed.weight === 0 && formula.length > 0 && !/^(\d*)H2O$/i.test(formula.replace(/·/g,'')))) {
-            inputElement.classList.add('input-error');
-            let errorMsg = parsed.unknownElements.join(', ');
-            if (parsed.weight === 0 && formula.length > 0 && !parsed.unknownElements.length && !/^(\d*)H2O$/i.test(formula.replace(/·/g,''))) {
-                 errorMsg = "Could not determine molecular weight. Check formula.";
-            } else if (!errorMsg && parsed.unknownElements.length > 0) {
-                 errorMsg = parsed.unknownElements.join(', ');
-            } else if (!errorMsg) {
-                 errorMsg = "Invalid formula structure.";
-            }
-            feedbackElement.textContent = `Error: ${errorMsg}`;
-            feedbackElement.classList.add('error');
-            return false;
-        } else {
-            inputElement.classList.remove('input-error');
-            feedbackElement.textContent = ''; 
-            chargeCheckBtn.classList.remove('hidden'); 
-            return true;
-        }
+    if (!text) { 
+        inputElement.classList.remove('input-error');
+        return true; 
     }
+
+    const potentialName = text.toLowerCase();
+
+    // --- NEW, MORE PATIENT LOGIC ---
+
+    // First, check if the input is ALREADY a complete name.
+    // (This case is mostly handled by handleFormulaInput, but it's good practice to keep).
+    if (compoundNameToFormulaMap[potentialName]) {
+        inputElement.classList.remove('input-error');
+        // The other function will handle the replacement, so we don't need to show a message here.
+        return true;
+    }
+
+    // NEXT, check if the input is the START of a known name.
+    const isPartialName = Object.keys(compoundNameToFormulaMap).some(key => key.startsWith(potentialName));
+    
+    if (isPartialName) {
+        // If it looks like a name is being typed, clear any errors and wait.
+        // DO NOT try to parse it as a formula yet.
+        inputElement.classList.remove('input-error');
+        return true; // Mark as "valid for now" and exit the function.
+    }
+    
+    // --- END OF NEW LOGIC ---
+
+    // ONLY if the text is NOT a known name OR the start of one, parse it as a formula.
+    const parsed = parseFormula(text);
+    if (parsed.unknownElements.length > 0 || (parsed.weight === 0 && text.length > 0 && !/^(\d*)H2O$/i.test(text.replace(/·/g,'')))) {
+        inputElement.classList.add('input-error');
+        let errorMsg = parsed.unknownElements.join(', ');
+        if (parsed.weight === 0 && text.length > 0 && !parsed.unknownElements.length && !/^(\d*)H2O$/i.test(text.replace(/·/g,''))) {
+             errorMsg = "Could not determine molecular weight. Check formula.";
+        } else if (!errorMsg && parsed.unknownElements.length > 0) {
+             errorMsg = parsed.unknownElements.join(', ');
+        } else if (!errorMsg) {
+             errorMsg = "Invalid formula structure.";
+        }
+        feedbackElement.textContent = `Error: ${errorMsg}`;
+        feedbackElement.classList.add('error');
+        return false;
+    } else {
+        inputElement.classList.remove('input-error');
+        feedbackElement.textContent = ''; 
+        chargeCheckBtn.classList.remove('hidden'); 
+        return true;
+    }
+}
     
     function handleChargeCheck(type) {
         const inputEl = type === 'original' ? originalFormulaInput : replacementFormulaInput;
@@ -1315,42 +1495,43 @@
         }
     }
 
-    function analyzeCompounds() {
-      selectedIon = null;
-      ionSelectionPanel.classList.add('hidden');
-      ionButtonsDiv.innerHTML = '';
-      mainActionBtn.disabled = true; 
-      btnTextSpan.innerHTML = '<span class="loading"></span> Analyzing...';
+function analyzeCompounds() {
+    selectedIon = null;
+    ionSelectionPanel.classList.add('hidden');
+    ionButtonsDiv.innerHTML = '';
+    
+    // Use the class-based selector to update all buttons
+    document.querySelectorAll('.main-action-btn').forEach(btn => btn.disabled = true);
+    document.querySelectorAll('.btn-text').forEach(span => span.innerHTML = '<span class="loading"></span> Analyzing...');
 
-      const isOriginalValid = validateFormulaInput(originalFormulaInput, originalFormulaFeedbackEl, checkChargeOriginalBtn);
-      const isReplacementValid = validateFormulaInput(replacementFormulaInput, replacementFormulaFeedbackEl, checkChargeReplacementBtn);
+    const isOriginalValid = validateFormulaInput(originalFormulaInput, originalFormulaFeedbackEl, checkChargeOriginalBtn);
+    const isReplacementValid = validateFormulaInput(replacementFormulaInput, replacementFormulaFeedbackEl, checkChargeReplacementBtn);
 
-      if (!isOriginalValid || !isReplacementValid) {
-          resetButtonToAnalyze();
-          return;
-      }
+    if (!isOriginalValid || !isReplacementValid) {
+        resetButtonToAnalyze();
+        return;
+    }
 
-
-      setTimeout(() => { 
+    setTimeout(() => {
         const originalFormulaStr = originalFormulaInput.value.trim();
         const replacementFormulaStr = replacementFormulaInput.value.trim();
 
         if (!originalFormulaStr || !replacementFormulaStr) {
-          showError('Please enter formulas for both original and replacement compounds.');
-          resetButtonToAnalyze(); 
-          return;
+            showError('Please enter formulas for both original and replacement compounds.');
+            resetButtonToAnalyze();
+            return;
         }
 
         compoundData.originalParsed = parseFormula(originalFormulaStr);
         compoundData.replacementParsed = parseFormula(replacementFormulaStr);
 
         let errors = [];
-        if (compoundData.originalParsed.unknownElements.length > 0 || (compoundData.originalParsed.weight === 0 && originalFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(originalFormulaStr.replace(/·/g,'')) ) ) {
+        if (compoundData.originalParsed.unknownElements.length > 0 || (compoundData.originalParsed.weight === 0 && originalFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(originalFormulaStr.replace(/·/g, '')))) {
             errors.push(`Error parsing original formula: "${compoundData.originalParsed?.displayFormula || originalFormulaStr}".`);
-             originalFormulaFeedbackEl.textContent = `Error: ${compoundData.originalParsed.unknownElements.join(', ') || 'Invalid formula.'}`;
-             originalFormulaFeedbackEl.classList.add('error');
+            originalFormulaFeedbackEl.textContent = `Error: ${compoundData.originalParsed.unknownElements.join(', ') || 'Invalid formula.'}`;
+            originalFormulaFeedbackEl.classList.add('error');
         }
-        if (compoundData.replacementParsed.unknownElements.length > 0 || (compoundData.replacementParsed.weight === 0 && replacementFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(replacementFormulaStr.replace(/·/g,'')) ) ) {
+        if (compoundData.replacementParsed.unknownElements.length > 0 || (compoundData.replacementParsed.weight === 0 && replacementFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(replacementFormulaStr.replace(/·/g, '')))) {
             errors.push(`Error parsing replacement formula: "${compoundData.replacementParsed?.displayFormula || replacementFormulaStr}".`);
             replacementFormulaFeedbackEl.textContent = `Error: ${compoundData.replacementParsed.unknownElements.join(', ') || 'Invalid formula.'}`;
             replacementFormulaFeedbackEl.classList.add('error');
@@ -1360,20 +1541,19 @@
             resetButtonToAnalyze();
             return;
         }
-        
-        const ionsForSelection = getIonsFromComposition(compoundData.originalParsed.mainComposition); 
-        
+
+        const ionsForSelection = getIonsFromComposition(compoundData.originalParsed.mainComposition);
+
         if (ionsForSelection.length === 0) {
-          showError(`No distinct chemical elements (potential ions for conservation) found in the main chemical entity of the original formula: ${compoundData.originalParsed.displayFormula}. Check if the formula is just a hydrate or if there are parsing errors.`);
-          resetButtonToAnalyze();
-          return;
+            showError(`No distinct chemical elements (potential ions for conservation) found in the main chemical entity of the original formula: ${compoundData.originalParsed.displayFormula}. Check if the formula is just a hydrate or if there are parsing errors.`);
+            resetButtonToAnalyze();
+            return;
         }
 
         showIonSelection(ionsForSelection);
-        btnTextSpan.textContent = 'Select Ion, then Calculate';
-        mainActionBtn.dataset.action = 'calculate'; 
-        mainActionBtn.disabled = true; 
-      }, 200);
+        // Use the new function to set the button state
+        resetButtonToCalculate();
+    }, 200);
     }
 
     function showIonSelection(ions) {
@@ -1390,28 +1570,31 @@
     }
 
     function selectIon(ion, buttonElement) {
-      selectedIon = ion; 
-      document.querySelectorAll('.ion-btn').forEach(btn => btn.classList.remove('selected'));
-      buttonElement.classList.add('selected');
-      
-      btnTextSpan.textContent = 'Calculate Replacement';
-      mainActionBtn.disabled = false; 
-      mainActionBtn.dataset.action = 'calculate'; 
+    selectedIon = ion;
+    document.querySelectorAll('.ion-btn').forEach(btn => btn.classList.remove('selected'));
+    buttonElement.classList.add('selected');
+
+    // Update all buttons to the "Calculate" state
+    document.querySelectorAll('.btn-text').forEach(span => span.textContent = 'Calculate Replacement');
+    document.querySelectorAll('.main-action-btn').forEach(btn => {
+        btn.disabled = false;
+        btn.dataset.action = 'calculate';
+    });
     }
 
-    function calculateReplacement() {
-      if (!selectedIon && mainActionBtn.dataset.action === 'calculate') {
-          showError('Please select an ion to conserve before calculating.');
-          mainActionBtn.disabled = false; 
-          return;
-      }
-        
-      btnTextSpan.innerHTML = '<span class="loading"></span> Calculating...';
-      mainActionBtn.disabled = true;
+function calculateReplacement() {
+    const firstMainBtn = document.querySelector('.main-action-btn');
+    if (!selectedIon && firstMainBtn && firstMainBtn.dataset.action === 'calculate') {
+        showError('Please select an ion to conserve before calculating.');
+        return;
+    }
 
-      setTimeout(() => {
-        if (!compoundData.originalParsed || !compoundData.replacementParsed || 
-            compoundData.originalParsed.unknownElements.length > 0 || 
+    document.querySelectorAll('.btn-text').forEach(span => span.innerHTML = '<span class="loading"></span> Calculating...');
+    document.querySelectorAll('.main-action-btn').forEach(btn => btn.disabled = true);
+
+    setTimeout(() => {
+        if (!compoundData.originalParsed || !compoundData.replacementParsed ||
+            compoundData.originalParsed.unknownElements.length > 0 ||
             compoundData.replacementParsed.unknownElements.length > 0) {
             showError("Formulas seem to have changed or are invalid. Please Analyze Compounds again.");
             resetButtonToAnalyze();
@@ -1424,131 +1607,110 @@
         const molarityUnit = molarityUnitSelect.value;
         const volumeVal = parseFloat(volumeInput.value);
         const volumeUnit = volumeUnitSelect.value;
-
         const hasOriginalAmount = !isNaN(originalAmountVal);
         const hasMolarity = !isNaN(molarityVal);
         const hasVolume = !isNaN(volumeVal);
-
         let currentMolarityM = hasMolarity ? convertMolarityToM(molarityVal, molarityUnit) : NaN;
         let currentVolumeL = hasVolume ? convertVolumeToL(volumeVal, volumeUnit) : NaN;
-        
         let originalMoles = NaN;
-        let calculatedMolarityForDisplay = null; 
-        let calculatedVolumeForDisplay = null;   
+        let calculatedMolarityForDisplay = null;
+        let calculatedVolumeForDisplay = null;
 
         if (hasMolarity && hasVolume) {
             originalMoles = currentMolarityM * currentVolumeL;
             if (compoundData.originalParsed && compoundData.originalParsed.weight > 0) {
                 const massInGrams = originalMoles * compoundData.originalParsed.weight;
-                const formattedMass = formatValue(massInGrams, 'weight');
-                amountInput.value = formattedMass.split(' ')[0];
-                unitSelect.value = formattedMass.endsWith(' g') ? 'g' : 'mg';
+                const formattedMass = formatValue(massInGrams, 'weight', false);
+                amountInput.value = formattedMass;
+                unitSelect.value = massInGrams < 1 ? 'mg' : 'g';
             } else {
-                 amountInput.value = originalMoles.toPrecision(4);
-                 unitSelect.value = 'mol';
+                amountInput.value = originalMoles.toPrecision(4);
+                unitSelect.value = 'mol';
             }
-        } else if (hasOriginalAmount && hasVolume) {
-            originalMoles = (originalUnit === 'mol') ? originalAmountVal : 
-                            (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
-            if (isNaN(originalMoles)) { showError("Original compound weight error for amount conversion."); resetButtonToCalculate(); return; }
+        } else if (hasOriginalAmount) {
+            originalMoles = (originalUnit === 'mol') ? originalAmountVal :
+                (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
             
-            if (currentVolumeL > 0) {
-                const calcM = originalMoles / currentVolumeL;
-                calculatedMolarityForDisplay = { value: calcM, unit: 'M' }; 
-                molarityInput.value = calcM.toPrecision(4); 
-                molarityUnitSelect.value = 'M';
-            } else { showError("Volume must be > 0 to calculate molarity."); resetButtonToCalculate(); return; }
-        } else if (hasOriginalAmount && hasMolarity) {
-            originalMoles = (originalUnit === 'mol') ? originalAmountVal : 
-                            (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
-            if (isNaN(originalMoles)) { showError("Original compound weight error for amount conversion."); resetButtonToCalculate(); return; }
+            if (isNaN(originalMoles)) {
+                showError("Original compound weight error for amount conversion.");
+                resetButtonToCalculate();
+                return;
+            }
 
-            if (currentMolarityM > 0) {
+            if (hasVolume && currentVolumeL > 0) {
+                const calcM = originalMoles / currentVolumeL;
+                calculatedMolarityForDisplay = { value: calcM, unit: 'M' };
+                molarityInput.value = (molarityUnitSelect.value === 'mM' ? calcM * 1000 : (molarityUnitSelect.value === 'uM' ? calcM * 1000000 : calcM)).toPrecision(4);
+            } else if (hasMolarity && currentMolarityM > 0) {
                 const calcL = originalMoles / currentMolarityM;
-                calculatedVolumeForDisplay = { value: calcL * 1000, unit: 'mL' }; 
-                volumeInput.value = (calcL * 1000).toPrecision(4); 
-                volumeUnitSelect.value = 'mL';
-            } else { showError("Molarity must be > 0 to calculate volume."); resetButtonToCalculate(); return; }
-        } else if (hasOriginalAmount) { 
-            originalMoles = (originalUnit === 'mol') ? originalAmountVal : 
-                            (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
-            if (isNaN(originalMoles)) { showError("Original compound weight error for amount conversion."); resetButtonToCalculate(); return; }
+                calculatedVolumeForDisplay = { value: calcL, unit: 'L' };
+                volumeInput.value = (volumeUnitSelect.value === 'mL' ? calcL * 1000 : calcL).toPrecision(4);
+            } else if (!hasVolume && !hasMolarity) {
+                // This is fine, just use the amount.
+            } else {
+                showError("To auto-calculate Molarity or Volume, ensure the provided value is > 0.");
+                resetButtonToCalculate();
+                return;
+            }
         } else {
-            showError("Insufficient input. Provide Original Amount, OR Molarity & Volume, OR Original Amount & one of (Molarity/Volume).");
-            if(selectedIon) resetButtonToCalculate(); else resetButtonToAnalyze();
+            showError("Insufficient input. Provide Original Amount, OR Molarity & Volume.");
+            resetButtonToAnalyze();
             return;
         }
 
         if (isNaN(originalMoles) || originalMoles <= 0) {
             showError("Could not determine a valid positive amount (moles) for the original compound.");
-            if(selectedIon) resetButtonToCalculate(); else resetButtonToAnalyze();
+            resetButtonToAnalyze();
             return;
         }
-        
-        if (!selectedIon) { 
-          showError('Please select an ion/element from the original compound to conserve.');
-          resetButtonToCalculate(); 
-          return;
+
+        if (!selectedIon) {
+            showError('Please select an ion/element from the original compound to conserve.');
+            resetButtonToCalculate();
+            return;
         }
 
         if (!compoundData.replacementParsed.mainComposition[selectedIon] || compoundData.replacementParsed.mainComposition[selectedIon] === 0) {
-          showError(`The selected element/ion (${selectedIon}) is not found (or has zero stoichiometry) in the main chemical entity of the replacement compound (${compoundData.replacementParsed.displayFormula}). Cannot conserve.`);
-          resetButtonToCalculate(); 
-          return;
+            showError(`The selected element/ion (${selectedIon}) is not found (or has zero stoichiometry) in the main chemical entity of the replacement compound (${compoundData.replacementParsed.displayFormula}). Cannot conserve.`);
+            resetButtonToCalculate();
+            return;
         }
 
-        const originalStoichiometry = compoundData.originalParsed.mainComposition[selectedIon]; 
-        const replacementStoichiometry = compoundData.replacementParsed.mainComposition[selectedIon]; 
+        const originalStoichiometry = compoundData.originalParsed.mainComposition[selectedIon];
+        const replacementStoichiometry = compoundData.replacementParsed.mainComposition[selectedIon];
 
         if (!originalStoichiometry || originalStoichiometry === 0) {
-          showError(`Selected ion (${selectedIon}) has zero stoichiometry in the main part of the original compound. This shouldn't happen if selected from the list.`);
-          resetButtonToCalculate(); return;
+            showError(`Selected ion (${selectedIon}) has zero stoichiometry in the main part of the original compound. This shouldn't happen if selected from the list.`);
+            resetButtonToCalculate();
+            return;
         }
 
         const molesOfSelectedIon = originalMoles * originalStoichiometry;
         const molesOfReplacementCompound = molesOfSelectedIon / replacementStoichiometry;
-        const weightOfReplacementGrams = molesOfReplacementCompound * compoundData.replacementParsed.weight; 
+        const weightOfReplacementGrams = molesOfReplacementCompound * compoundData.replacementParsed.weight;
 
         let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">📊</span>Calculation Results</h2>`;
-        
-        resultsHTML += `
-            <div class="main-result-item">
-              <div class="main-result-value">${formatValue(weightOfReplacementGrams, 'weight')}</div>
-              <div class="main-result-label">Required Weight of ${compoundData.replacementParsed.displayFormula}</div>
-            </div>`;
-        
-        resultsHTML += `<h3>Calculation Details</h3>`;
-        resultsHTML += `<div class="results-grid">`;
+        resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(weightOfReplacementGrams, 'weight')}</div><div class="main-result-label">Required Weight of ${compoundData.replacementParsed.displayFormula}</div></div>`;
+        resultsHTML += `<h3>Calculation Details</h3><div class="results-grid">`;
         resultsHTML += createResultItem(formatValue(molesOfReplacementCompound, 'moles'), `Moles of ${compoundData.replacementParsed.displayFormula}`);
         resultsHTML += createResultItem(`${selectedIon}${getIonDisplayCharge(selectedIon)}`, 'Conserved Element/Ion');
-
         if (calculatedMolarityForDisplay) {
-            let displayMolarity = calculatedMolarityForDisplay.value;
-            let displayMolarityUnit = 'M';
-            if (molarityUnitSelect.value === 'mM' && displayMolarity * 1000 >= 0.001) { 
-                displayMolarity *= 1000; displayMolarityUnit = 'mM';
-            } else if (molarityUnitSelect.value === 'uM' && displayMolarity * 1000000 >= 0.001) { 
-                displayMolarity *= 1000000; displayMolarityUnit = 'µM';
-            }
-            resultsHTML += createResultItem(`${displayMolarity.toPrecision(4)} ${displayMolarityUnit}`, 'Calculated Molarity');
+            resultsHTML += createResultItem(`${formatValue(calculatedMolarityForDisplay.value, 'moles')} / L`, 'Calculated Molarity');
         }
         if (calculatedVolumeForDisplay) {
-             resultsHTML += createResultItem(`${calculatedVolumeForDisplay.value.toPrecision(4)} ${calculatedVolumeForDisplay.unit}`, 'Calculated Volume');
+            resultsHTML += createResultItem(formatValue(calculatedVolumeForDisplay.value, 'volume'), 'Calculated Volume');
         }
-        resultsHTML += `</div>`;
-        resultsHTML += `<button id="copyResultsBtn" class="secondary-btn">Copy Summary</button>`;
-        
-        outputPanel.innerHTML = resultsHTML; 
+        resultsHTML += `</div><button id="copyResultsBtn" class="secondary-btn">Copy Summary</button>`;
+
+        outputPanel.innerHTML = resultsHTML;
         outputPanel.classList.remove('hidden');
         outputPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
         document.getElementById('copyResultsBtn').addEventListener('click', () => copyResultsSummary(weightOfReplacementGrams, molesOfReplacementCompound));
-
-
-        btnTextSpan.textContent = 'Analyze Again'; 
-        mainActionBtn.disabled = false;
-        mainActionBtn.dataset.action = 'analyze'; 
-      }, 200);
+        
+        // This will reset the button text to 'Analyze Again' and re-enable it
+        resetButtonToAnalyze();
+    }, 200);
     }
 
     /**
@@ -1749,27 +1911,56 @@ Required Moles: ${formatValue(moles, 'moles')}
     /**
      * Resets the main action button to its initial "Analyze Compounds" state.
      */
-    function resetButtonToAnalyze() {
-        btnTextSpan.textContent = 'Analyze Compounds';
-        mainActionBtn.disabled = false;
-        mainActionBtn.dataset.action = 'analyze';
-        ionSelectionPanel.classList.add('hidden'); 
-        selectedIon = null; 
-    }
-    /**
-     * Resets the main action button to the "Calculate Replacement" state.
-     */
-    function resetButtonToCalculate() { 
-        btnTextSpan.textContent = 'Calculate Replacement';
-        if(selectedIon && ionButtonsDiv.children.length > 0){
-            mainActionBtn.disabled = false;
-        } else {
-            mainActionBtn.disabled = true;
-            if(ionButtonsDiv.children.length > 0) btnTextSpan.textContent = 'Select Ion, then Calculate';
-        }
-        mainActionBtn.dataset.action = 'calculate';
-    }
+    // CORRECTED VERSION
+function resetButtonToAnalyze() {
+    // This finds ALL the button text spans using the new class '.btn-text'
+    document.querySelectorAll('.btn-text').forEach(span => {
+        span.textContent = 'Analyze Compounds';
+    });
 
+    // This finds ALL the main action buttons using the new class '.main-action-btn'
+    document.querySelectorAll('.main-action-btn').forEach(btn => {
+        btn.disabled = false;
+        // This line is now active and correctly resets the button's action
+        btn.dataset.action = 'analyze';
+    });
+
+    // The rest of your function that hides other panels
+    if (typeof ionSelectionPanel !== 'undefined') {
+        ionSelectionPanel.classList.add('hidden');
+    }
+    if (typeof selectedIon !== 'undefined') {
+        selectedIon = null;
+    }
+}
+// --- PASTE THIS ENTIRE FUNCTION INTO YOUR SCRIPT ---
+
+/**
+ * Resets the main action button to the "Calculate" state,
+ * enabling it only if an ion has been selected.
+ */
+function resetButtonToCalculate() {
+    document.querySelectorAll('.main-action-btn').forEach(btn => {
+        // If an ion has been chosen, enable the button, otherwise disable it.
+        if (selectedIon && ionButtonsDiv.children.length > 0) {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
+        btn.dataset.action = 'calculate';
+    });
+    
+    document.querySelectorAll('.btn-text').forEach(span => {
+        // Change text based on whether an ion has been selected.
+        if (ionButtonsDiv.children.length > 0 && !selectedIon) {
+            span.textContent = 'Select Ion, then Calculate';
+        } else {
+            span.textContent = 'Calculate Replacement';
+        }
+    });
+}
+
+// --- END OF CODE TO PASTE ---
   </script>
 </body>
 </html>
