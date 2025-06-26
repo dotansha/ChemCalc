@@ -16,6 +16,7 @@
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [Version_1.3](#Version_1.3)
+- [Version_1.5](#Version_1.5)
 - [License](#license)
 - [Contact](#contact)
 
@@ -84,6 +85,7 @@ Contributions are welcome! Please open an issue or pull request with suggestions
 
 ---
 ## Version_1.3
+## What's New in ChemCalc v1.3 (compared to ChemCalc v1.0)
 Version 1.3 is a major update focused on user experience and intelligent input, making the calculator faster, more intuitive, and more powerful to use.
 
 ✨ Key Features & Improvements
@@ -107,7 +109,69 @@ JavaScript Refactoring: The core logic for handling button clicks was refactored
 Modern Event Handling: The application now uses a single, universal event listener (event delegation) to efficiently manage all user actions on the main buttons, replacing multiple individual listeners.
 
 ---
+## Version_1.5
+## What's New in ChemFormulator v1.5 (compared to ChemCalc v1.3)
 
+ChemFormulator v1.5 is a major upgrade from v1.3, bringing both user experience enhancements and functional improvements. Below is a summary of the most important changes and new features:
+
+### 1. **Project Renaming & Branding**
+- **New Name:** The tool is now called **ChemFormulator** instead of ChemCalc.
+- **Updated Branding:** All titles, headers, and footers in the UI and code have been updated to reflect the new name.
+
+### 2. **User Interface & Usability**
+- **Hydration Controls:**
+  - v1.3: Only a “+H₂O” button for adding hydration was available.
+  - v1.5: Now includes both “+H₂O” (add) **and** “-H₂O” (remove) buttons for fine-tuned control over hydrate numbers in formulas.
+  - Hydration buttons have improved styling and positioning for usability.
+- **Improved Suggestions Panel:**
+  - Suggestions for compound names now appear **inside** the formula input box instead of below, for better accessibility.
+  - Increased the number of suggestions shown (from 5 to 8).
+  - More robust click handling and closing of suggestions when clicking elsewhere.
+- **Footer & Metadata:**
+  - Footer and contact/feedback links updated to reflect the new tool name and version.
+  - Footer now always displays the correct version and project name.
+
+### 3. **Compound Input & Analysis**
+- **Original/Replacement Compound Handling:**
+  - v1.3 required both original and replacement compounds to be filled for analysis.
+  - v1.5 allows users to analyze just the original compound (e.g., molarity, moles, or mass calculations) without specifying a replacement.
+  - If only the original compound is provided, ChemFormulator computes and displays its moles and molar mass.
+- **Formula Validation & Feedback:**
+  - Input validation logic is more robust and tolerant, with improved error messages.
+  - Validation now correctly handles partial names and auto-fills formulas from known compound names.
+
+### 4. **Calculation Logic Enhancements**
+- **Flexible Analysis Flow:**
+  - v1.5 allows users to analyze the original, then optionally proceed to replacement calculations if a replacement is provided.
+- **Calculation Result Details:**
+  - When only original compound is entered, result panel shows calculated moles and molar mass.
+  - Replacement calculation panel now also shows moles of the original compound for transparency.
+- **Consistent Button Logic:**
+  - Unified action buttons for "Analyze" and "Calculate" with smart disabling/enabling based on user input and context.
+  - Button text and state update automatically depending on whether an ion is selected and which step the user is on.
+
+### 5. **Hydration Handling & Edge Cases**
+- **Hydration Subtraction:**  
+  - v1.5 introduces the ability to decrease or remove hydration numbers from formulas, not just add.
+  - Hydration parsing logic improved for more accurate handling of edge cases.
+- **Formula Normalization:**  
+  - Improved digit normalization and parsing for subscripts and superscripts for more robust formula entry.
+
+### 6. **Minor and Cosmetic Improvements**
+- **UI Polishing:**  
+  - Margin and padding tweaks for a cleaner appearance.
+  - Improved alignment and style consistency across sections.
+  - Streamlined feedback and error styling.
+- **Accessibility:**  
+  - All suggestion items are now clickable even if the user types quickly or clicks during rendering.
+- **Compound Database:**  
+  - Updates and corrections to the compound name-to-formula mapping for better coverage and accuracy.
+
+---
+
+**Summary:**  
+ChemFormulator v1.5 is a more flexible, robust, and user-friendly chemistry calculator, with expanded functionality for working with hydrates, improved analysis flow, and a more modern interface. It is ideal for both quick checks and more complex reagent conversions.
+---
 ## License
 
 This project is licensed under the Apache License 2.0.  
