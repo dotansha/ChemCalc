@@ -392,7 +392,78 @@
         background-color: #e2e8f0;
         border-color: #cbd5e1;
     }
+/* --- ADD THIS ENTIRE BLOCK OF NEW CSS --- */
 
+.dilution-main-result {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  color: white;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  margin: 1rem 0;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.dilution-main-result-label {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: 0.25rem;
+}
+
+.dilution-main-result-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.dilution-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+@media (max-width: 600px) {
+  .dilution-grid { grid-template-columns: 1fr; }
+}
+
+.dilution-input-group h4 {
+  font-size: 1rem;
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #dbeafe;
+  padding-bottom: 0.5rem;
+}
+
+.input-with-unit {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+
+.input-with-unit input {
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  flex: 1; /* <-- ADD: Allows the input to grow and fill space */
+  min-width: 0; /* <-- ADD: Important fix for flexbox in some browsers */
+}
+.input-with-unit select {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background-color: #f8fafc;
+  width: auto;
+  min-width: 85px; /* <-- CHANGE: A slightly larger fixed width */
+}
+
+.dilution-secondary-output {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dbeafe;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #475569;
+}
     .output-panel {
       background: linear-gradient(135deg, #f0fff4, #e6fffa);
       border-radius: 15px;
@@ -650,48 +721,59 @@
     <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
       </div>
       <div id="dilutionCalculatorSection" class="calculator-section">
-        <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
-        <div class="flex-inputs">
-            <div>
-                <label for="stockConc">Stock Conc. (C₁)</label>
-                <input type="number" id="stockConc" placeholder="e.g., 10" step="any">
-            </div>
-            <div>
-                <label for="stockConcUnit">Stock Conc. Unit</label>
-                <select id="stockConcUnit">
-                    <option value="M">M (mol/L)</option>
-                    <option value="mM" selected>mM (mmol/L)</option>
-                    <option value="uM">µM (µmol/L)</option>
-                </select>
-            </div>
-            <div>
-                <label for="finalConc">Final Conc. (C₂)</label>
-                <input type="number" id="finalConc" placeholder="e.g., 10" step="any">
-            </div>
-            <div>
-                <label for="finalConcUnit">Final Conc. Unit</label>
-                <select id="finalConcUnit">
-                    <option value="M">M (mol/L)</option>
-                    <option value="mM" selected>mM (mmol/L)</option>
-                    <option value="uM">µM (µmol/L)</option>
-                </select>
-            </div>
-            <div>
-                <label for="finalVolume">Final Volume (V₂)</label>
-                <input type="number" id="finalVolume" placeholder="e.g., 50" step="any">
-            </div>
-            <div>
-                <label for="finalVolumeUnit">Final Volume Unit</label>
-                <select id="finalVolumeUnit">
-                    <option value="mL" selected>mL</option>
-                    <option value="L">L</option>
-                </select>
-            </div>
+        <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator</h3>
+        
+        <div class="dilution-main-result">
+          <span class="dilution-main-result-label">Volume of Stock to Add (V₁)</span>
+          <span id="dilutionPrimaryResult" class="dilution-main-result-value">---</span>
         </div>
-        <button id="calculateDilutionBtn" class="calculate-btn dilution-calc-btn" style="margin-top:1.5rem;">Calculate Dilution</button>
-        <div id="dilutionResultOutput" class="dilution-output-panel output-panel hidden">
+      
+        <div class="dilution-grid">
+          <div class="dilution-input-group">
+            <h4>Stock Solution (C₁V₁)</h4>
+            <label for="stockConc">Stock Concentration (C₁)</label>
+            <div class="input-with-unit">
+              <input type="number" id="stockConc" placeholder="e.g., 10" step="any">
+              <select id="stockConcUnit">
+                <option value="M">M</option>
+                <option value="mM" selected>mM</option>
+                <option value="uM">µM</option>
+                <option value="mg/mL">mg/mL</option>
+                <option value="ug/mL">µg/mL</option>
+                <option value="ng/mL">ng/mL</option>
+              </select>
             </div>
-         <span id="dilutionCalcError" class="dilution-error-message"></span>
+          </div>
+      
+          <div class="dilution-input-group">
+            <h4>Final Solution (C₂V₂)</h4>
+            <label for="finalConc">Final Concentration (C₂)</label>
+            <div class="input-with-unit">
+              <input type="number" id="finalConc" placeholder="e.g., 100" step="any">
+              <select id="finalConcUnit">
+                <option value="M">M</option>
+                <option value="mM" selected>mM</option>
+                <option value="uM">µM</option>
+                <option value="mg/mL">mg/mL</option>
+                <option value="ug/mL">µg/mL</option>
+                <option value="ng/mL">ng/mL</option>
+              </select>
+            </div>
+            
+            <label for="finalVolume">Final Volume (V₂)</label>
+            <div class="input-with-unit">
+              <input type="number" id="finalVolume" placeholder="e.g., 50" step="any">
+              <select id="finalVolumeUnit">
+                <option value="L">L</option>
+                <option value="mL" selected>mL</option>
+                <option value="uL">µL</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      
+        <div id="dilutionSecondaryResult" class="dilution-secondary-output hidden"></div>
+        <div id="dilutionCalcError" class="message-box error-message hidden" style="margin-top: 1rem;"></div>
       </div>
 
 
@@ -725,7 +807,7 @@
         <div class="footer-links">
             <a href="mailto:dotansh@bgu.ac.il?subject=ChemFormulator%20Feedback">Report an Issue</a>
             <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-            <span>ChemFormulator v1.5</span>
+            <span>ChemFormulator v1.6</span>
         </div>
     </div>
   </footer>
@@ -879,8 +961,17 @@
     document.getElementById('removeHydrationOriginal').addEventListener('click', () => modifyHydration('originalFormula', 'remove'));
     document.getElementById('addHydrationReplacement').addEventListener('click', () => modifyHydration('replacementFormula', 'add'));
     document.getElementById('removeHydrationReplacement').addEventListener('click', () => modifyHydration('replacementFormula', 'remove'));
+// --- ADD THESE NEW EVENT LISTENERS ---
 
-    calculateDilutionBtn.addEventListener('click', handleCalculateDilution);
+const dilutionInputs = [
+  stockConc, stockConcUnit,
+  finalConc, finalConcUnit,
+  finalVolume, finalVolumeUnit
+];
+dilutionInputs.forEach(input => {
+  input.addEventListener('input', handleCalculateDilution);
+});
+    // deleted calculateDilutionBtn.addEventListener('click', handleCalculateDilution);
     checkChargeOriginalBtn.addEventListener('click', () => handleChargeCheck('original'));
     checkChargeReplacementBtn.addEventListener('click', () => handleChargeCheck('replacement'));
     
@@ -1531,59 +1622,91 @@
         }, 200);
     }
 
-    function handleCalculateDilution() {
-        dilutionCalcErrorEl.textContent = ''; 
-        dilutionResultOutputEl.classList.add('hidden');
-        dilutionResultOutputEl.innerHTML = '';
-        const M1_val = parseFloat(stockConcInput.value);
-        const M1_unit = stockConcUnitSelect.value;
-        const M2_val = parseFloat(finalConcInput.value);
-        const M2_unit = finalConcUnitSelect.value;
-        const V2_val = parseFloat(finalVolumeInput.value);
-        const V2_unit = finalVolumeUnitSelect.value;
-        if (isNaN(M1_val) || isNaN(M2_val) || isNaN(V2_val)) {
-            dilutionCalcErrorEl.textContent = "Error: All concentration and volume fields must be numbers.";
-            return;
-        }
-        if (M1_val <= 0 || M2_val < 0 || V2_val <= 0) { 
-             dilutionCalcErrorEl.textContent = "Error: Concentrations and final volume must be positive (final conc. can be 0).";
-            return;
-        }
-        const M1_molar = convertMolarityToM(M1_val, M1_unit);
-        const M2_molar = convertMolarityToM(M2_val, M2_unit);
-        const V2_liters = convertVolumeToL(V2_val, V2_unit);
-        if (M1_molar < M2_molar && M2_molar > 0) { 
-            dilutionCalcErrorEl.textContent = "Error: Stock concentration (C₁) must be greater than or equal to final concentration (C₂).";
-            return;
-        }
-        if (M1_molar === 0 && M2_molar > 0) {
-             dilutionCalcErrorEl.textContent = "Error: Stock concentration (C₁) cannot be zero if final concentration (C₂) is greater than zero.";
-            return;
-        }
-        let V1_liters;
-        if (M1_molar === 0) { 
-            V1_liters = (M2_molar === 0) ? 0 : NaN; 
-            if (isNaN(V1_liters)) {
-                 dilutionCalcErrorEl.textContent = "Error: Cannot achieve a non-zero final concentration with a 0M stock.";
-                 return;
-            }
-        } else {
-            V1_liters = (M2_molar * V2_liters) / M1_molar;
-        }
-        const volume_diluent_liters = V2_liters - V1_liters;
-        if (V1_liters < 0 || volume_diluent_liters < 0) { 
-            dilutionCalcErrorEl.textContent = "Error: Calculation resulted in negative volume. Check inputs.";
-            return;
-        }
-        let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">💧</span>Dilution Results</h2>`;
-        resultsHTML += `<div class="dilution-results-grid results-grid">`; 
-        resultsHTML += createResultItem(formatValue(V1_liters, 'volume'), `Required Volume of Stock (V₁)`);
-        resultsHTML += createResultItem(formatValue(volume_diluent_liters, 'volume'), `Volume of Diluent to Add`);
-        resultsHTML += `</div>`;
-        dilutionResultOutputEl.innerHTML = resultsHTML;
-        dilutionResultOutputEl.classList.remove('hidden');
-        dilutionResultOutputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+function handleCalculateDilution() {
+    dilutionCalcError.classList.add('hidden');
+    dilutionCalcError.textContent = '';
+    
+    const inputs = [stockConc.value, finalConc.value, finalVolume.value];
+    if (inputs.some(val => val === '')) {
+        dilutionPrimaryResult.textContent = '---';
+        dilutionSecondaryResult.classList.add('hidden');
+        return; // Do nothing if any box is empty
     }
+    
+    const C1_val = parseFloat(stockConc.value);
+    const C2_val = parseFloat(finalConc.value);
+    const V2_val = parseFloat(finalVolume.value);
+
+    if ([C1_val, C2_val, V2_val].some(isNaN)) {
+        dilutionPrimaryResult.textContent = '---';
+        dilutionSecondaryResult.classList.add('hidden');
+        return;
+    }
+
+    const C1_unit = stockConcUnit.value;
+    const C2_unit = finalConcUnit.value;
+    const V2_unit = finalVolumeUnit.value;
+
+    const isMolar = ['M', 'mM', 'uM'].includes(C1_unit);
+    const isMass = ['mg/mL', 'ug/mL', 'ng/mL'].includes(C1_unit);
+
+    // Ensure units are of the same type (both molar or both mass)
+    if ((isMolar && !['M', 'mM', 'uM'].includes(C2_unit)) || (isMass && !['mg/mL', 'ug/mL', 'ng/mL'].includes(C2_unit))) {
+        dilutionCalcError.textContent = "Error: Stock and Final units must both be molar (M, mM) or mass (mg/mL, µg/mL).";
+        dilutionCalcError.classList.remove('hidden');
+        dilutionPrimaryResult.textContent = 'Error';
+        return;
+    }
+
+    // --- Helper function to convert all mass-based units to g/L ---
+    const convertMassToGL = (val, unit) => {
+        switch(unit) {
+            case 'mg/mL': return val;       // 1 mg/mL = 1 g/L
+            case 'ug/mL': return val / 1000;  // 1 µg/mL = 1 mg/L = 0.001 g/L
+            case 'ng/mL': return val / 1000000; // 1 ng/mL = 1 µg/L = 1e-6 g/L
+            default: return NaN;
+        }
+    };
+
+    let C1_standard, C2_standard;
+
+    if (isMolar) {
+        C1_standard = convertMolarityToM(C1_val, C1_unit);
+        C2_standard = convertMolarityToM(C2_val, C2_unit);
+    } else { // isMass
+        C1_standard = convertMassToGL(C1_val, C1_unit);
+        C2_standard = convertMassToGL(C2_val, C2_unit);
+    }
+    
+    const V2_liters = convertVolumeToL(V2_val, V2_unit);
+
+    if (C1_standard < C2_standard && C2_standard > 0) { 
+      dilutionCalcError.textContent = "Error: Stock concentration (C₁) must be >= final concentration (C₂).";
+      dilutionCalcError.classList.remove('hidden');
+      dilutionPrimaryResult.textContent = 'Error';
+      dilutionSecondaryResult.classList.add('hidden');
+      return;
+    }
+    
+    let V1_liters = (C1_standard === 0) ? 0 : (C2_standard * V2_liters) / C1_standard;
+
+    // Update the main result display
+    const finalUnit = finalVolumeUnit.value;
+    let V1_display_val;
+    if (finalUnit === 'L') V1_display_val = V1_liters;
+    else if (finalUnit === 'mL') V1_display_val = V1_liters * 1000;
+    else V1_display_val = V1_liters * 1000000; // uL
+    dilutionPrimaryResult.textContent = `${V1_display_val.toPrecision(4)} ${finalUnit}`;
+
+    // Update the secondary result display
+    const volume_diluent_liters = V2_liters - V1_liters;
+    const diluent_display_val = (finalUnit === 'L') ? volume_diluent_liters : 
+                                (finalUnit === 'mL') ? volume_diluent_liters * 1000 : 
+                                                       volume_diluent_liters * 1000000;
+    dilutionSecondaryResult.innerHTML = `Add <strong>${diluent_display_val.toPrecision(4)} ${finalUnit}</strong> of diluent to reach the final volume.`;
+    dilutionSecondaryResult.classList.remove('hidden');
+}
     
     function copyResultsSummary(weightGrams, moles) {
         const summary = `
