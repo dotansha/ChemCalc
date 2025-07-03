@@ -17,6 +17,7 @@
 - [Contributing](#contributing)
 - [Version_1.3](#Version_1.3)
 - [Version_1.5](#Version_1.5)
+- [Version_1.6](#Version_1.6)
 - [License](#license)
 - [Contact](#contact)
 
@@ -168,6 +169,34 @@ ChemFormulator v1.5 is a major upgrade from v1.3, bringing both user experience 
   - Updates and corrections to the compound name-to-formula mapping for better coverage and accuracy.
 
 ---
+## Version_1.6
+
+What's New in Version 1.6
+Version 1.6 introduces a complete overhaul of the Solution Dilution Calculator, transforming it from a simple tool into a powerful, live, and user-friendly utility that provides instant feedback.
+
+✨ Key Features & Improvements
+Live Calculations 🔢: The dilution calculator is now fully interactive. Results for the "Volume of Stock to Add" are updated instantly as you type, eliminating the need to press a "Calculate" button and providing a much faster workflow.
+
+Modern & Intuitive GUI ✨: The entire user interface for the dilution calculator has been redesigned to be clearer and more professional.
+
+The most important result is now displayed prominently at the top in a highlighted box.
+
+Inputs are logically grouped into "Stock Solution" and "Final Solution" sections.
+
+A secondary result now automatically calculates the required "Volume of Diluent to Add", a common source of error when performing dilutions manually.
+
+Expanded Unit Support ⚖️: The calculator is no longer limited to molar concentrations. You can now perform dilutions using common weight-based concentration units, including:
+
+mg/mL
+
+µg/mL
+
+ng/mL
+
+Robust Error Handling 🛡️: The new interface provides clear, real-time error messages. It will now prevent calculations if the stock and final units are incompatible (e.g., molar vs. mass-based) or if the stock concentration is lower than the final concentration.
+
+Browser Compatibility Fix 🐞: A stubborn CSS bug that caused unit selection boxes (M, mM, etc.) to appear cropped in Chrome has been fixed, ensuring a consistent and polished look across different browsers.
+--
 
 **Summary:**  
 ChemFormulator v1.5 is a more flexible, robust, and user-friendly chemistry calculator, with expanded functionality for working with hydrates, improved analysis flow, and a more modern interface. It is ideal for both quick checks and more complex reagent conversions.
