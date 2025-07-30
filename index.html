@@ -1,1840 +1,1990 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="description" content="A simple and powerful chemistry calculator to analyze chemical compounds, calculate molar mass, and determine mass percentages. Perfect for students and professionals.">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="google-adsense-account" content="ca-pub-8948405948087873">
-  <meta name="msvalidate.01" content="848A490F5967273EFF4F57D7327BB1F5" />
-  <title>ChemFormulator: The Easy Chemistry Calculator</title>
-  <style>
-    /* General Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 20px; 
-    }
-
-    .background-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-      pointer-events: none;
-      z-index: -1; 
-    }
-
-    header {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 1.5rem 0; 
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 1200px; 
-      border-radius: 0 0 15px 15px; 
-      margin-bottom: 1.5rem; 
-    }
-
-    header h1 {
-      font-size: 2.5rem; 
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.3rem;
-    }
-
-    header p {
-      color: #666;
-      font-size: 1rem; 
-      font-weight: 300;
-    }
-
-    .container {
-      max-width: 1200px;
-      width: 95%; 
-      margin: 0 auto 2rem auto; 
-      padding: 0 1rem; 
-      position: relative;
-      z-index: 5;
-    }
-
-    .main-panel {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 2rem; 
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); 
-      margin-bottom: 2rem;
-    }
-
-    .flex-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr; 
-      gap: 2rem; 
-      margin-bottom: 2rem;
-    }
-
-    @media (max-width: 900px) { 
-      .flex-row {
-        grid-template-columns: 1fr; 
-      }
-    }
-
-    .compound-section, .calculator-section { 
-      background: linear-gradient(135deg, #f8f9ff, #e8ecff);
-      border-radius: 15px;
-      padding: 1.5rem; 
-      border: 1px solid rgba(102, 126, 234, 0.1); 
-      transition: all 0.3s ease;
-    }
-    .calculator-section { 
-         background: linear-gradient(135deg, #e0f2fe, #f0f9ff); 
-         border-color: rgba(59, 130, 246, 0.15);
-         margin-bottom: 1.5rem;
-    }
-
-
-    .compound-section:hover {
-      transform: translateY(-3px); 
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15); 
-    }
-
-    .compound-section h2, .calculator-section h3 { 
-      color: #4a5568;
-      margin-bottom: 1rem; 
-      font-size: 1.3rem; 
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .calculator-section h3 { 
-        color: #1e3a8a; 
-    }
-
-    .molecule-icon {
-      width: 22px; 
-      height: 22px; 
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 11px; 
-    }
-
-    label {
-      display: block;
-      margin-bottom: 0.4rem; 
-      font-weight: 600;
-      color: #4a5568;
-      font-size: 0.85rem; 
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    input, select {
-        width: 100%;
-        padding: 0.9rem;
-        border: 1px solid #d1d5db;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        background: white;
-        line-height: 1.4;
-    }
-    
-    .formula-input-group {
-        margin-bottom: 0.8rem;
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1); 
-    }
-
-    input.input-error {
-        border-color: #e53e3e !important; 
-        box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2) !important;
-    }
-    .formula-feedback-message { 
-        font-size: 0.75rem;
-        margin-top: -0.6rem;
-        margin-bottom: 0.8rem;
-        display: block; 
-        min-height: 1em; 
-    }
-    .formula-feedback-message.error { color: #c53030; }
-    .formula-feedback-message.success { color: #15803d; }
-    .formula-feedback-message.warning { color: #ca8a04; }
-    .formula-feedback-message.info { color: #4b5563; }
-    
-    .charge-check-btn {
-        background-color: #f1f5f9;
-        color: #475569;
-        border: 1px solid #e2e8f0;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.3rem 0.8rem;
-        margin-left: 0.5rem;
-        vertical-align: middle;
-    }
-    .charge-check-btn:hover {
-        background-color: #e2e8f0;
-        border-color: #cbd5e1;
-    }
-
-    .formula-input-container {
-      position: relative;
-    }
-
-    .hydration-op-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      border-radius: 6px;
-      padding: 0.4rem 0.7rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .hydration-op-btn.add {
-      right: 6px;
-      background: linear-gradient(135deg, #4CAF50, #45a049);
-      color: white;
-    }
-
-    .hydration-op-btn.subtract {
-      right: 62px;
-      background-color: #f1f5f9;
-      color: #475569;
-      border: 1px solid #e2e8f0;
-    }
-    
-    .hydration-op-btn:hover {
-        transform: translateY(-50%) scale(1.05);
-    }
-
-    .suggestions {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      max-height: 130px; 
-      overflow-y: auto;
-      position: absolute;
-      width: 100%;
-      z-index: 100;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); 
-      top: 100%;
-      left: 0;
-      margin-top: 4px;
-    }
-
-    .suggestion-item {
-      padding: 0.7rem; 
-      cursor: pointer;
-      transition: background-color 0.2s;
-      border-bottom: 1px solid #f7f7f7;
-      font-size: 0.9rem; 
-    }
-    .suggestion-item:hover { background-color: #f8f9ff; }
-    .suggestion-item:last-child { border-bottom: none; }
-
-    .ion-selection-panel {
-      background: linear-gradient(135deg, #fff9e6, #fff3cd);
-      border-radius: 15px;
-      padding: 1.5rem; 
-      border-left: 3px solid #f59e0b; 
-      margin: 1.5rem 0; 
-      animation: slideIn 0.4s ease-out; 
-    }
-
-    .ion-selection-panel h3 {
-      color: #92400e;
-      margin-bottom: 0.8rem; 
-      font-size: 1.2rem; 
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-     .ion-selection-panel p {
-        font-size: 0.9rem;
-        color: #a16207; 
-        margin-bottom: 1rem;
-    }
-
-    .ion-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .ion-btn {
-      background: white;
-      border: 2px solid #f59e0b;
-      color: #92400e;
-      padding: 0.5rem 0.9rem; 
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      font-size: 0.85rem; 
-    }
-
-    .ion-btn:hover, .ion-btn.selected {
-      background: #f59e0b;
-      color: white;
-      transform: translateY(-2px); 
-    }
-    .ion-btn.selected {
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
-    }
-    
-    .flex-inputs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-      gap: 1rem 1.5rem; 
-    }
-
-    #dilutionCalculatorSection .flex-inputs {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-    }
-    @media (min-width: 768px) { 
-        #dilutionCalculatorSection .flex-inputs {
-            grid-template-columns: repeat(2, 1fr); 
+    <meta name="description" content="A simple and powerful chemistry calculator to analyze chemical compounds, calculate molar mass, and determine mass percentages. Perfect for students and professionals.">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-adsense-account" content="ca-pub-8948405948087873">
+    <meta name="msvalidate.01" content="848A490F5967273EFF4F57D7327BB1F5" />
+    <title>ChemFormulator: The Easy Chemistry Calculator</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-    }
-     @media (min-width: 1024px) { 
-        #dilutionCalculatorSection .flex-inputs {
-            grid-template-columns: repeat(3, 1fr); 
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
         }
-    }
-    
-    .action-buttons-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-        margin: 1.5rem auto;
-    }
 
-    .calculate-btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 1rem 2.5rem; 
-      font-size: 1.1rem; 
-      font-weight: 600;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25); 
-      margin: 0; 
-    }
-    
-    .calculate-btn.dilution-calc-btn { 
-        background: linear-gradient(135deg, #38bdf8, #3b82f6); 
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
-    }
-    .calculate-btn.dilution-calc-btn:hover:not(:disabled) {
-        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
-    }
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
 
-    .calculate-btn:hover:not(:disabled) {
-      transform: translateY(-2px); 
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.35); 
-    }
-    .calculate-btn:active:not(:disabled) { transform: translateY(-1px); }
-    .calculate-btn:disabled {
-      opacity: 0.5; 
-      cursor: not-allowed;
-      background: #b0b0e0; 
-    }
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 1.5rem;
+        }
 
-    .secondary-btn {
-        background-color: #f1f5f9;
-        color: #475569;
-        border: 1px solid #e2e8f0;
-        padding: 0.8rem 1.5rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .secondary-btn:hover {
-        background-color: #e2e8f0;
-        border-color: #cbd5e1;
-    }
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            margin: 0 auto 2rem auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        .main-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .flex-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .flex-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .compound-section, .calculator-section {
+            background: linear-gradient(135deg, #f8f9ff, #e8ecff);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+        .calculator-section {
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+            border-color: rgba(59, 130, 246, 0.15);
+            margin-bottom: 1.5rem;
+        }
+
+
+        .compound-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .compound-section h2, .calculator-section h3 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .calculator-section h3 {
+            color: #1e3a8a;
+        }
+
+        .molecule-icon {
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            line-height: 1.4;
+        }
+
+        .formula-input-group {
+            margin-bottom: 0.8rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        input.input-error {
+            border-color: #e53e3e !important;
+            box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2) !important;
+        }
+        .formula-feedback-message {
+            font-size: 0.75rem;
+            margin-top: -0.6rem;
+            margin-bottom: 0.8rem;
+            display: block;
+            min-height: 1em;
+        }
+        .formula-feedback-message.error { color: #c53030; }
+        .formula-feedback-message.success { color: #15803d; }
+        .formula-feedback-message.warning { color: #ca8a04; }
+        .formula-feedback-message.info { color: #4b5563; }
+
+        .charge-check-btn {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        .charge-check-btn:hover {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .formula-input-container {
+            position: relative;
+        }
+
+        .hydration-op-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .hydration-op-btn.add {
+            right: 6px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .hydration-op-btn.subtract {
+            right: 62px;
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .hydration-op-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .suggestions {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            max-height: 130px;
+            overflow-y: auto;
+            position: absolute;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+        }
+
+        .suggestion-item {
+            padding: 0.7rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f7f7f7;
+            font-size: 0.9rem;
+        }
+        .suggestion-item:hover { background-color: #f8f9ff; }
+        .suggestion-item:last-child { border-bottom: none; }
+
+        .ion-selection-panel {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 3px solid #f59e0b;
+            margin: 1.5rem 0;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .ion-selection-panel h3 {
+            color: #92400e;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .ion-selection-panel p {
+            font-size: 0.9rem;
+            color: #a16207;
+            margin-bottom: 1rem;
+        }
+
+        .ion-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .ion-btn {
+            background: white;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .ion-btn:hover, .ion-btn.selected {
+            background: #f59e0b;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .ion-btn.selected {
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .flex-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem 1.5rem;
+        }
+
+        #dilutionCalculatorSection .flex-inputs {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+        @media (min-width: 768px) {
+            #dilutionCalculatorSection .flex-inputs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            #dilutionCalculatorSection .flex-inputs {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .action-buttons-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem auto;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            margin: 0;
+        }
+
+        .calculate-btn.dilution-calc-btn {
+            background: linear-gradient(135deg, #38bdf8, #3b82f6);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+        }
+        .calculate-btn.dilution-calc-btn:hover:not(:disabled) {
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+        }
+
+        .calculate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.35);
+        }
+        .calculate-btn:active:not(:disabled) { transform: translateY(-1px); }
+        .calculate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #b0b0e0;
+        }
+
+        .secondary-btn {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .secondary-btn:hover {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
 /* --- ADD THIS ENTIRE BLOCK OF NEW CSS --- */
 
-.dilution-main-result {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  color: white;
-  border-radius: 12px;
-  padding: 1rem 1.5rem;
-  text-align: center;
-  margin: 1rem 0;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-}
+        .dilution-main-result {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            color: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
 
-.dilution-main-result-label {
-  display: block;
-  font-size: 0.9rem;
-  opacity: 0.9;
-  margin-bottom: 0.25rem;
-}
+        .dilution-main-result-label {
+            display: block;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
 
-.dilution-main-result-value {
-  display: block;
-  font-size: 2rem;
-  font-weight: 700;
-}
+        .dilution-main-result-value {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+        }
 
-.dilution-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-top: 1.5rem;
-}
-@media (max-width: 600px) {
-  .dilution-grid { grid-template-columns: 1fr; }
-}
+        .dilution-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .dilution-grid { grid-template-columns: 1fr; }
+        }
 
-.dilution-input-group h4 {
-  font-size: 1rem;
-  color: #1e3a8a;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #dbeafe;
-  padding-bottom: 0.5rem;
-}
+        .dilution-input-group h4 {
+            font-size: 1rem;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #dbeafe;
+            padding-bottom: 0.5rem;
+        }
 
-.input-with-unit {
-  display: flex;
-  margin-bottom: 1rem;
-}
+        .input-with-unit {
+            display: flex;
+            margin-bottom: 1rem;
+        }
 
 
-.input-with-unit input {
-  border-right: none;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  flex: 1; /* <-- ADD: Allows the input to grow and fill space */
-  min-width: 0; /* <-- ADD: Important fix for flexbox in some browsers */
-}
-.input-with-unit select {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  background-color: #f8fafc;
-  width: auto;
-  min-width: 85px; /* <-- CHANGE: A slightly larger fixed width */
-}
+        .input-with-unit input {
+            border-right: none;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            flex: 1; /* <-- ADD: Allows the input to grow and fill space */
+            min-width: 0; /* <-- ADD: Important fix for flexbox in some browsers */
+        }
+        .input-with-unit select {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            background-color: #f8fafc;
+            width: auto;
+            min-width: 85px; /* <-- CHANGE: A slightly larger fixed width */
+        }
 
-.dilution-secondary-output {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #dbeafe;
-  font-size: 0.9rem;
-  text-align: center;
-  color: #475569;
-}
-    .output-panel {
-      background: linear-gradient(135deg, #f0fff4, #e6fffa);
-      border-radius: 15px;
-      padding: 2rem; 
-      border-left: 3px solid #4CAF50; 
-      margin-top: 1.5rem; 
-      animation: slideIn 0.4s ease-out; 
-    }
-    .dilution-output-panel { 
-        background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
-        border-left-color: #3b82f6;
-        padding: 1.5rem;
-    }
+        .dilution-secondary-output {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #dbeafe;
+            font-size: 0.9rem;
+            text-align: center;
+            color: #475569;
+        }
+        .output-panel {
+            background: linear-gradient(135deg, #f0fff4, #e6fffa);
+            border-radius: 15px;
+            padding: 2rem;
+            border-left: 3px solid #4CAF50;
+            margin-top: 1.5rem;
+            animation: slideIn 0.4s ease-out;
+        }
+        .dilution-output-panel {
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+            border-left-color: #3b82f6;
+            padding: 1.5rem;
+        }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .output-panel h2, .output-panel h3 {
-      color: #2d5016;
-      margin-bottom: 1rem; 
-      font-size: 1.3rem; 
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .output-panel h3 {
-        font-size: 1.1rem;
-        color: #3f6212;
-        border-bottom: 1px solid #dcfce7;
-        padding-bottom: 0.5rem;
-        margin-top: 1.5rem;
-    }
+        .output-panel h2, .output-panel h3 {
+            color: #2d5016;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .output-panel h3 {
+            font-size: 1.1rem;
+            color: #3f6212;
+            border-bottom: 1px solid #dcfce7;
+            padding-bottom: 0.5rem;
+            margin-top: 1.5rem;
+        }
 
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-     .dilution-results-grid { 
-        grid-template-columns: 1fr; 
-        gap: 0.8rem;
-    }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .dilution-results-grid {
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
 
-    .result-item, .main-result-item {
-      background: white;
-      padding: 1rem;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); 
-      border: 1px solid #e8f5e9; 
-    }
-    
-    .main-result-item {
-        background: linear-gradient(135deg, #f0fff4, #ffffff);
-        border: 1px solid #4CAF50;
-        grid-column: 1 / -1; 
-        padding: 1.5rem;
-    }
+        .result-item, .main-result-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e8f5e9;
+        }
 
-    .result-value, .main-result-value {
-      font-size: 1.3rem; 
-      font-weight: 700;
-      color: #2d5016;
-      margin-bottom: 0.4rem; 
-      word-wrap: break-word; 
-    }
+        .main-result-item {
+            background: linear-gradient(135deg, #f0fff4, #ffffff);
+            border: 1px solid #4CAF50;
+            grid-column: 1 / -1;
+            padding: 1.5rem;
+        }
 
-    .main-result-value {
-        font-size: 1.8rem;
-        color: #15803d;
-    }
+        .result-value, .main-result-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d5016;
+            margin-bottom: 0.4rem;
+            word-wrap: break-word;
+        }
 
-    .result-label, .main-result-label {
-      font-size: 0.85rem; 
-      color: #555; 
-      letter-spacing: 0.5px;
-    }
-    
-    .main-result-label {
-        font-size: 1rem;
-    }
+        .main-result-value {
+            font-size: 1.8rem;
+            color: #15803d;
+        }
 
-    #copyResultsBtn {
-        display: block;
-        margin: 1.5rem auto 0 auto;
-    }
+        .result-label, .main-result-label {
+            font-size: 0.85rem;
+            color: #555;
+            letter-spacing: 0.5px;
+        }
 
-    .message-box {
-        padding: 1rem;
-        border-radius: 10px;
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        border-left-width: 4px;
-        border-left-style: solid;
-    }
-    .error-message {
-      background: linear-gradient(135deg, #fff5f5, #fed7d7);
-      color: #c53030;
-      border-left-color: #e53e3e;
-    }
-     .info-note {
-      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-      color: #0c4a6e;
-      padding: 0.8rem 1rem; 
-      border-radius: 8px; 
-      border-left: 3px solid #0ea5e9; 
-      margin-top: 1rem;
-      font-size: 0.85rem; 
-    }
+        .main-result-label {
+            font-size: 1rem;
+        }
 
-    footer {
-      background: rgba(40, 40, 40, 0.95); 
-      backdrop-filter: blur(8px); 
-      color: #e0e0e0; 
-      text-align: center;
-      padding: 1.5rem; 
-      margin-top: 3rem; 
-      width: 100%;
-      max-width: 1200px; 
-      border-radius: 15px 15px 0 0; 
-    }
-    .footer-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-    }
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap; 
-      gap: 1.5rem; 
-      margin: 0;
-    }
-    .footer-links a {
-      color: #e0e0e0;
-      text-decoration: none;
-      transition: color 0.3s ease;
-      font-size: 0.9rem; 
-    }
-    .footer-links a:hover { color: #8a9bf8; }
-    
-    .loading {
-      display: inline-block;
-      width: 18px; 
-      height: 18px; 
-      border: 2px solid rgba(255,255,255,.3); 
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.8s linear infinite; 
-      margin-right: 5px; 
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+        #copyResultsBtn {
+            display: block;
+            margin: 1.5rem auto 0 auto;
+        }
 
-    .hidden { display: none !important; }
-  </style>
+        .message-box {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border-left-width: 4px;
+            border-left-style: solid;
+        }
+        .error-message {
+            background: linear-gradient(135deg, #fff5f5, #fed7d7);
+            color: #c53030;
+            border-left-color: #e53e3e;
+        }
+        .info-note {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            color: #0c4a6e;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border-left: 3px solid #0ea5e9;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(8px);
+            color: #e0e0e0;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 1200px;
+            border-radius: 15px 15px 0 0;
+        }
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 0;
+        }
+        .footer-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .footer-links a:hover { color: #8a9bf8; }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            margin-right: 5px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
-  <div class="background-overlay"></div>
-  
-  <header>
-    <h1>ChemFormulator</h1>
-    <p>Enhanced Reagent Converter with Ion Conservation & Solution Calculations</p>
-  </header>
+    <div class="background-overlay"></div>
 
-  <div class="container">
-    <div class="main-panel">
-      <div class="flex-row">
-        <div class="compound-section">
-          <h2><span class="molecule-icon">A</span>Original Compound</h2>
-          
-          <label for="originalFormula">Chemical Formula</label>
-          <div class="formula-input-group">
-            <div class="formula-input-container">
-                <input type="text" id="originalFormula" placeholder="e.g. NaH₂(PO₄)" />
-                <div id="originalSuggestions" class="suggestions hidden"></div>
-                <button id="removeHydrationOriginal" class="hydration-op-btn subtract">-H₂O</button>
-                <button id="addHydrationOriginal" class="hydration-op-btn add">+H₂O</button>
+    <header>
+        <h1>ChemFormulator</h1>
+        <p>Enhanced Reagent Converter with Ion Conservation & Solution Calculations</p>
+    </header>
+
+    <div class="container">
+        <div class="main-panel">
+            <div class="flex-row">
+                <div class="compound-section">
+                    <h2><span class="molecule-icon">A</span>Original Compound</h2>
+
+                    <label for="originalFormula">Chemical Formula</label>
+                    <div class="formula-input-group">
+                        <div class="formula-input-container">
+                            <input type="text" id="originalFormula" placeholder="e.g. NaH₂(PO₄)" />
+                            <div id="originalSuggestions" class="suggestions hidden"></div>
+                            <button id="removeHydrationOriginal" class="hydration-op-btn subtract">-H₂O</button>
+                            <button id="addHydrationOriginal" class="hydration-op-btn add">+H₂O</button>
+                        </div>
+                    </div>
+                    <span id="originalFormulaFeedback" class="formula-feedback-message"></span>
+                    <button id="checkChargeOriginalBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
+
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" placeholder="e.g. 100 (optional if M & V given)" step="any" />
+
+                    <label for="unit">Unit</label>
+                    <select id="unit">
+                        <option value="mg" selected>Milligrams (mg)</option>
+                        <option value="g">Grams (g)</option>
+                        <option value="mol">Moles (mol)</option>
+                    </select>
+                </div>
+
+                <div class="compound-section">
+                    <h2><span class="molecule-icon">B</span>Replacement Compound</h2>
+
+                    <label for="replacementFormula">Chemical Formula</label>
+                    <div class="formula-input-group">
+                        <div class="formula-input-container">
+                            <input type="text" id="replacementFormula" placeholder="e.g. Na₂H(PO₄)" />
+                            <div id="replacementSuggestions" class="suggestions hidden"></div>
+                            <button id="removeHydrationReplacement" class="hydration-op-btn subtract">-H₂O</button>
+                            <button id="addHydrationReplacement" class="hydration-op-btn add">+H₂O</button>
+                        </div>
+                    </div>
+                    <span id="replacementFormulaFeedback" class="formula-feedback-message"></span>
+                    <button id="checkChargeReplacementBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
+                </div>
             </div>
-          </div>
-          <span id="originalFormulaFeedback" class="formula-feedback-message"></span>
-          <button id="checkChargeOriginalBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
-
-          <label for="amount">Amount</label>
-          <input type="number" id="amount" placeholder="e.g. 100 (optional if M & V given)" step="any" />
-
-          <label for="unit">Unit</label>
-          <select id="unit">
-            <option value="mg" selected>Milligrams (mg)</option>
-            <option value="g">Grams (g)</option>
-            <option value="mol">Moles (mol)</option>
-          </select>
-        </div>
-
-        <div class="compound-section">
-          <h2><span class="molecule-icon">B</span>Replacement Compound</h2>
-          
-          <label for="replacementFormula">Chemical Formula</label>
-           <div class="formula-input-group">
-            <div class="formula-input-container">
-                <input type="text" id="replacementFormula" placeholder="e.g. Na₂H(PO₄)" />
-                <div id="replacementSuggestions" class="suggestions hidden"></div>
-                <button id="removeHydrationReplacement" class="hydration-op-btn subtract">-H₂O</button>
-                <button id="addHydrationReplacement" class="hydration-op-btn add">+H₂O</button>
+            <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
+                <button id="analyzeCompoundsBtn" class="calculate-btn main-action-btn" style="flex: 1;">
+                    <span class="btn-text">Analyze Compounds</span>
+                </button>
+                <button id="clearAllBtn" class="secondary-btn" style="flex: 1;">Clear All</button>
             </div>
-          </div>
-          <span id="replacementFormulaFeedback" class="formula-feedback-message"></span>
-          <button id="checkChargeReplacementBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
-        </div>
-      </div>
-<div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-    <button class="calculate-btn main-action-btn" style="flex: 1;">
-        <span class="btn-text">Analyze Compounds</span>
-    </button>
-    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
-</div>
-      <div class="calculator-section molarity-volume-section">
-        <h3><span class="molecule-icon" style="font-size:14px;">🧪</span>Solution Parameters (Original Compound)</h3>
-        <div class="flex-inputs">
-          <div>
-            <label for="molarity">Molarity</label>
-            <input type="number" id="molarity" placeholder="e.g. 200" step="any" />
-          </div>
-          <div>
-            <label for="molarityUnit">Molarity Unit</label>
-            <select id="molarityUnit">
-              <option value="M">M (mol/L)</option>
-              <option value="mM" selected>mM (mmol/L)</option>
-              <option value="uM">µM (µmol/L)</option>
-            </select>
-          </div>
-          <div>
-            <label for="volume">Volume</label>
-            <input type="number" id="volume" placeholder="e.g. 500" step="any" />
-          </div>
-           <div>
-            <label for="volumeUnit">Volume Unit</label>
-            <select id="volumeUnit">
-              <option value="mL" selected>Milliliters (mL)</option>
-              <option value="L">Liters (L)</option>
-            </select>
-          </div>
-        </div>
-        <div class="info-note">
-          💡 Provide Original Amount, <strong>OR</strong> Molarity & Volume. If Original Amount is given with Molarity <strong>OR</strong> Volume, the missing parameter will be calculated.
-        </div>
-      </div>
-      <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-    <button class="calculate-btn main-action-btn" style="flex: 1;">
-        <span class="btn-text">Analyze Compounds</span>
-    </button>
-    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
-      </div>
-      <div id="dilutionCalculatorSection" class="calculator-section">
-        <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator</h3>
-        
-        <div class="dilution-main-result">
-          <span class="dilution-main-result-label">Volume of Stock to Add (V₁)</span>
-          <span id="dilutionPrimaryResult" class="dilution-main-result-value">---</span>
-        </div>
-      
-        <div class="dilution-grid">
-          <div class="dilution-input-group">
-            <h4>Stock Solution (C₁V₁)</h4>
-            <label for="stockConc">Stock Concentration (C₁)</label>
-            <div class="input-with-unit">
-              <input type="number" id="stockConc" placeholder="e.g., 10" step="any">
-              <select id="stockConcUnit">
-                <option value="M">M</option>
-                <option value="mM" selected>mM</option>
-                <option value="uM">µM</option>
-                <option value="mg/mL">mg/mL</option>
-                <option value="ug/mL">µg/mL</option>
-                <option value="ng/mL">ng/mL</option>
-              </select>
+            <div class="calculator-section molarity-volume-section">
+                <h3><span class="molecule-icon" style="font-size:14px;">🧪</span>Solution Parameters (Original Compound)</h3>
+                <div class="flex-inputs">
+                    <div>
+                        <label for="molarity">Molarity</label>
+                        <input type="number" id="molarity" placeholder="e.g. 200" step="any" />
+                    </div>
+                    <div>
+                        <label for="molarityUnit">Molarity Unit</label>
+                        <select id="molarityUnit">
+                            <option value="M">M (mol/L)</option>
+                            <option value="mM" selected>mM (mmol/L)</option>
+                            <option value="uM">µM (µmol/L)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="volume">Volume</label>
+                        <input type="number" id="volume" placeholder="e.g. 500" step="any" />
+                    </div>
+                    <div>
+                        <label for="volumeUnit">Volume Unit</label>
+                        <select id="volumeUnit">
+                            <option value="mL" selected>Milliliters (mL)</option>
+                            <option value="L">Liters (L)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="info-note">
+                    💡 Provide Original Amount, <strong>OR</strong> Molarity & Volume. If Original Amount is given with Molarity <strong>OR</strong> Volume, the missing parameter will be calculated.
+                </div>
             </div>
-          </div>
-      
-          <div class="dilution-input-group">
-            <h4>Final Solution (C₂V₂)</h4>
-            <label for="finalConc">Final Concentration (C₂)</label>
-            <div class="input-with-unit">
-              <input type="number" id="finalConc" placeholder="e.g., 100" step="any">
-              <select id="finalConcUnit">
-                <option value="M">M</option>
-                <option value="mM" selected>mM</option>
-                <option value="uM">µM</option>
-                <option value="mg/mL">mg/mL</option>
-                <option value="ug/mL">µg/mL</option>
-                <option value="ng/mL">ng/mL</option>
-              </select>
+
+            <div id="dilutionCalculatorSection" class="calculator-section">
+                <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator</h3>
+
+                <div class="dilution-main-result">
+                    <span class="dilution-main-result-label">Volume of Stock to Add (V₁)</span>
+                    <span id="dilutionPrimaryResult" class="dilution-main-result-value">---</span>
+                </div>
+
+                <div class="dilution-grid">
+                    <div class="dilution-input-group">
+                        <h4>Stock Solution (C₁V₁)</h4>
+                        <label for="stockConc">Stock Concentration (C₁)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="stockConc" placeholder="e.g., 10" step="any">
+                            <select id="stockConcUnit">
+                                <option value="M">M</option>
+                                <option value="mM" selected>mM</option>
+                                <option value="uM">µM</option>
+                                <option value="mg/mL">mg/mL</option>
+                                <option value="ug/mL">µg/mL</option>
+                                <option value="ng/mL">ng/mL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="dilution-input-group">
+                        <h4>Final Solution (C₂V₂)</h4>
+                        <label for="finalConc">Final Concentration (C₂)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="finalConc" placeholder="e.g., 100" step="any">
+                            <select id="finalConcUnit">
+                                <option value="M">M</option>
+                                <option value="mM" selected>mM</option>
+                                <option value="uM">µM</option>
+                                <option value="mg/mL">mg/mL</option>
+                                <option value="ug/mL">µg/mL</option>
+                                <option value="ng/mL">ng/mL</option>
+                            </select>
+                        </div>
+
+                        <label for="finalVolume">Final Volume (V₂)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="finalVolume" placeholder="e.g., 50" step="any">
+                            <select id="finalVolumeUnit">
+                                <option value="L">L</option>
+                                <option value="mL" selected>mL</option>
+                                <option value="uL">µL</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dilutionSecondaryResult" class="dilution-secondary-output hidden"></div>
+                <div id="dilutionCalcError" class="message-box error-message hidden" style="margin-top: 1rem;"></div>
+                <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
+                    <button id="calculateDilutionBtn" class="calculate-btn dilution-calc-btn" style="flex: 1;">
+                        <span class="btn-text">Calculate Dilution</span>
+                    </button>
+                    <button id="clearDilutionBtn" class="secondary-btn" style="flex: 1;">Clear Dilution</button>
+                </div>
             </div>
-            
-            <label for="finalVolume">Final Volume (V₂)</label>
-            <div class="input-with-unit">
-              <input type="number" id="finalVolume" placeholder="e.g., 50" step="any">
-              <select id="finalVolumeUnit">
-                <option value="L">L</option>
-                <option value="mL" selected>mL</option>
-                <option value="uL">µL</option>
-              </select>
+
+
+            <div id="ionSelectionPanel" class="ion-selection-panel hidden">
+                <h3><span class="molecule-icon" style="font-size:14px;">⚛️</span>Conserve Ion Concentration</h3>
+                <p>Select the element/ion from the original compound's main chemical entity whose molar quantity you wish to conserve:</p>
+                <div id="ionButtons" class="ion-buttons"></div>
             </div>
-          </div>
-        </div>
-      
-        <div id="dilutionSecondaryResult" class="dilution-secondary-output hidden"></div>
-        <div id="dilutionCalcError" class="message-box error-message hidden" style="margin-top: 1rem;"></div>
-      </div>
 
+            <div id="outputPanel" class="output-panel hidden">
+            </div>
+            <div id="errorDisplay" class="message-box error-message hidden"></div>
 
-      <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-    <button class="calculate-btn main-action-btn" style="flex: 1;">
-        <span class="btn-text">Analyze Compounds</span>
-    </button>
-    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
-      </div>
-
-      <div id="ionSelectionPanel" class="ion-selection-panel hidden">
-        <h3><span class="molecule-icon" style="font-size:14px;">⚛️</span>Conserve Ion Concentration</h3>
-        <p>Select the element/ion from the original compound's main chemical entity whose molar quantity you wish to conserve:</p>
-        <div id="ionButtons" class="ion-buttons"></div>
-      </div>
-
-      <div id="outputPanel" class="output-panel hidden">
-        </div>
-      <div id="errorDisplay" class="message-box error-message hidden"></div>
-
-    </div>
-  </div>
-
-  <footer>
-    <div class="footer-content">
-        <p>ChemFormulator is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
-        
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
-     crossorigin="anonymous"></script>
-
-        <div class="footer-links">
-            <a href="mailto:dotansh@bgu.ac.il?subject=ChemFormulator%20Feedback">Report an Issue</a>
-            <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-            <span>ChemFormulator v1.6</span>
         </div>
     </div>
-  </footer>
 
-  <script>
-    // --- DATA CONSTANTS ---
-    const atomicWeights = { H:1.008,He:4.0026,Li:6.94,Be:9.0122,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.95,Tc:98,Ru:101.07,Rh:102.91,Pd:106.42,Ag:107.87,Cd:112.41,In:114.82,Sn:118.71,Sb:121.76,Te:127.60,I:126.90,Xe:131.29,Cs:132.91,Ba:137.33,La:138.91,Ce:140.12,Pr:140.91,Nd:144.24,Pm:145,Sm:150.36,Eu:151.96,Gd:157.25,Tb:158.93,Dy:162.50,Ho:164.93,Er:167.26,Tm:168.93,Yb:173.05,Lu:174.97,Hf:178.49,Ta:180.95,W:183.84,Re:186.21,Os:190.23,Ir:192.22,Pt:195.08,Au:196.97,Hg:200.59,Tl:204.38,Pb:207.2,Bi:208.98,Po:209,At:210,Rn:222,Fr:223,Ra:226,Ac:227,Th:232.04,Pa:231.04,U:238.03,Np:237,Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,Lr:262};
-    const compoundNameToFormulaMap = {
-        'acetic acid': 'CH₃COOH',     
-        'ammonium acetate': 'NH₄CH₃COO',
-        'ammonium chloride': 'NH₄Cl',
-        'ammonium dihydrogen phosphate': 'NH₄H₂PO₄',
-        'ammonium molybdate tetrahydrate': '(NH₄)₂MoO₄·4H₂O',
-        'ammonium phosphate dibasic': '(NH₄)₂HPO₄',
-        'ammonium sulfate': '(NH₄)₂SO₄',    
-        'bicine': 'C₆H₁₃NO₄',
-        'boric acid': 'H₃BO₃',
-        'calcium chloride anhydrous': 'CaCl₂',
-        'calcium chloride dihydrate': 'CaCl₂·2H₂O',
-        'calcium nitrate tetrahydrate': 'Ca(NO₃)₂·4H₂O',
-        'calcium sulfate anhydrous': 'CaSO₄',
-        'calcium sulfate dihydrate': 'CaSO₄·2H₂O',       
-        'charcoal': 'C',      
-        'citric acid anhydrous': 'C₆H₈O₇',
-        'citric acid monohydrate': 'C₆H₈O₇·H₂O',
-        'cobalt(ii) chloride': 'CoCl₂',
-        'copper(ii) chloride': 'CuCl₂',
-        'copper(ii) sulfate pentahydrate': 'CuSO₄·5H₂O',
-        'copper(ii) sulfate anhydrous': 'CuSO₄',
-        'd-glucose monohydrate': 'C₆H₁₂O₆·H₂O',
-        'd-sorbitol': 'C₆H₁₄O₆',
-        'diatomaceous earth': 'SiO₂',
-        'edta': 'C₁₀H₁₆N₂O₈',
-        'ethanolamine': 'C₂H₇NO',
-        'ethylene glycol': 'C₂H₆O₂',
-        'ferric ammonium citrate': 'Fe(NH₄)C₆H₅O₇',
-        'ferric citrate': 'FeC₆H₅O₇',
-        'glycerol': 'C₃H₈O₃',
-        'glycine': 'C₂H₅NO₂',
-        'guanidine hydrochloride': 'CH₅N₃·HCl',
-        'hydrochloric acid': 'HCl',
-        'iodine': 'I₂',
-        'iptg': 'C₉H₁₈O₅S',
-        'iron(ii) sulfate heptahydrate': 'FeSO₄·7H₂O',
-        'iron(iii) citrate': 'FeC₆H₅O₇',
-        'l - arginine': 'C₆H₁₄N₄O₂',
-        'l - histidine': 'C₆H₉N₃O₂',
-        'l - lysine': 'C₆H₁₄N₂O₂',
-        'l - methionine': 'C₅H₁₁NO₂S',
-        'l-2-aminobutyric acid': 'C₄H₉NO₂',
-        'lactose monohydrate': 'C₁₂H₂₂O₁₁·H₂O',
-        'lithium chloride': 'LiCl',
-        'magnesium chloride anhydrous': 'MgCl₂',
-        'magnesium chloride hexahydrate': 'MgCl₂·6H₂O',
-        'magnesium sulfate heptahydrate': 'MgSO₄·7H₂O',
-        'manganese(ii) chloride tetrahydrate': 'MnCl₂·4H₂O',
-        'manganese(ii) sulfate monohydrate': 'MnSO₄·H₂O',
-        'manganese sulphate': 'MnSO₄',
-        'phosphoric acid': 'H₃PO₄',
-        'potassium chloride': 'KCl',
-        'potassium citrate tribasic monohydrate': 'K₃C₆H₅O₇·H₂O',
-        'potassium hydroxide pellets': 'KOH',
-        'potassium phosphate monobasic': 'KH₂PO₄',
-        'potassium sulfate': 'K₂SO₄',
-        'propylene glycol': 'C₃H₈O₂',
-        'sodium acetate trihydrate': 'CH₃COONa·3H₂O',
-        'sodium azide': 'NaN₃',
-        'sodium bicarbonate': 'NaHCO₃',
-        'sodium chloride': 'NaCl',
-        'sodium dihydrogen phospate': 'NaH₂PO₄',
-        'sodium hydrogen phosphate': 'Na₂HPO₄',
-        'sodium hydroxide': 'NaOH',
-        'sodium iodide': 'NaI',
-        'sodium molybdate': 'Na₂MoO₄',
-        'sodium periodate': 'NaIO₄',
-        'sodium phosphate dibasic anhydrose': 'Na₂HPO₄',
-        'sodium phosphate monobasic anhydrous': 'NaH₂PO₄',
-        'sodium sulfate anhydrous': 'Na₂SO₄',
-        'sulfuric acid': 'H₂SO₄',
-        'zinc acetate': 'Zn(CH₃COO)₂',
-        'zinc chloride': 'ZnCl₂',
-        'zinc sulfate heptahydrate': 'ZnSO₄·7H₂O'
-    };
-   
-    const commonIonCharges = { 'H':1,'H3O':1,'Li':1,'Na':1,'K':1,'Rb':1,'Cs':1,'Fr':1,'Ag':1,'Cu':[1,2],'NH4':1,'Be':2,'Mg':2,'Ca':2,'Sr':2,'Ba':2,'Ra':2,'Zn':2,'Cd':2,'Mn':[2,3,4,6,7],'Fe':[2,3],'Co':[2,3],'Ni':2,'Pb':[2,4],'Sn':[2,4],'Hg':[1,2],'Hg2':2,'Al':3,'Cr':[2,3,6],'Bi':[3,5],'Sc':3,'Y':3,'La':3,'Au':[1,3],'Ti':[3,4],'F':-1,'Cl':-1,'Br':-1,'I':-1,'At':-1,'OH':-1,'CN':-1,'SCN':-1,'NO3':-1,'NO2':-1,'MnO4':-1,'ClO':-1,'ClO2':-1,'ClO3':-1,'ClO4':-1,'HCO3':-1,'HSO4':-1,'HSO3':-1,'HS':-1,'H2PO4':-1,'CH3COO':-1,'C2H3O3':-1,'C6H5COO':-1,'CNO':-1,'IO3':-1,'IO4':-1,'N3':-1,'OCN':-1,'O':-2,'O2':-2,'S':-2,'SO4':-2,'SO3':-2,'CO3':-2,'CrO4':-2,'Cr2O7':-2,'S2O3':-2,'HPO4':-2,'C2O4':-2,'Te':-2,'Se':-2,'MoO4':-2,'N':-3,'P':-3,'As':-3,'PO4':-3,'AsO4':-3,'BO3':-3,'ASO3':-3,'BrO3':-3,'C6H5O7':-3,'SiO4':-4,'VO2':1,'UO2':2};
-    const commonCompounds = ['Acetic acid','AlK(SO₄)₂','Al₂O₃','Ammonium Acetate','Ammonium Chloride','Ammonium dihydrogen phosphate','Ammonium Molybdate Tetrahydrate','Ammonium Phosphate Dibasic','Ammonium Sulfate','(NH₄)₂SO₄','Bicine','Boric Acid','Calcium chloride anhydrous','Calcium chloride dihydrate','Calcium nitrate tetrahydrate','Calcium Sulfate anhydrous','Calcium Sulfate dihydrate','CaCO₃','CaSO₄','Charcoal','CH₃COOH','Citric Acid - anhydrous','Citric acid monohydrate','Cobalt(II) chloride','Copper(II) chloride','Copper(II) sulfate pentahydrate','Copper(II) sulfate anhydrous','D-Glucose monohydrate','D-sorbitol','Diatomaceous Earth','EDTA','Ethanolamine','Ethylene glycol','Ferric Ammonium Citrate','Ferric citrate','Glycerol','Glycine','Guanidine hydrochloride','H₂O','H₂SO₄','H₃PO₄','HCl','Hydrochloric acid','Iodine','IPTG','Iron(II) Sulfate Heptahydrate','Iron(III) citrate','K₂Cr₂O₇','Kanamycin sulfate','KCl','L - Arginine','L - Histidine','L - Lysine','L - Methionine','L-2-aminobutyric acid','Lactose monohydrate','LiCl','Lithium chloride','Magnesium chloride anhydrous','Magnesium chloride hexahydrate','Magnesium Sulfate Heptahydrate','MgSO₄','Malt Extract','Manganese(II) chloride tetrahydrate','Manganese(II) Sulfate monohydrate','Manganese sulphate','NaCl','Na₂CO₃','Na₂HPO₄','Na₂SO₄','NaHCO₃','NaH₂PO₄','NaHSO₄','NaOH','Peptone','Phosphoric Acid','Potassium chloride','Potassium citrate tribasic monohydrate','Potassium Hydroxide pellets','Potassium phosphate monobasic','Potassium Sulfate','Propylene Glycol','Sodium acetate trihydrate','Sodium azide','Sodium bicarbonate','Sodium Chloride','Sodium dihydrogen phospate','Sodium hydrogen phosphate','Sodium hydroxide','Sodium iodide','Sodium molybdate','Sodium periodate','Sodium phosphate dibasic anhydrose','Sodium phosphate monobasic anhydrous','Sodium sulfate anhydrous','Sulfuric acid','Zinc acetate','Zinc Chloride','Zinc Sulfate Heptahydrate'].sort();
-    // Global State
-    let selectedIon = null;
-    let compoundData = { originalParsed: null, replacementParsed: null }; 
+    <footer>
+        <div class="footer-content">
+            <p>ChemFormulator is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
 
-    // --- DOM ELEMENT REFERENCES ---
-    const originalFormulaInput = document.getElementById('originalFormula');
-    const replacementFormulaInput = document.getElementById('replacementFormula');
-    const originalFormulaFeedbackEl = document.getElementById('originalFormulaFeedback');
-    const replacementFormulaFeedbackEl = document.getElementById('replacementFormulaFeedback');
-    const checkChargeOriginalBtn = document.getElementById('checkChargeOriginalBtn');
-    const checkChargeReplacementBtn = document.getElementById('checkChargeReplacementBtn');
-    const amountInput = document.getElementById('amount');
-    const unitSelect = document.getElementById('unit');
-    const molarityInput = document.getElementById('molarity');
-    const molarityUnitSelect = document.getElementById('molarityUnit');
-    const volumeInput = document.getElementById('volume');
-    const volumeUnitSelect = document.getElementById('volumeUnit');
-    const ionSelectionPanel = document.getElementById('ionSelectionPanel');
-    const ionButtonsDiv = document.getElementById('ionButtons'); 
-    const outputPanel = document.getElementById('outputPanel'); 
-    const errorDisplayDiv = document.getElementById('errorDisplay');
-    const stockConcInput = document.getElementById('stockConc');
-    const stockConcUnitSelect = document.getElementById('stockConcUnit');
-    const finalConcInput = document.getElementById('finalConc');
-    const finalConcUnitSelect = document.getElementById('finalConcUnit');
-    const finalVolumeInput = document.getElementById('finalVolume');
-    const finalVolumeUnitSelect = document.getElementById('finalVolumeUnit');
-    const calculateDilutionBtn = document.getElementById('calculateDilutionBtn');
-    const dilutionResultOutputEl = document.getElementById('dilutionResultOutput');
-    const dilutionCalcErrorEl = document.getElementById('dilutionCalcError');
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
+            crossorigin="anonymous"></script>
 
-    // --- EVENT LISTENERS ---
-    document.addEventListener('click', function(event) {
-        const mainBtn = event.target.closest('.main-action-btn');
-        if (mainBtn) {
-            handleMainAction();
-        }
-        if (event.target.closest('.clear-all-btn')) {
-            clearAll();
-        }
-    });
+            <div class="footer-links">
+                <a href="mailto:dotansh@bgu.ac.il?subject=ChemFormulator%20Feedback">Report an Issue</a>
+                <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                <span>ChemFormulator v1.6</span>
+            </div>
+        </div>
+    </footer>
 
-    function handleFormulaInput(event) {
-        const inputElement = event.target;
-        const suggestionsId = (inputElement.id === 'originalFormula') ? 'originalSuggestions' : 'replacementSuggestions';
-        const feedbackElement = (inputElement.id === 'originalFormula') ? originalFormulaFeedbackEl : replacementFormulaFeedbackEl;
-        const chargeCheckBtn = (inputElement.id === 'originalFormula') ? checkChargeOriginalBtn : checkChargeReplacementBtn;
-        
-        const text = inputElement.value.trim().toLowerCase();
-        
-        if (compoundNameToFormulaMap[text]) {
-            inputElement.value = compoundNameToFormulaMap[text];
-            document.getElementById(suggestionsId).classList.add('hidden');
-            validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn);
-        } else {
-            validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn);
-            showSuggestions(inputElement.id, suggestionsId, inputElement.value);
-        }
-    }
+    <script>
+        // --- DATA CONSTANTS ---
+        const atomicWeights = { H:1.008,He:4.0026,Li:6.94,Be:9.0122,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.95,Tc:98,Ru:101.07,Rh:102.91,Pd:106.42,Ag:107.87,Cd:112.41,In:114.82,Sn:118.71,Sb:121.76,Te:127.60,I:126.90,Xe:131.29,Cs:132.91,Ba:137.33,La:138.91,Ce:140.12,Pr:140.91,Nd:144.24,Pm:145,Sm:150.36,Eu:151.96,Gd:157.25,Tb:158.93,Dy:162.50,Ho:164.93,Er:167.26,Tm:168.93,Yb:173.05,Lu:174.97,Hf:178.49,Ta:180.95,W:183.84,Re:186.21,Os:190.23,Ir:192.22,Pt:195.08,Au:196.97,Hg:200.59,Tl:204.38,Pb:207.2,Bi:208.98,Po:209,At:210,Rn:222,Fr:223,Ra:226,Ac:227,Th:232.04,Pa:231.04,U:238.03,Np:237,Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,Lr:262};
+        const compoundNameToFormulaMap = {
+            'acetic acid': 'CH₃COOH',
+            'ammonium acetate': 'NH₄CH₃COO',
+            'ammonium chloride': 'NH₄Cl',
+            'ammonium dihydrogen phosphate': 'NH₄H₂PO₄',
+            'ammonium molybdate tetrahydrate': '(NH₄)₂MoO₄·4H₂O',
+            'ammonium phosphate dibasic': '(NH₄)₂HPO₄',
+            'ammonium sulfate': '(NH₄)₂SO₄',
+            'bicine': 'C₆H₁₃NO₄',
+            'boric acid': 'H₃BO₃',
+            'calcium chloride anhydrous': 'CaCl₂',
+            'calcium chloride dihydrate': 'CaCl₂·2H₂O',
+            'calcium nitrate tetrahydrate': 'Ca(NO₃)₂·4H₂O',
+            'calcium sulfate anhydrous': 'CaSO₄',
+            'calcium sulfate dihydrate': 'CaSO₄·2H₂O',
+            'charcoal': 'C',
+            'citric acid anhydrous': 'C₆H₈O₇',
+            'citric acid monohydrate': 'C₆H₈O₇·H₂O',
+            'cobalt(ii) chloride': 'CoCl₂',
+            'copper(ii) chloride': 'CuCl₂',
+            'copper(ii) sulfate pentahydrate': 'CuSO₄·5H₂O',
+            'copper(ii) sulfate anhydrous': 'CuSO₄',
+            'd-glucose monohydrate': 'C₆H₁₂O₆·H₂O',
+            'd-sorbitol': 'C₆H₁₄O₆',
+            'diatomaceous earth': 'SiO₂',
+            'edta': 'C₁₀H₁₆N₂O₈',
+            'ethanolamine': 'C₂H₇NO',
+            'ethylene glycol': 'C₂H₆O₂',
+            'ferric ammonium citrate': 'Fe(NH₄)C₆H₅O₇',
+            'ferric citrate': 'FeC₆H₅O₇',
+            'glycerol': 'C₃H₈O₃',
+            'glycine': 'C₂H₅NO₂',
+            'guanidine hydrochloride': 'CH₅N₃·HCl',
+            'hydrochloric acid': 'HCl',
+            'iodine': 'I₂',
+            'iptg': 'C₉H₁₈O₅S',
+            'iron(ii) sulfate heptahydrate': 'FeSO₄·7H₂O',
+            'iron(iii) citrate': 'FeC₆H₅O₇',
+            'l - arginine': 'C₆H₁₄N₄O₂',
+            'l - histidine': 'C₆H₉N₃O₂',
+            'l - lysine': 'C₆H₁₄N₂O₂',
+            'l - methionine': 'C₅H₁₁NO₂S',
+            'l-2-aminobutyric acid': 'C₄H₉NO₂',
+            'lactose monohydrate': 'C₁₂H₂₂O₁₁·H₂O',
+            'lithium chloride': 'LiCl',
+            'magnesium chloride anhydrous': 'MgCl₂',
+            'magnesium chloride hexahydrate': 'MgCl₂·6H₂O',
+            'magnesium sulfate heptahydrate': 'MgSO₄·7H₂O',
+            'manganese(ii) chloride tetrahydrate': 'MnCl₂·4H₂O',
+            'manganese(ii) sulfate monohydrate': 'MnSO₄·H₂O',
+            'manganese sulphate': 'MnSO₄',
+            'phosphoric acid': 'H₃PO₄',
+            'potassium chloride': 'KCl',
+            'potassium citrate tribasic monohydrate': 'K₃C₆H₅O₇·H₂O',
+            'potassium hydroxide pellets': 'KOH',
+            'potassium phosphate monobasic': 'KH₂PO₄',
+            'potassium sulfate': 'K₂SO₄',
+            'propylene glycol': 'C₃H₈O₂',
+            'sodium acetate trihydrate': 'CH₃COONa·3H₂O',
+            'sodium azide': 'NaN₃',
+            'sodium bicarbonate': 'NaHCO₃',
+            'sodium chloride': 'NaCl',
+            'sodium dihydrogen phospate': 'NaH₂PO₄',
+            'sodium hydrogen phosphate': 'Na₂HPO₄',
+            'sodium hydroxide': 'NaOH',
+            'sodium iodide': 'NaI',
+            'sodium molybdate': 'Na₂MoO₄',
+            'sodium periodate': 'NaIO₄',
+            'sodium phosphate dibasic anhydrose': 'Na₂HPO₄',
+            'sodium phosphate monobasic anhydrous': 'NaH₂PO₄',
+            'sodium sulfate anhydrous': 'Na₂SO₄',
+            'sulfuric acid': 'H₂SO₄',
+            'zinc acetate': 'Zn(CH₃COO)₂',
+            'zinc chloride': 'ZnCl₂',
+            'zinc sulfate heptahydrate': 'ZnSO₄·7H₂O'
+        };
 
-    originalFormulaInput.addEventListener('input', handleFormulaInput);
-    replacementFormulaInput.addEventListener('input', handleFormulaInput);
+        const commonIonCharges = {
+            'H':1,'H3O':1,'Li':1,'Na':1,'K':1,'Rb':1,'Cs':1,'Fr':1,'Ag':1,'Cu':[1,2],'NH4':1,
+            'Be':2,'Mg':2,'Ca':2,'Sr':2,'Ba':2,'Ra':2,'Zn':2,'Cd':2,'Mn':[2,3,4,6,7],'Fe':[2,3],'Co':[2,3],'Ni':2,'Pb':[2,4],'Sn':[2,4],'Hg':[1,2],'Hg2':2,
+            'Al':3,'Cr':[2,3,6],'Bi':[3,5],'Sc':3,'Y':3,'La':3,'Au':[1,3],'Ti':[3,4],
+            'F':-1,'Cl':-1,'Br':-1,'I':-1,'At':-1,'OH':-1,'CN':-1,'SCN':-1,'NO3':-1,'NO2':-1,'MnO4':-1,'ClO':-1,'ClO2':-1,'ClO3':-1,'ClO4':-1,'HCO3':-1,'HSO4':-1,'HSO3':-1,'HS':-1,'H2PO4':-1,'CH3COO':-1,'C2H3O3':-1,'C6H5COO':-1,'CNO':-1,'IO3':-1,'IO4':-1,'N3':-1,'OCN':-1,
+            'O':-2,'O2':-2,'S':-2,'SO4':-2,'SO3':-2,'CO3':-2,'CrO4':-2,'Cr2O7':-2,'S2O3':-2,'HPO4':-2,'C2O4':-2,'Te':-2,'Se':-2,'MoO4':-2,
+            'N':-3,'P':-3,'As':-3,'PO4':-3,'AsO4':-3,'BO3':-3,'ASO3':-3,'BrO3':-3,'C6H5O7':-3,
+            'SiO4':-4,
+            'VO2':1,'UO2':2 // These seem like specific ions, including them.
+        };
 
-    document.getElementById('addHydrationOriginal').addEventListener('click', () => modifyHydration('originalFormula', 'add'));
-    document.getElementById('removeHydrationOriginal').addEventListener('click', () => modifyHydration('originalFormula', 'remove'));
-    document.getElementById('addHydrationReplacement').addEventListener('click', () => modifyHydration('replacementFormula', 'add'));
-    document.getElementById('removeHydrationReplacement').addEventListener('click', () => modifyHydration('replacementFormula', 'remove'));
-// --- ADD THESE NEW EVENT LISTENERS ---
+        const commonCompounds = ['Acetic acid','AlK(SO₄)₂','Al₂O₃','Ammonium Acetate','Ammonium Chloride','Ammonium dihydrogen phosphate','Ammonium Molybdate Tetrahydrate','Ammonium Phosphate Dibasic','Ammonium Sulfate','(NH₄)₂SO₄','Bicine','Boric Acid','Calcium chloride anhydrous','Calcium chloride dihydrate','Calcium nitrate tetrahydrate','Calcium Sulfate anhydrous','Calcium Sulfate dihydrate','CaCO₃','CaSO₄','Charcoal','CH₃COOH','Citric Acid - anhydrous','Citric acid monohydrate','Cobalt(II) chloride','Copper(II) chloride','Copper(II) sulfate pentahydrate','Copper(II) sulfate anhydrous','D-Glucose monohydrate','D-sorbitol','Diatomaceous Earth','EDTA','Ethanolamine','Ethylene glycol','Ferric Ammonium Citrate','Ferric citrate','Glycerol','Glycine','Guanidine hydrochloride','H₂O','H₂SO₄','H₃PO₄','HCl','Hydrochloric acid','Iodine','IPTG','Iron(II) Sulfate Heptahydrate','Iron(III) citrate','K₂Cr₂O₇','Kanamycin sulfate','KCl','L - Arginine','L - Histidine','L - Lysine','L - Methionine','L-2-aminobutyric acid','Lactose monohydrate','LiCl','Lithium chloride','Magnesium chloride anhydrous','Magnesium chloride hexahydrate','Magnesium Sulfate Heptahydrate','MgSO₄','Malt Extract','Manganese(II) chloride tetrahydrate','Manganese(II) Sulfate monohydrate','Manganese sulphate','NaCl','Na₂CO₃','Na₂HPO₄','Na₂SO₄','NaHCO₃','NaH₂PO₄','NaHSO₄','NaOH','Peptone','Phosphoric Acid','Potassium chloride','Potassium citrate tribasic monohydrate','Potassium Hydroxide pellets','Potassium phosphate monobasic','Potassium Sulfate','Propylene Glycol','Sodium acetate trihydrate','Sodium azide','Sodium bicarbonate','Sodium Chloride','Sodium dihydrogen phospate','Sodium hydrogen phosphate','Sodium hydroxide','Sodium iodide','Sodium molybdate','Sodium periodate','Sodium phosphate dibasic anhydrose','Sodium phosphate monobasic anhydrous','Sodium sulfate anhydrous','Sulfuric acid','Zinc acetate','Zinc Chloride','Zinc Sulfate Heptahydrate'].sort();
 
-const dilutionInputs = [
-  stockConc, stockConcUnit,
-  finalConc, finalConcUnit,
-  finalVolume, finalVolumeUnit
-];
-dilutionInputs.forEach(input => {
-  input.addEventListener('input', handleCalculateDilution);
-});
-    // deleted calculateDilutionBtn.addEventListener('click', handleCalculateDilution);
-    checkChargeOriginalBtn.addEventListener('click', () => handleChargeCheck('original'));
-    checkChargeReplacementBtn.addEventListener('click', () => handleChargeCheck('replacement'));
-    
-    document.addEventListener('click', (e) => {
-        const originalSuggestionsDiv = document.getElementById('originalSuggestions');
-        const replacementSuggestionsDiv = document.getElementById('replacementSuggestions');
-        if (originalSuggestionsDiv && !originalFormulaInput.contains(e.target) && !originalSuggestionsDiv.contains(e.target)) {
-            originalSuggestionsDiv.classList.add('hidden');
-        }
-        if (replacementSuggestionsDiv && !replacementFormulaInput.contains(e.target) && !replacementSuggestionsDiv.contains(e.target)) {
-            replacementSuggestionsDiv.classList.add('hidden');
-        }
-    });
+        // Global State
+        let selectedIon = null;
+        let compoundData = { originalParsed: null, replacementParsed: null };
 
-    ionButtonsDiv.addEventListener('click', (e) => {
-        if (e.target && e.target.classList.contains('ion-btn')) {
-            selectIon(e.target.dataset.ion, e.target);
-        }
-    });
-    
-    // --- UI & HELPER FUNCTIONS ---
-    function modifyHydration(fieldId, operation) {
-      const input = document.getElementById(fieldId);
-      let currentValue = input.value.trim().replace(/H2O/g, 'H₂O');
-      const hydrateRegex = /·(\d*)H₂O$/;
-      const match = currentValue.match(hydrateRegex);
-      if (match) {
-        let currentHydration = parseInt(match[1]) || 1;
-        let newHydration = (operation === 'add') ? currentHydration + 1 : currentHydration - 1;
-        if (newHydration > 1) {
-          input.value = currentValue.replace(hydrateRegex, `·${newHydration}H₂O`);
-        } else if (newHydration === 1) {
-          input.value = currentValue.replace(hydrateRegex, `·H₂O`);
-        } else {
-          input.value = currentValue.replace(hydrateRegex, '');
-        }
-      } else if (operation === 'add' && currentValue) {
-        input.value = currentValue + '·H₂O';
-      } else if (operation === 'add' && !currentValue) {
-        input.value = 'H₂O';
-      }
-      input.focus();
-      const event = new Event('input', { bubbles: true, cancelable: true });
-      input.dispatchEvent(event);
-    }
+        // --- DOM ELEMENT REFERENCES ---
+        const originalFormulaInput = document.getElementById('originalFormula');
+        const replacementFormulaInput = document.getElementById('replacementFormula');
+        const originalFormulaFeedbackEl = document.getElementById('originalFormulaFeedback');
+        const replacementFormulaFeedbackEl = document.getElementById('replacementFormulaFeedback');
+        const checkChargeOriginalBtn = document.getElementById('checkChargeOriginalBtn');
+        const checkChargeReplacementBtn = document.getElementById('checkChargeReplacementBtn');
 
-    function showSuggestions(inputId, suggestionsId, value) {
-      const suggestionsDiv = document.getElementById(suggestionsId);
-      if (!value || value.length < 1) { 
-        suggestionsDiv.classList.add('hidden');
-        return;
-      }
-      const suggestions = commonCompounds.filter(compound => 
-        compound.toLowerCase().includes(value.toLowerCase())
-      ).slice(0, 8);
-      if (suggestions.length > 0) {
-        suggestionsDiv.innerHTML = suggestions.map(suggestion => 
-          `<div class="suggestion-item" onclick="selectSuggestion('${inputId}', '${suggestion}', '${suggestionsId}')">${suggestion}</div>`
-        ).join('');
-        suggestionsDiv.classList.remove('hidden');
-      } else {
-        suggestionsDiv.classList.add('hidden');
-      }
-    }
+        const amountInput = document.getElementById('amount');
+        const unitSelect = document.getElementById('unit');
+        const molarityInput = document.getElementById('molarity');
+        const molarityUnitSelect = document.getElementById('molarityUnit');
+        const volumeInput = document.getElementById('volume');
+        const volumeUnitSelect = document.getElementById('volumeUnit');
 
-    function selectSuggestion(inputId, suggestion, suggestionsId) {
-      const inputField = document.getElementById(inputId);
-      inputField.value = suggestion;
-      document.getElementById(suggestionsId).classList.add('hidden');
-      const event = new Event('input', { bubbles: true, cancelable: true });
-      inputField.dispatchEvent(event);
-    }
-    
-    const subscriptMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
-    const superscriptMap = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9'};
+        const analyzeCompoundsBtn = document.getElementById('analyzeCompoundsBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
 
-    function normalizeDigits(text) {
-        if (!text) return "";
-        let normalized = "";
-        for (let char of text) {
-            normalized += subscriptMap[char] || superscriptMap[char] || char;
-        }
-        return normalized;
-    }
-    
-    // --- CORE LOGIC ---
-    const sortedIonKeys = Object.keys(commonIonCharges).sort((a,b) => b.length - a.length);
-    const sortedElementKeys = Object.keys(atomicWeights).sort((a,b) => b.length - a.length);
+        const removeHydrationOriginalBtn = document.getElementById('removeHydrationOriginal');
+        const addHydrationOriginalBtn = document.getElementById('addHydrationOriginal');
+        const removeHydrationReplacementBtn = document.getElementById('removeHydrationReplacement');
+        const addHydrationReplacementBtn = document.getElementById('addHydrationReplacement');
 
-    function getCompositionOfSimpleFormula(formulaStr) {
-        const composition = {};
-        const regex = /([A-Z][a-z]*)(\d*)/g;
-        let match;
-        while ((match = regex.exec(formulaStr)) !== null) {
-            const element = match[1];
-            const count = parseInt(match[2] || '1', 10);
-            if(atomicWeights[element]) {
-                composition[element] = (composition[element] || 0) + count;
+        const ionSelectionPanel = document.getElementById('ionSelectionPanel');
+        const ionButtonsContainer = document.getElementById('ionButtons');
+        const outputPanel = document.getElementById('outputPanel');
+        const errorDisplay = document.getElementById('errorDisplay');
+
+        // Dilution Calculator Elements
+        const stockConcInput = document.getElementById('stockConc');
+        const stockConcUnitSelect = document.getElementById('stockConcUnit');
+        const finalConcInput = document.getElementById('finalConc');
+        const finalConcUnitSelect = document.getElementById('finalConcUnit');
+        const finalVolumeInput = document.getElementById('finalVolume');
+        const finalVolumeUnitSelect = document.getElementById('finalVolumeUnit');
+        const dilutionPrimaryResultEl = document.getElementById('dilutionPrimaryResult');
+        const dilutionSecondaryResultEl = document.getElementById('dilutionSecondaryResult');
+        const dilutionCalcErrorEl = document.getElementById('dilutionCalcError');
+        const calculateDilutionBtn = document.getElementById('calculateDilutionBtn');
+        const clearDilutionBtn = document.getElementById('clearDilutionBtn');
+
+        // --- HELPER FUNCTIONS ---
+
+        /**
+         * Displays a message in the feedback area for a given input.
+         * @param {HTMLElement} feedbackEl - The span element to display feedback in.
+         * @param {HTMLElement} inputEl - The input element to apply error styling to.
+         * @param {string} message - The message to display.
+         * @param {string} type - 'error', 'success', 'warning', 'info'.
+         */
+        function showFeedback(feedbackEl, inputEl, message, type) {
+            feedbackEl.textContent = message;
+            feedbackEl.className = `formula-feedback-message ${type}`;
+            if (type === 'error') {
+                inputEl.classList.add('input-error');
+            } else {
+                inputEl.classList.remove('input-error');
+            }
+            if (message === '') {
+                feedbackEl.classList.add('hidden');
+            } else {
+                feedbackEl.classList.remove('hidden');
             }
         }
-        return composition;
-    }
 
-    function parseFormula(formulaInput) {
-        if (!formulaInput || typeof formulaInput !== 'string' || formulaInput.trim() === "") {
-            return { weight: 0, composition: {}, mainComposition: {}, unknownElements: ["Empty formula"], originalFormula: formulaInput, displayFormula: "", parsedStructure: [] };
+        /**
+         * Clears a specific formula input's feedback.
+         * @param {HTMLElement} inputEl
+         * @param {HTMLElement} feedbackEl
+         */
+        function clearFormulaFeedback(inputEl, feedbackEl) {
+            showFeedback(feedbackEl, inputEl, '', 'info'); // Clears message and removes error class
         }
-        const originalFormula = formulaInput;
-        let formulaToParse = formulaInput.replace(/\s+/g, "").replace(/H₂O/g, "H2O");
-        formulaToParse = normalizeDigits(formulaToParse);
-        let mainPartString = formulaToParse;
-        let hydrateContentString = ""; 
-        let hydrateDisplaySuffix = "";
-        const dotIndex = formulaToParse.lastIndexOf('·');
-        if (dotIndex !== -1) {
-            mainPartString = formulaToParse.substring(0, dotIndex);
-            hydrateContentString = formulaToParse.substring(dotIndex + 1);
-            const originalDotIndex = originalFormula.lastIndexOf('·');
-            if (originalDotIndex !== -1) {
-                let originalHydratePart = originalFormula.substring(originalDotIndex + 1).trim();
-                hydrateDisplaySuffix = "·" + originalHydratePart.replace(/H2O/gi, "H₂O");
-            } else { 
-                hydrateDisplaySuffix = "·" + hydrateContentString.replace(/H2O/gi, "H₂O");
+
+        function showError(message) {
+            errorDisplay.textContent = message;
+            errorDisplay.classList.remove('hidden');
+        }
+
+        function clearError() {
+            errorDisplay.textContent = '';
+            errorDisplay.classList.add('hidden');
+        }
+
+        function showOutput(htmlContent) {
+            outputPanel.innerHTML = htmlContent;
+            outputPanel.classList.remove('hidden');
+        }
+
+        function clearOutput() {
+            outputPanel.innerHTML = '';
+            outputPanel.classList.add('hidden');
+        }
+
+        /**
+         * Parses a chemical formula string into an object representing elements and their counts.
+         * Handles parentheses and hydration (·nH₂O).
+         * @param {string} formula - The chemical formula string (e.g., "H2O", "Ca(NO3)2", "MgSO4·7H2O").
+         * @returns {object|null} An object { elements: {Element: count}, hydration: count, mainFormula: string } or null if invalid.
+         */
+        function parseFormula(formula) {
+            if (!formula) return null;
+
+            formula = formula.trim();
+            let mainFormula = formula;
+            let hydration = 0;
+
+            const hydrationMatch = formula.match(/·(\d*)H₂O/i);
+            if (hydrationMatch) {
+                mainFormula = formula.substring(0, hydrationMatch.index);
+                hydration = parseInt(hydrationMatch[1] || '1', 10);
+            }
+
+            const elements = {};
+            // Regex to match:
+            // 1. An element symbol (e.g., "H", "Na", "Cl", "Fe")
+            // 2. An element symbol followed by a number (e.g., "O2", "N3")
+            // 3. A polyatomic ion in parentheses followed by a number (e.g., "(NO3)2")
+            // 4. A recognized common polyatomic ion without parentheses if it starts with a capital letter and is followed by a number (e.g., SO4, PO4)
+            // It tries to capture the largest possible element/ion group first.
+            const regex = /([A-Z][a-z]?|\([A-Za-z0-9]+\))(\d*)|([A-Z][a-z]?[0-9]*)/g;
+
+            // First pass: Handle parentheses and polyatomic ions
+            let tempFormula = mainFormula;
+            const polyatomicGroups = {};
+            let groupIndex = 0;
+
+            // Replace polyatomic ions like (SO4)2 with unique placeholders like $P0$2
+            tempFormula = tempFormula.replace(/\(([A-Za-z0-9]+)\)(\d*)/g, (match, p1, p2) => {
+                polyatomicGroups[`$P${groupIndex}$`] = parseFormulaPart(p1);
+                const count = parseInt(p2 || '1', 10);
+                const placeholder = `$P${groupIndex}$`;
+                groupIndex++;
+                return placeholder + (count > 1 ? count : '');
+            });
+
+            // Parse the modified formula for individual elements
+            let match;
+            while ((match = /([A-Z][a-z]?)(\d*)/g.exec(tempFormula)) !== null) {
+                const element = match[1];
+                const count = parseInt(match[2] || '1', 10);
+                elements[element] = (elements[element] || 0) + count;
+            }
+
+            // Expand polyatomic groups
+            for (const placeholder in polyatomicGroups) {
+                const groupCount = parseInt(tempFormula.match(new RegExp(`${placeholder}(\\d*)`))[1] || '1', 10);
+                const groupElements = polyatomicGroups[placeholder].elements; // The elements within the ( )
+                for (const element in groupElements) {
+                    elements[element] = (elements[element] || 0) + (groupElements[element] * groupCount);
+                }
+            }
+
+            // A helper to parse elements inside parentheses or simple parts
+            function parseFormulaPart(part) {
+                const partElements = {};
+                let partMatch;
+                const partRegex = /([A-Z][a-z]?)(\d*)/g;
+                while ((partMatch = partRegex.exec(part)) !== null) {
+                    const element = partMatch[1];
+                    const count = parseInt(partMatch[2] || '1', 10);
+                    partElements[element] = (partElements[element] || 0) + count;
+                }
+                return { elements: partElements };
+            }
+
+            // Basic validation: Check if all elements found are valid
+            for (const element in elements) {
+                if (!atomicWeights[element]) {
+                    console.error(`Unknown element: ${element} in formula ${formula}`);
+                    return null; // Invalid element found
+                }
+            }
+            if (hydrationMatch && isNaN(hydration)) {
+                 console.error(`Invalid hydration number in formula ${formula}`);
+                 return null;
+            }
+
+            return { elements: elements, hydration: hydration, mainFormula: mainFormula };
+        }
+
+
+        /**
+         * Calculates the molar mass of a compound based on its parsed elements and hydration.
+         * @param {object} parsedFormula - Object from parseFormula.
+         * @returns {number} Molar mass in g/mol.
+         */
+        function calculateMolarMass(parsedFormula) {
+            if (!parsedFormula || !parsedFormula.elements) return 0;
+
+            let molarMass = 0;
+            for (const element in parsedFormula.elements) {
+                molarMass += atomicWeights[element] * parsedFormula.elements[element];
+            }
+            if (parsedFormula.hydration > 0) {
+                molarMass += parsedFormula.hydration * (atomicWeights['H'] * 2 + atomicWeights['O']); // Molar mass of H2O
+            }
+            return molarMass;
+        }
+
+        /**
+         * Calculates the mass percentage of each element in a parsed formula.
+         * @param {object} parsedFormula - Object from parseFormula.
+         * @param {number} totalMolarMass - The total molar mass of the compound.
+         * @returns {object} An object { Element: percentage }.
+         */
+        function calculateMassPercentages(parsedFormula, totalMolarMass) {
+            const percentages = {};
+            if (!parsedFormula || !parsedFormula.elements || totalMolarMass === 0) return percentages;
+
+            for (const element in parsedFormula.elements) {
+                const mass = atomicWeights[element] * parsedFormula.elements[element];
+                percentages[element] = (mass / totalMolarMass) * 100;
+            }
+            return percentages;
+        }
+
+        /**
+         * Extracts potential ions/elements from the main part of a parsed formula for conservation selection.
+         * @param {object} parsedFormula - The parsed formula object.
+         * @returns {string[]} An array of ion/element strings.
+         */
+        function extractConsumableIons(parsedFormula) {
+            if (!parsedFormula || !parsedFormula.elements) return [];
+
+            const potentialIons = new Set();
+            const formulaString = parsedFormula.mainFormula; // Use the non-hydrated part for ion extraction
+
+            // Regex to find potential ions or elements
+            // Matches: [A-Z][a-z]? (single element), or a polyatomic ion string (e.g., NO3, SO4)
+            const ionRegex = /([A-Z][a-z]?[0-9]*|[A-Z][a-z]?)/g;
+            let match;
+            while ((match = ionRegex.exec(formulaString)) !== null) {
+                let ion = match[0];
+                // Remove numbers from single elements or check if it matches a known polyatomic ion
+                const elementMatch = ion.match(/^([A-Z][a-z]?)\d*$/);
+                if (elementMatch && atomicWeights[elementMatch[1]]) {
+                    potentialIons.add(elementMatch[1]); // Add just the element symbol
+                } else {
+                    // Check if it's a known polyatomic ion (e.g., NO3, SO4)
+                    // This is a simplification; a more robust solution would involve checking known polyatomic ions from a list.
+                    // For now, if it's not a single element and has a number, assume it's part of a polyatomic group.
+                    // Or check if it's directly in commonIonCharges
+                    const cleanedIon = ion.replace(/\d/g, ''); // Remove digits for lookup
+                    if (commonIonCharges[ion] || commonIonCharges[cleanedIon]) {
+                        potentialIons.add(ion);
+                    }
+                }
+            }
+
+            // Also add all individual elements from the parsed formula
+            for (const el in parsedFormula.elements) {
+                potentialIons.add(el);
+            }
+
+            return Array.from(potentialIons).sort((a, b) => {
+                // Prioritize elements over multi-character "ions" if preferred, or sort by length, then alphabetically
+                if (a.length === b.length) return a.localeCompare(b);
+                return a.length - b.length;
+            });
+        }
+
+
+        /**
+         * Populates the ion selection panel with buttons based on the original compound.
+         * @param {object} parsedFormula - The parsed original formula.
+         */
+        function populateIonSelection(parsedFormula) {
+            ionButtonsContainer.innerHTML = ''; // Clear previous buttons
+            ionSelectionPanel.classList.add('hidden'); // Hide until we confirm ions
+
+            if (!parsedFormula || !parsedFormula.elements || Object.keys(parsedFormula.elements).length === 0) {
+                return; // No elements to select from
+            }
+
+            const ions = extractConsumableIons(parsedFormula);
+
+            if (ions.length > 0) {
+                ionSelectionPanel.classList.remove('hidden');
+                ions.forEach(ion => {
+                    const button = document.createElement('button');
+                    button.textContent = ion;
+                    button.classList.add('ion-btn');
+                    button.addEventListener('click', () => {
+                        // Remove 'selected' class from all other buttons
+                        document.querySelectorAll('.ion-btn').forEach(btn => btn.classList.remove('selected'));
+                        button.classList.add('selected');
+                        selectedIon = ion;
+                        calculateIonConversion();
+                    });
+                    ionButtonsContainer.appendChild(button);
+                });
             }
         }
-        const fullComposition = {};
-        const mainComposition = {};
-        const unknownElements = [];
-        let parsedStructure = [];
-        function parseSegmentRecursive(segment, overallMultiplier, isMainChemicalPart, currentParsedStructureLevel) {
-            let currentDisplay = "";
-            let i = 0;
-            while (i < segment.length) {
-                if (segment[i] === '(') {
-                    let balance = 1;
-                    let j = i + 1;
-                    while (j < segment.length && balance > 0) {
-                        if (segment[j] === '(') balance++;
-                        else if (segment[j] === ')') balance--;
-                        j++;
-                    }
-                    if (balance !== 0) {
-                        if (!unknownElements.includes("Mismatched parentheses")) unknownElements.push("Mismatched parentheses");
-                        currentParsedStructureLevel.push({type: 'text', value: segment.substring(i)});
-                        return { display: currentDisplay + segment.substring(i) }; 
-                    }
-                    const groupContentString = segment.substring(i + 1, j - 1);
-                    i = j;
-                    let numStr = "";
-                    while (i < segment.length && /\d/.test(segment[i])) {
-                        numStr += segment[i];
-                        i++;
-                    }
-                    const groupMultiplier = numStr ? parseInt(numStr, 10) : 1;
-                    currentDisplay += "(";
-                    let groupParsedStructure = [];
-                    const sub = parseSegmentRecursive(groupContentString, overallMultiplier * groupMultiplier, isMainChemicalPart, groupParsedStructure);
-                    currentDisplay += sub.display;
-                    currentDisplay += ")";
-                    if (groupMultiplier > 1) currentDisplay += groupMultiplier;
-                    let groupSymbol = sub.display; 
-                    if (commonIonCharges[groupSymbol] === undefined) {
-                         if (commonIonCharges[groupContentString]) groupSymbol = groupContentString;
-                    }
-                    currentParsedStructureLevel.push({
-                        type: 'group',
-                        symbol: groupSymbol, 
-                        count: groupMultiplier,
+
+        /**
+         * Calculates the required amount of replacement compound based on ion conservation.
+         */
+        function calculateIonConversion() {
+            clearError();
+            clearOutput();
+
+            if (!compoundData.originalParsed || !compoundData.replacementParsed || !selectedIon) {
+                showError("Please ensure both formulas are valid and an ion is selected for conservation.");
+                return;
+            }
+
+            const originalAmountStr = amountInput.value;
+            const originalMolarityStr = molarityInput.value;
+            const originalVolumeStr = volumeInput.value;
+            const originalUnit = unitSelect.value;
+            const originalMolarityUnit = molarityUnitSelect.value;
+            const originalVolumeUnit = volumeUnitSelect.value;
+
+            let originalMoles = 0;
+            let calculatedOriginalAmount = null;
+            let calculatedOriginalAmountUnit = null;
+            let calculatedOriginalMolarity = null;
+            let calculatedOriginalVolume = null;
+
+            // Determine original moles based on available inputs
+            if (originalAmountStr && parseFloat(originalAmountStr) > 0) {
+                const amount = parseFloat(originalAmountStr);
+                const molarMassOriginal = calculateMolarMass(compoundData.originalParsed);
+                if (molarMassOriginal === 0) {
+                    showError("Could not calculate molar mass for original compound.");
+                    return;
+                }
+
+                if (originalUnit === 'mg') {
+                    originalMoles = (amount / 1000) / molarMassOriginal;
+                    calculatedOriginalAmount = amount;
+                    calculatedOriginalAmountUnit = 'mg';
+                } else if (originalUnit === 'g') {
+                    originalMoles = amount / molarMassOriginal;
+                    calculatedOriginalAmount = amount;
+                    calculatedOriginalAmountUnit = 'g';
+                } else if (originalUnit === 'mol') {
+                    originalMoles = amount;
+                    calculatedOriginalAmount = amount;
+                    calculatedOriginalAmountUnit = 'mol';
+                }
+            } else if (originalMolarityStr && originalVolumeStr && parseFloat(originalMolarityStr) > 0 && parseFloat(originalVolumeStr) > 0) {
+                const molarity = convertMolarityToM(parseFloat(originalMolarityStr), originalMolarityUnit);
+                const volume = convertVolumeToL(parseFloat(originalVolumeStr), originalVolumeUnit);
+                originalMoles = molarity * volume;
+                calculatedOriginalMolarity = parseFloat(originalMolarityStr);
+                calculatedOriginalVolume = parseFloat(originalVolumeStr);
+            } else {
+                showError("Please enter a valid amount for the original compound, OR a valid molarity and volume.");
+                return;
+            }
+
+            if (originalMoles === 0) {
+                showError("Calculated moles for original compound is zero. Please check inputs.");
+                return;
+            }
+
+            // Calculate moles of the selected ion in the original compound
+            const originalIonCount = getElementCountInFormula(compoundData.originalParsed, selectedIon);
+            if (originalIonCount === 0) {
+                showError(`Selected ion "${selectedIon}" not found in original compound. Please choose another.`);
+                return;
+            }
+            const molesOfSelectedIon = originalMoles * originalIonCount;
+
+            // Calculate required moles of replacement compound
+            const replacementIonCount = getElementCountInFormula(compoundData.replacementParsed, selectedIon);
+            if (replacementIonCount === 0) {
+                showError(`Selected ion "${selectedIon}" not found in replacement compound. Cannot convert.`);
+                return;
+            }
+            const molesOfReplacementCompound = molesOfSelectedIon / replacementIonCount;
+
+            // Calculate mass of replacement compound
+            const molarMassReplacement = calculateMolarMass(compoundData.replacementParsed);
+            if (molarMassReplacement === 0) {
+                showError("Could not calculate molar mass for replacement compound.");
+                return;
+            }
+            const massOfReplacementCompoundGrams = molesOfReplacementCompound * molarMassReplacement;
+            const massOfReplacementCompoundMg = massOfReplacementCompoundGrams * 1000;
+
+            let outputHtml = `
+                <h2><span class="molecule-icon">✅</span>Calculation Results</h2>
+                <div class="main-result-item">
+                    <div class="main-result-value">${molesOfReplacementCompound.toPrecision(5)} mol</div>
+                    <div class="main-result-label">Required Moles of ${compoundData.replacementParsed.fullFormula || replacementFormulaInput.value}</div>
+                </div>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value">${massOfReplacementCompoundGrams.toPrecision(5)} g</div>
+                        <div class="result-label">Mass in Grams</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">${massOfReplacementCompoundMg.toPrecision(5)} mg</div>
+                        <div class="result-label">Mass in Milligrams</div>
+                    </div>
+                </div>
+            `;
+
+            if (calculatedOriginalAmount !== null) {
+                outputHtml += `<h3><span class="molecule-icon">📊</span>Original Compound Details</h3>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value">${calculatedOriginalAmount.toPrecision(5)} ${calculatedOriginalAmountUnit}</div>
+                        <div class="result-label">Input Amount (${compoundData.originalParsed.fullFormula || originalFormulaInput.value})</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">${originalMoles.toPrecision(5)} mol</div>
+                        <div class="result-label">Moles of Original Compound</div>
+                    </div>
+                </div>`;
+            } else if (calculatedOriginalMolarity !== null && calculatedOriginalVolume !== null) {
+                 const finalMolarity = (molesOfReplacementCompound / convertVolumeToL(calculatedOriginalVolume, originalVolumeUnit));
+                outputHtml += `<h3><span class="molecule-icon">📊</span>Original Solution Details</h3>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value">${calculatedOriginalMolarity.toPrecision(5)} ${originalMolarityUnit}</div>
+                        <div class="result-label">Input Molarity (${compoundData.originalParsed.fullFormula || originalFormulaInput.value})</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">${calculatedOriginalVolume.toPrecision(5)} ${originalVolumeUnit}</div>
+                        <div class="result-label">Input Volume (${compoundData.originalParsed.fullFormula || originalFormulaInput.value})</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">${originalMoles.toPrecision(5)} mol</div>
+                        <div class="result-label">Total Moles of Original Compound</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">${finalMolarity.toPrecision(5)} ${molarityUnitSelect.value}</div>
+                        <div class="result-label">Equivalent Molarity of Replacement in Original Volume</div>
+                    </div>
+                </div>`;
+            }
+
+            outputHtml += `<h3><span class="molecule-icon">🔬</span>Compound Details</h3>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value">${compoundData.originalParsed.molarMass.toPrecision(5)} g/mol</div>
+                        <div class="result-label">Original Molar Mass</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">${compoundData.replacementParsed.molarMass.toPrecision(5)} g/mol</div>
+                        <div class="result-label">Replacement Molar Mass</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">${selectedIon} (${originalIonCount})</div>
+                        <div class="result-label">Conserved Ion/Element (Original Count)</div>
+                    </div>
+                     <div class="result-item">
+                        <div class="result-value">${selectedIon} (${replacementIonCount})</div>
+                        <div class="result-label">Conserved Ion/Element (Replacement Count)</div>
+                    </div>
+                </div>
+            `;
+
+
+            // Add elemental percentages
+            outputHtml += `<h3><span class="molecule-icon">🧪</span>Elemental Compositions (%)</h3>`;
+            outputHtml += `<div class="results-grid">`;
+
+            // Original Compound Percentages
+            outputHtml += `<div class="result-item">
+                                <div class="result-label">Original Compound (${compoundData.originalParsed.fullFormula || originalFormulaInput.value})</div>
+                                <div style="font-size:0.9rem; text-align:left; margin-top:0.5rem;">`;
+            for (const element in compoundData.originalParsed.massPercentages) {
+                outputHtml += `<strong>${element}:</strong> ${compoundData.originalParsed.massPercentages[element].toFixed(2)}%<br>`;
+            }
+            outputHtml += `</div></div>`;
+
+            // Replacement Compound Percentages
+            outputHtml += `<div class="result-item">
+                                <div class="result-label">Replacement Compound (${compoundData.replacementParsed.fullFormula || replacementFormulaInput.value})</div>
+                                <div style="font-size:0.9rem; text-align:left; margin-top:0.5rem;">`;
+            for (const element in compoundData.replacementParsed.massPercentages) {
+                outputHtml += `<strong>${element}:</strong> ${compoundData.replacementParsed.massPercentages[element].toFixed(2)}%<br>`;
+            }
+            outputHtml += `</div></div>`;
+            outputHtml += `</div>`; // Close results-grid
+
+            showOutput(outputHtml);
+        }
+
+        /**
+         * Determines the count of a specific element or polyatomic ion within a parsed formula.
+         * @param {object} parsedFormula - The parsed formula object.
+         * @param {string} targetIon - The element symbol or polyatomic ion string (e.g., 'Na', 'PO4').
+         * @returns {number} The count of the target ion/element.
+         */
+        function getElementCountInFormula(parsedFormula, targetIon) {
+            if (!parsedFormula || !parsedFormula.elements) return 0;
+
+            // Normalize targetIon for lookup, e.g., 'PO4' vs 'PO4'
+            // For simple elements like 'Na', it's direct.
+            // For polyatomic ions, we need to carefully parse.
+
+            // Simple element check first
+            if (parsedFormula.elements[targetIon]) {
+                return parsedFormula.elements[targetIon];
+            }
+
+            // More complex check for polyatomic ions, assuming targetIon can be 'PO4', 'NO3', etc.
+            // This requires a more sophisticated parser or a pre-defined list of polyatomic ions.
+            // For now, we'll try to match it directly if it's not a single element.
+
+            // A more advanced approach would involve breaking down the targetIon into its elements
+            // and checking if the parsedFormula contains those elements in the correct stoichiometry.
+            // For example, if targetIon is 'SO4', check if parsedFormula.elements has S:1, O:4.
+            // This is a simplified approach for demonstration.
+            if (targetIon in commonIonCharges) {
+                // If it's a known polyatomic ion, we need to count its occurrences in the original formula string
+                // or have a more detailed parseFormula that separates these.
+                // For simplicity here, we'll try to estimate based on known patterns or count direct occurrences.
+
+                // This part requires careful implementation depending on how `parseFormula` handles polyatomics
+                // and if `targetIon` refers to an individual element or a group.
+                // For now, let's assume `parsedFormula.elements` already contains expanded elements.
+                // We need to infer how many "units" of targetIon are present from the expanded elements.
+
+                // Example: If targetIon is "PO4" and parsedFormula.elements has P:1, O:4, then count is 1.
+                // If parsedFormula.elements has P:2, O:8 (from (PO4)2), then count is 2.
+                // This is a simplified approach and assumes the targetIon elements are present in exact ratios.
+                // A better approach would be to parse the formula for polyatomic units directly.
+
+                // Re-parsing the main formula for the specific ion to count
+                const formulaToParse = parsedFormula.mainFormula;
+                const ionRegex = new RegExp(`(?:\\(|^|\\d)(${targetIon})(\\d*)`, 'g');
+                let count = 0;
+                let match;
+                while ((match = ionRegex.exec(formulaToParse)) !== null) {
+                    const ionCount = parseInt(match[2] || '1', 10);
+                    count += ionCount;
+                }
+
+                // If the target ion is like "NO3", and the formula is "Al(NO3)3",
+                // parseFormula.elements would have N:3, O:9.
+                // A simple `elements[targetIon]` won't work.
+                // We need to count the "groups".
+                // This is a quick workaround for simple cases like individual elements or if the main parse handles groups.
+                // For a robust solution, the `parseFormula` function needs to return not just expanded elements
+                // but also a list of distinct polyatomic ions and their counts.
+                return parsedFormula.elements[targetIon] || 0; // Fallback, will return 0 if targetIon is a polyatomic
+                                                                // and elements only has individual atoms.
+            }
+
+            // Fallback for simple elements if not caught above
+            return parsedFormula.elements[targetIon] || 0;
+        }
+
+
+        // --- DILUTION CALCULATOR FUNCTIONS ---
+
+        /**
+         * Converts any concentration unit to M (moles/Liter).
+         * Requires molar mass for mass-based concentrations.
+         * @param {number} value - The concentration value.
+         * @param {string} unit - The unit (M, mM, uM, mg/mL, ug/mL, ng/mL).
+         * @param {number} [molarMass=1] - Molar mass in g/mol, required for mass-based units.
+         * @returns {number} Concentration in M.
+         */
+        function convertMolarityToM(value, unit, molarMass = 1) {
+            if (isNaN(value)) return NaN;
+            switch (unit) {
+                case 'M': return value;
+                case 'mM': return value / 1000;
+                case 'uM': return value / 1000000;
+                case 'mg/mL': return (value / 1000) / molarMass; // Convert mg to g, then g to mol
+                case 'ug/mL': return (value / 1000000) / molarMass;
+                case 'ng/mL': return (value / 1000000000) / molarMass;
+                default: return NaN;
+            }
+        }
+
+        /**
+         * Converts M (moles/Liter) to target concentration unit.
+         * Requires molar mass for mass-based concentrations.
+         * @param {number} molarity - Concentration in M.
+         * @param {string} targetUnit - The target unit (M, mM, uM, mg/mL, ug/mL, ng/mL).
+         * @param {number} [molarMass=1] - Molar mass in g/mol, required for mass-based units.
+         * @returns {number} Concentration in target unit.
+         */
+        function convertMToMolarity(molarity, targetUnit, molarMass = 1) {
+            if (isNaN(molarity)) return NaN;
+            switch (targetUnit) {
+                case 'M': return molarity;
+                case 'mM': return molarity * 1000;
+                case 'uM': return molarity * 1000000;
+                case 'mg/mL': return molarity * molarMass * 1000; // mol to g, then g to mg
+                case 'ug/mL': return molarity * molarMass * 1000000;
+                case 'ng/mL': return molarity * molarMass * 1000000000;
+                default: return NaN;
+            }
+        }
+
+        /**
+         * Converts any volume unit to Liters.
+         * @param {number} value - The volume value.
+         * @param {string} unit - The unit (L, mL, uL).
+         * @returns {number} Volume in Liters.
+         */
+        function convertVolumeToL(value, unit) {
+            if (isNaN(value)) return NaN;
+            switch (unit) {
+                case 'L': return value;
+                case 'mL': return value / 1000;
+                case 'uL': return value / 1000000;
+                default: return NaN;
+            }
+        }
+
+        /**
+         * Converts Liters to target volume unit.
+         * @param {number} volumeL - Volume in Liters.
+         * @param {string} targetUnit - The target unit (L, mL, uL).
+         * @returns {number} Volume in target unit.
+         */
+        function convertLToVolume(volumeL, targetUnit) {
+            if (isNaN(volumeL)) return NaN;
+            switch (targetUnit) {
+                case 'L': return volumeL;
+                case 'mL': return volumeL * 1000;
+                case 'uL': return volumeL * 1000000;
+                default: return NaN;
+            }
+        }
+
+        function calculateDilution() {
+            dilutionCalcErrorEl.classList.add('hidden');
+            dilutionPrimaryResultEl.textContent = '---';
+            dilutionSecondaryResultEl.classList.add('hidden');
+
+            let c1 = parseFloat(stockConcInput.value);
+            let c2 = parseFloat(finalConcInput.value);
+            let v2 = parseFloat(finalVolumeInput.value);
+
+            const stockConcUnit = stockConcUnitSelect.value;
+            const finalConcUnit = finalConcUnitSelect.value;
+            const finalVolumeUnit = finalVolumeUnitSelect.value;
+
+            // Optional: get molar mass if needed for mass/volume units.
+            // For now, assuming concentration units are compatible or require the same molar mass (e.g., M or mg/mL of the SAME compound)
+            // If the stock and final concentrations are for DIFFERENT compounds or different states (e.g., hydrated vs anhydrous)
+            // AND you want to use mg/mL, ug/mL, etc., you'll need the molar mass of the compound associated with stockConc and finalConc.
+            // For C1V1 = C2V2, it's usually assumed to be the same solute.
+
+            // Convert C1 and C2 to a common base unit (e.g., M) if they are molar.
+            // If they are mass/volume units (mg/mL), ensure they are the same type.
+            let c1_base = c1;
+            let c2_base = c2;
+            let molarMassOriginalForC = compoundData.originalParsed ? calculateMolarMass(compoundData.originalParsed) : 1; // Fallback
+            let molarMassReplacementForC = compoundData.replacementParsed ? calculateMolarMass(compoundData.replacementParsed) : 1; // Fallback
+
+            if (stockConcUnit.includes('M')) {
+                c1_base = convertMolarityToM(c1, stockConcUnit, molarMassOriginalForC);
+            } else if (finalConcUnit.includes('M')) {
+                 c2_base = convertMolarityToM(c2, finalConcUnit, molarMassOriginalForC);
+            } else { // Handle mass/volume units
+                // Crucial: for mass/volume units, ensure the units are the same (e.g., mg/mL to mg/mL)
+                // If not, explicit conversion based on molar mass and compound needs to happen.
+                // For now, simple assumption: C1 and C2 are in the same mass/volume unit if not molar.
+                // If you need cross-conversion (e.g., mg/mL to M), you must parse a chemical formula here.
+                if (stockConcUnit !== finalConcUnit) {
+                    dilutionCalcErrorEl.textContent = "Error: When using mass/volume units (mg/mL, etc.), stock and final concentration units must match unless a compound formula is provided.";
+                    dilutionCalcErrorEl.classList.remove('hidden');
+                    return;
+                }
+            }
+
+
+            const v2_L = convertVolumeToL(v2, finalVolumeUnit);
+
+            let v1_L; // Volume of stock solution needed in Liters
+
+            // Check if any input is missing or invalid
+            if (isNaN(c1) || c1 <= 0) {
+                dilutionCalcErrorEl.textContent = "Please enter a valid Stock Concentration (C₁).";
+                dilutionCalcErrorEl.classList.remove('hidden');
+                return;
+            }
+            if (isNaN(c2) || c2 <= 0) {
+                dilutionCalcErrorEl.textContent = "Please enter a valid Final Concentration (C₂).";
+                dilutionCalcErrorEl.classList.remove('hidden');
+                return;
+            }
+            if (isNaN(v2) || v2 <= 0) {
+                dilutionCalcErrorEl.textContent = "Please enter a valid Final Volume (V₂).";
+                dilutionCalcErrorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (c2_base > c1_base) {
+                dilutionCalcErrorEl.textContent = "Error: Final concentration (C₂) cannot be greater than Stock concentration (C₁).";
+                dilutionCalcErrorEl.classList.remove('hidden');
+                return;
+            }
+
+            // Calculate V₁ using C₁V₁ = C₂V₂
+            v1_L = (c2_base * v2_L) / c1_base;
+
+            // Convert V₁ back to the desired final volume unit
+            const v1_display = convertLToVolume(v1_L, finalVolumeUnit);
+
+            dilutionPrimaryResultEl.textContent = `${v1_display.toPrecision(5)} ${finalVolumeUnit}`;
+
+            // Calculate secondary results
+            const waterToAdd_L = v2_L - v1_L;
+            const waterToAdd_display = convertLToVolume(waterToAdd_L, finalVolumeUnit);
+
+            dilutionSecondaryResultEl.innerHTML = `
+                <p>Add <strong>${v1_display.toPrecision(5)} ${finalVolumeUnit}</strong> of stock solution to <strong>${waterToAdd_display.toPrecision(5)} ${finalVolumeUnit}</strong> of solvent to reach the target concentration and volume.</p>
+            `;
+            dilutionSecondaryResultEl.classList.remove('hidden');
+        }
+
+
+        // --- MAIN CALCULATION / ANALYSIS FUNCTION ---
+        async function calculateMainResults() {
+            clearError();
+            clearOutput();
+            ionSelectionPanel.classList.add('hidden');
+            ionButtonsContainer.innerHTML = '';
+            selectedIon = null;
+
+            const originalFormulaText = originalFormulaInput.value.trim();
+            const replacementFormulaText = replacementFormulaInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+            const unit = unitSelect.value;
+            const molarity = parseFloat(molarityInput.value);
+            const molarityUnit = molarityUnitSelect.value;
+            const volume = parseFloat(volumeInput.value);
+            const volumeUnit = volumeUnitSelect.value;
+
+            if (!originalFormulaText) {
+                showError("Please enter a chemical formula for the Original Compound.");
+                showFeedback(originalFormulaFeedbackEl, originalFormulaInput, 'Required field.', 'error');
+                return;
+            }
+            if (!replacementFormulaText) {
+                showError("Please enter a chemical formula for the Replacement Compound.");
+                showFeedback(replacementFormulaFeedbackEl, replacementFormulaInput, 'Required field.', 'error');
+                return;
+            }
+
+            // Parse formulas
+            const parsedOriginal = parseFormula(originalFormulaText);
+            const parsedReplacement = parseFormula(replacementFormulaText);
+
+            if (!parsedOriginal) {
+                showError("Invalid chemical formula for Original Compound. Please check for typos or unsupported syntax.");
+                showFeedback(originalFormulaFeedbackEl, originalFormulaInput, 'Invalid formula.', 'error');
+                return;
+            } else {
+                clearFormulaFeedback(originalFormulaInput, originalFormulaFeedbackEl);
+            }
+
+            if (!parsedReplacement) {
+                showError("Invalid chemical formula for Replacement Compound. Please check for typos or unsupported syntax.");
+                showFeedback(replacementFormulaFeedbackEl, replacementFormulaInput, 'Invalid formula.', 'error');
+                return;
+            } else {
+                clearFormulaFeedback(replacementFormulaInput, replacementFormulaFeedbackEl);
+            }
+
+            // Calculate molar masses
+            parsedOriginal.molarMass = calculateMolarMass(parsedOriginal);
+            parsedReplacement.molarMass = calculateMolarMass(parsedReplacement);
+
+            // Store original formula text for display
+            parsedOriginal.fullFormula = originalFormulaText;
+            parsedReplacement.fullFormula = replacementFormulaText;
+
+            // Calculate mass percentages
+            parsedOriginal.massPercentages = calculateMassPercentages(parsedOriginal, parsedOriginal.molarMass);
+            parsedReplacement.massPercentages = calculateMassPercentages(parsedReplacement, parsedReplacement.molarMass);
+
+            compoundData.originalParsed = parsedOriginal;
+            compoundData.replacementParsed = parsedReplacement;
+
+            // Populate ion selection for original compound
+            populateIonSelection(parsedOriginal);
+
+            // Automatically select an ion if only one common element exists
+            const commonElements = Object.keys(parsedOriginal.elements).filter(el =>
+                Object.keys(parsedReplacement.elements).includes(el)
+            );
+
+            if (commonElements.length === 1) {
+                const singleIonBtn = Array.from(ionButtonsContainer.children).find(btn => btn.textContent === commonElements[0]);
+                if (singleIonBtn) {
+                    singleIonBtn.click(); // Programmatically click to select and trigger conversion
+                }
+            } else if (commonElements.length > 1) {
+                showFeedback(originalFormulaFeedbackEl, originalFormulaInput, 'Select an ion for conservation below.', 'info');
+            } else {
+                 showFeedback(originalFormulaFeedbackEl, originalFormulaInput, 'No common elements found for ion conservation. Conversion might not be chemically sound.', 'warning');
+                 // Still populate ion selection for other options or manual choice
+            }
+
+            // If amount or molarity/volume are provided, perform initial calculations for original compound
+            let originalMoles = null;
+            let originalVolumeL = null;
+            let originalMolarityM = null;
+
+            if (!isNaN(amount) && amount > 0) {
+                let amountGrams = amount;
+                if (unit === 'mg') amountGrams = amount / 1000;
+                else if (unit === 'mol') amountGrams = amount * parsedOriginal.molarMass;
+
+                originalMoles = amountGrams / parsedOriginal.molarMass;
+            }
+
+            if (!isNaN(molarity) && !isNaN(volume) && molarity > 0 && volume > 0) {
+                originalMolarityM = convertMolarityToM(molarity, molarityUnit);
+                originalVolumeL = convertVolumeToL(volume, volumeUnit);
+                originalMoles = originalMolarityM * originalVolumeL;
+            } else if (!isNaN(amount) && amount > 0) {
+                // If amount is given and M or V is missing, calculate the missing one
+                if (!isNaN(molarity) && molarity > 0 && isNaN(volume)) {
+                    originalMolarityM = convertMolarityToM(molarity, molarityUnit);
+                    originalVolumeL = originalMoles / originalMolarityM;
+                    volumeInput.value = convertLToVolume(originalVolumeL, volumeUnit).toPrecision(5);
+                } else if (isNaN(molarity) && !isNaN(volume) && volume > 0) {
+                    originalVolumeL = convertVolumeToL(volume, volumeUnit);
+                    originalMolarityM = originalMoles / originalVolumeL;
+                    molarityInput.value = convertMToMolarity(originalMolarityM, molarityUnit).toPrecision(5);
+                }
+            }
+
+            // Display initial analysis results if enough data for original compound
+            let initialOutputHtml = `
+                <h2><span class="molecule-icon">📈</span>Compound Analysis</h2>
+                <h3>Original Compound: ${originalFormulaText}</h3>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value">${parsedOriginal.molarMass.toPrecision(5)} g/mol</div>
+                        <div class="result-label">Molar Mass</div>
+                    </div>
+                </div>
+                <h4>Elemental Composition:</h4>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-label" style="text-align:left;">`;
+            for (const el in parsedOriginal.massPercentages) {
+                initialOutputHtml += `<strong>${el}:</strong> ${parsedOriginal.massPercentages[el].toFixed(2)}%<br>`;
+            }
+            initialOutputHtml += `</div></div></div>`;
+
+            if (originalMoles !== null && originalMoles > 0) {
+                initialOutputHtml += `<h3>Calculated Original Quantity:</h3>
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <div class="result-value">${originalMoles.toPrecision(5)} mol</div>
+                            <div class="result-label">Total Moles</div>
+                        </div>`;
+                if (originalVolumeL !== null && originalVolumeL > 0) {
+                    initialOutputHtml += `<div class="result-item">
+                                            <div class="result-value">${convertLToVolume(originalVolumeL, volumeUnit).toPrecision(5)} ${volumeUnit}</div>
+                                            <div class="result-label">Volume</div>
+                                          </div>`;
+                }
+                if (originalMolarityM !== null && originalMolarityM > 0) {
+                    initialOutputHtml += `<div class="result-item">
+                                            <div class="result-value">${convertMToMolarity(originalMolarityM, molarityUnit).toPrecision(5)} ${molarityUnit}</div>
+                                            <div class="result-label">Molarity</div>
+                                          </div>`;
+                }
+                initialOutputHtml += `</div>`;
+            }
+
+
+            initialOutputHtml += `<h3>Replacement Compound: ${replacementFormulaText}</h3>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value">${parsedReplacement.molarMass.toPrecision(5)} g/mol</div>
+                        <div class="result-label">Molar Mass</div>
+                    </div>
+                </div>
+                <h4>Elemental Composition:</h4>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-label" style="text-align:left;">`;
+            for (const el in parsedReplacement.massPercentages) {
+                initialOutputHtml += `<strong>${el}:</strong> ${parsedReplacement.massPercentages[el].toFixed(2)}%<br>`;
+            }
+            initialOutputHtml += `</div></div></div>`;
+            showOutput(initialOutputHtml);
+        }
+
+        // --- Event Listeners ---
+
+        analyzeCompoundsBtn.addEventListener('click', calculateMainResults);
+        calculateDilutionBtn.addEventListener('click', calculateDilution);
+
+        clearAllBtn.addEventListener('click', () => {
+            originalFormulaInput.value = '';
+            replacementFormulaInput.value = '';
+            amountInput.value = '';
+            molarityInput.value = '';
+            volumeInput.value = '';
+            clearFormulaFeedback(originalFormulaInput, originalFormulaFeedbackEl);
+            clearFormulaFeedback(replacementFormulaInput, replacementFormulaFeedbackEl);
+            ionSelectionPanel.classList.add('hidden');
+            ionButtonsContainer.innerHTML = '';
+            outputPanel.classList.add('hidden');
+            errorDisplay.classList.add('hidden');
+            selectedIon = null;
+            compoundData = { originalParsed: null, replacementParsed: null };
+            clearDilutionCalc(); // Also clear dilution calculator
+        });
+
+        clearDilutionBtn.addEventListener('click', clearDilutionCalc);
+
+        function clearDilutionCalc() {
+            stockConcInput.value = '';
+            finalConcInput.value = '';
+            finalVolumeInput.value = '';
+            dilutionPrimaryResultEl.textContent = '---';
+            dilutionSecondaryResultEl.classList.add('hidden');
+            dilutionCalcErrorEl.classList.add('hidden');
+        }
+
+        // Hydration buttons functionality
+        function handleHydration(inputEl, add) {
+            let formula = inputEl.value.trim();
+            const hydrationMatch = formula.match(/·(\d*)H₂O/i);
+            let currentHydration = 0;
+            let baseFormula = formula;
+
+            if (hydrationMatch) {
+                baseFormula = formula.substring(0, hydrationMatch.index).trim();
+                currentHydration = parseInt(hydrationMatch[1] || '1', 10);
+            }
+
+            if (add) {
+                currentHydration++;
+            } else {
+                currentHydration = Math.max(0, currentHydration - 1);
+            }
+
+            if (currentHydration > 0) {
+                inputEl.value = `${baseFormula}·${currentHydration}H₂O`;
+            } else {
+                inputEl.value = baseFormula;
+            }
+            // Re-validate/re-analyze if formulas change
+            // This might be too frequent, consider debouncing or linking to main calculate button
+            // For now, let's just update the input.
+        }
+
+        removeHydrationOriginalBtn.addEventListener('click', () => handleHydration(originalFormulaInput, false));
+        addHydrationOriginalBtn.addEventListener('click', () => handleHydration(originalFormulaInput, true));
+        removeHydrationReplacementBtn.addEventListener('click', () => handleHydration(replacementFormulaInput, false));
+        addHydrationReplacementBtn.addEventListener('click', () => handleHydration(replacementFormulaInput, true));
+
+        // Basic auto-suggestion and validation on input change/blur
+        function setupFormulaInput(inputEl, suggestionsEl, feedbackEl, isOriginal) {
+            const debouncedSuggest = debounce((text) => {
+                suggestionsEl.classList.add('hidden');
+                if (text.length < 2) {
+                    return;
+                }
+                const filtered = commonCompounds.filter(c =>
+                    c.toLowerCase().includes(text.toLowerCase())
+                ).slice(0, 5); // Limit suggestions
+
+                if (filtered.length > 0) {
+                    suggestionsEl.innerHTML = '';
+                    filtered.forEach(compoundName => {
+                        const item = document.createElement('div');
+                        item.classList.add('suggestion-item');
+                        item.textContent = compoundName;
+                        item.addEventListener('click', () => {
+                            inputEl.value = compoundNameToFormulaMap[compoundName.toLowerCase()] || compoundName;
+                            suggestionsEl.classList.add('hidden');
+                            clearFormulaFeedback(inputEl, feedbackEl);
+                            // Potentially trigger re-parsing if this makes sense for the flow
+                        });
+                        suggestionsEl.appendChild(item);
                     });
-                    continue;
+                    suggestionsEl.classList.remove('hidden');
                 }
-                let matchedSymbol = "";
-                let matchedLen = 0;
-                for (const key of sortedIonKeys) {
-                    if(segment.substring(i, i + key.length).toLowerCase() === key.toLowerCase()) {
-                        matchedSymbol = key;
-                        matchedLen = key.length;
-                        break;
-                    }
-                }
-                if(!matchedSymbol) {
-                    for (const key of sortedElementKeys) {
-                         if(segment.substring(i, i + key.length).toLowerCase() === key.toLowerCase()) {
-                            matchedSymbol = key;
-                            matchedLen = key.length;
-                            break;
-                         }
-                    }
-                }
-                if (matchedSymbol) {
-                    currentDisplay += matchedSymbol;
-                    i += matchedLen;
-                    let numStr = "";
-                    while (i < segment.length && /\d/.test(segment[i])) {
-                        numStr += segment[i];
-                        i++;
-                    }
-                    const count = numStr ? parseInt(numStr, 10) : 1;
-                    if (count > 1) currentDisplay += count;
-                    currentParsedStructureLevel.push({
-                        type: 'ion',
-                        symbol: matchedSymbol,
-                        count: count
-                    });
-                    const compositionToUse = getCompositionOfSimpleFormula(matchedSymbol);
-                    for(const [element, atomCount] of Object.entries(compositionToUse)) {
-                         const totalAtomCount = atomCount * count * overallMultiplier;
-                         fullComposition[element] = (fullComposition[element] || 0) + totalAtomCount;
-                        if (isMainChemicalPart) {
-                            mainComposition[element] = (mainComposition[element] || 0) + totalAtomCount;
+            }, 300); // 300ms debounce
+
+            inputEl.addEventListener('input', (e) => {
+                clearFormulaFeedback(inputEl, feedbackEl);
+                debouncedSuggest(e.target.value);
+            });
+
+            inputEl.addEventListener('blur', () => {
+                setTimeout(() => { // Small delay to allow click on suggestion to register
+                    suggestionsEl.classList.add('hidden');
+                    const formula = inputEl.value.trim();
+                    if (formula) {
+                        const parsed = parseFormula(formula);
+                        if (!parsed) {
+                            showFeedback(feedbackEl, inputEl, 'Invalid formula syntax or unknown element.', 'error');
+                        } else {
+                            showFeedback(feedbackEl, inputEl, '', 'info'); // Clear error if fixed
                         }
                     }
+                }, 100);
+            });
+
+            inputEl.addEventListener('focus', (e) => {
+                if (e.target.value.length >= 2) {
+                    debouncedSuggest(e.target.value);
+                }
+            });
+        }
+
+        setupFormulaInput(originalFormulaInput, document.getElementById('originalSuggestions'), originalFormulaFeedbackEl, true);
+        setupFormulaInput(replacementFormulaInput, document.getElementById('replacementSuggestions'), replacementFormulaFeedbackEl, false);
+
+
+        // Simple debounce utility function
+        function debounce(func, delay) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
+        }
+
+        // --- Ionic Balance Check (Placeholder - requires more complex parsing) ---
+        checkChargeOriginalBtn.addEventListener('click', () => checkIonicBalance(originalFormulaInput.value, originalFormulaFeedbackEl, checkChargeOriginalBtn));
+        checkChargeReplacementBtn.addEventListener('click', () => checkIonicBalance(replacementFormulaInput.value, replacementFormulaFeedbackEl, checkChargeReplacementBtn));
+
+        function checkIonicBalance(formula, feedbackEl, buttonEl) {
+            clearFormulaFeedback(buttonEl, feedbackEl);
+            const parsed = parseFormula(formula);
+            if (!parsed) {
+                showFeedback(feedbackEl, buttonEl, "Cannot check balance for invalid formula.", 'error');
+                return;
+            }
+
+            // This is a highly simplified check. True ionic balance requires:
+            // 1. Identifying cations and anions correctly (e.g., Na+ and Cl-, not just Na and Cl)
+            // 2. Knowing their valencies/charges.
+            // 3. Summing charges based on stoichiometry.
+
+            let totalCharge = 0;
+            let uncertain = false;
+            let missingChargeInfo = [];
+
+            for (const element in parsed.elements) {
+                let elementCharge = commonIonCharges[element];
+                if (elementCharge) {
+                    // If multiple charges possible (e.g., Fe), cannot determine without context.
+                    if (Array.isArray(elementCharge)) {
+                        uncertain = true;
+                        feedbackEl.classList.remove('success', 'error', 'info');
+                        showFeedback(feedbackEl, buttonEl, `Cannot definitively determine ionic balance for "${formula}" due to variable charge for ${element}.`, 'warning');
+                        buttonEl.classList.remove('hidden');
+                        return; // Exit early if uncertain
+                    }
+                    totalCharge += elementCharge * parsed.elements[element];
                 } else {
-                    if (!unknownElements.includes(`Unrecognized: ${segment[i]}`)) unknownElements.push(`Unrecognized: ${segment[i]}`);
-                    currentDisplay += segment[i]; 
-                    currentParsedStructureLevel.push({type: 'text', value: segment[i]});
-                    i++;
+                    // For elements not in commonIonCharges or complex structures, we can't determine automatically.
+                    // This is where a more advanced parser (e.g., using chemical libraries) would be needed.
+                    missingChargeInfo.push(element);
                 }
             }
-            return { display: currentDisplay };
-        }
-        const mainParsedResult = parseSegmentRecursive(mainPartString, 1, true, parsedStructure);
-        let finalDisplayFormula = mainParsedResult.display;
-        if (hydrateContentString) {
-            const h2oMatch = hydrateContentString.match(/^(\d*)H2O$/i);
-            if (h2oMatch) {
-                const numH2O = h2oMatch[1] ? parseInt(h2oMatch[1], 10) : 1;
-                fullComposition['H'] = (fullComposition['H'] || 0) + numH2O * 2;
-                fullComposition['O'] = (fullComposition['O'] || 0) + numH2O * 1;
-                finalDisplayFormula += hydrateDisplaySuffix;
+
+            if (missingChargeInfo.length > 0) {
+                showFeedback(feedbackEl, buttonEl, `Ionic charge for ${missingChargeInfo.join(', ')} is unknown. Cannot fully check balance.`, 'warning');
+            } else if (totalCharge === 0) {
+                showFeedback(feedbackEl, buttonEl, 'Formula appears ionically balanced.', 'success');
             } else {
-                if (!unknownElements.includes(`Invalid hydrate: ${hydrateContentString}`)) unknownElements.push(`Invalid hydrate: ${hydrateContentString}`);
-                finalDisplayFormula += "·" + hydrateContentString; 
+                showFeedback(feedbackEl, buttonEl, `Formula has a net charge of ${totalCharge}. Not ionically balanced or a polyatomic ion.`, 'warning');
             }
+            buttonEl.classList.remove('hidden'); // Show button after first check
         }
-        let totalWeight = 0;
-        for (const [element, count] of Object.entries(fullComposition)) {
-            if (atomicWeights[element]) {
-                totalWeight += atomicWeights[element] * count;
-            }
-        }
-         if (totalWeight === 0 && originalFormula.trim().length > 0 && unknownElements.length === 0 && Object.keys(fullComposition).length === 0) {
-             if(!unknownElements.includes("Could not parse formula")) unknownElements.push("Could not parse formula");
-        }
-        return {
-            weight: totalWeight,
-            composition: fullComposition,
-            mainComposition: mainComposition,
-            unknownElements: unknownElements,
-            originalFormula: originalFormula,
-            displayFormula: unknownElements.length > 0 ? `${finalDisplayFormula} (errors: ${unknownElements.join(', ')})` : finalDisplayFormula,
-            parsedStructure: parsedStructure 
-        };
-    }
-    
-    function getIonsFromComposition(composition, excludeHO = true) {
-      const ions = [];
-      if (!composition) return ions;
-      for (const element in composition) { 
-        if (composition[element] > 0) { 
-          if (excludeHO && (element === 'H' || element === 'O')) {
-            const otherElementsPresent = Object.keys(composition).some(el => el !== 'H' && el !== 'O' && composition[el] > 0);
-            if (otherElementsPresent) continue;
-          }
-          ions.push(element);
-        }
-      }
-      if (ions.length === 0 && excludeHO) {
-        if (composition['O'] && composition['O'] > 0) ions.push('O');
-        if (composition['H'] && composition['H'] > 0) ions.push('H');
-      }
-      return ions.sort(); 
-    }
 
-    function formatValue(value, type, units = true) {
-        if (isNaN(value)) return "N/A";
-        let formattedValue = "";
-        if (type === 'weight') {
-            if (value >= 1) {
-                formattedValue = `${value.toPrecision(5)}${units ? " g" : ""}`;
-            } else {
-                formattedValue = `${(value * 1000).toPrecision(4)}${units ? " mg" : ""}`;
-            }
-        } else if (type === 'moles') {
-            const valueInMmol = value * 1000;
-            formattedValue = `${valueInMmol.toFixed(2)}${units ? " mmol" : ""}`;
-        } else if (type === 'volume') {
-            if (value >= 1 && units) {
-                formattedValue = `${value.toPrecision(4)} L`;
-            } else if (units) {
-                formattedValue = `${(value * 1000).toPrecision(4)} mL`;
-            } else {
-                formattedValue = value.toPrecision(4);
-            }
-        } else {
-            formattedValue = value.toPrecision(4);
-        }
-        return formattedValue;
-    }
-
-    function convertMolarityToM(value, unit) {
-      if (isNaN(value)) return NaN;
-      switch(unit) {
-        case 'M': return value;
-        case 'mM': return value / 1000;
-        case 'uM': return value / 1000000;
-        default: return value; 
-      }
-    }
-
-    function convertVolumeToL(value, unit) {
-        if (isNaN(value)) return NaN;
-        switch(unit) {
-            case 'L': return value;
-            case 'mL': return value / 1000;
-            default: return value;
-        }
-    }
-    
-    function handleMainAction() {
-        hideError();
-        originalFormulaFeedbackEl.textContent = '';
-        originalFormulaInput.classList.remove('input-error');
-        replacementFormulaFeedbackEl.textContent = '';
-        replacementFormulaInput.classList.remove('input-error');
-        hideOutput();
-        const firstMainBtn = document.querySelector('.main-action-btn');
-        const currentAction = firstMainBtn.dataset.action || 'analyze';
-        if (currentAction === 'analyze') {
-            analyzeCompounds();
-        } else if (currentAction === 'calculate') {
-            calculateReplacement();
-        }
-    }
-
-    function validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn) {
-        const text = inputElement.value.trim();
-        feedbackElement.textContent = ''; 
-        feedbackElement.className = 'formula-feedback-message'; 
-        chargeCheckBtn.classList.add('hidden');
-        if (!text) { 
-            inputElement.classList.remove('input-error');
-            return true; 
-        }
-        const potentialName = text.toLowerCase();
-        if (compoundNameToFormulaMap[potentialName]) {
-            inputElement.classList.remove('input-error');
-            return true;
-        }
-        const isPartialName = Object.keys(compoundNameToFormulaMap).some(key => key.startsWith(potentialName));
-        if (isPartialName) {
-            inputElement.classList.remove('input-error');
-            return true;
-        }
-        const parsed = parseFormula(text);
-        if (parsed.unknownElements.length > 0 || (parsed.weight === 0 && text.length > 0 && !/^(\d*)H2O$/i.test(text.replace(/·/g,'')))) {
-            inputElement.classList.add('input-error');
-            let errorMsg = parsed.unknownElements.join(', ');
-            if (parsed.weight === 0 && text.length > 0 && !parsed.unknownElements.length && !/^(\d*)H2O$/i.test(text.replace(/·/g,''))) {
-                 errorMsg = "Could not determine molecular weight. Check formula.";
-            } else if (!errorMsg && parsed.unknownElements.length > 0) {
-                 errorMsg = parsed.unknownElements.join(', ');
-            } else if (!errorMsg) {
-                 errorMsg = "Invalid formula structure.";
-            }
-            feedbackElement.textContent = `Error: ${errorMsg}`;
-            feedbackElement.classList.add('error');
-            return false;
-        } else {
-            inputElement.classList.remove('input-error');
-            feedbackElement.textContent = ''; 
-            chargeCheckBtn.classList.remove('hidden'); 
-            return true;
-        }
-    }
-    
-    function handleChargeCheck(type) {
-        const inputEl = type === 'original' ? originalFormulaInput : replacementFormulaInput;
-        const feedbackEl = type === 'original' ? originalFormulaFeedbackEl : replacementFormulaFeedbackEl;
-        const formulaStr = inputEl.value.trim();
-        feedbackEl.textContent = ''; 
-        feedbackEl.className = 'formula-feedback-message'; 
-        if (!formulaStr) {
-            feedbackEl.textContent = "Enter a formula to check charge balance.";
-            feedbackEl.classList.add('info');
-            return;
-        }
-        const parsed = parseFormula(formulaStr);
-        if (parsed.unknownElements.length > 0 || parsed.weight === 0) {
-            feedbackEl.textContent = "Formula must be valid before checking charge balance.";
-            feedbackEl.classList.add('error');
-            return;
-        }
-        let totalCharge = 0;
-        let hasAmbiguousCharge = false;
-        let unlistedIons = [];
-        for (const part of parsed.parsedStructure) {
-            let chargeInfo = commonIonCharges[part.symbol];
-            if (chargeInfo) {
-                if (Array.isArray(chargeInfo)) { 
-                    hasAmbiguousCharge = true;
-                } else {
-                    totalCharge += chargeInfo * part.count;
-                }
-            } else {
-                if (part.type !== 'text') unlistedIons.push(part.symbol);
-            }
-        }
-        if (unlistedIons.length > 0) {
-             feedbackEl.innerHTML = `ℹ️ Unrecognized ion(s): ${unlistedIons.join(', ')}.`;
-             feedbackEl.classList.add('info');
-        } else if (hasAmbiguousCharge) {
-            feedbackEl.textContent = `⚠️ Balance ambiguous due to multi-valent ions (e.g., Fe, Cu).`;
-            feedbackEl.classList.add('warning');
-        } else if (totalCharge === 0) {
-            feedbackEl.textContent = "✅ Charges appear balanced (Net Charge: 0).";
-            feedbackEl.classList.add('success');
-        } else {
-            feedbackEl.textContent = `⚠️ Potential charge imbalance. Net Charge: ${totalCharge > 0 ? '+' : ''}${totalCharge}.`;
-            feedbackEl.classList.add('warning');
-        }
-    }
-
-    function analyzeCompounds() {
-        selectedIon = null;
-        ionSelectionPanel.classList.add('hidden');
-        ionButtonsDiv.innerHTML = '';
-        document.querySelectorAll('.main-action-btn').forEach(btn => btn.disabled = true);
-        document.querySelectorAll('.btn-text').forEach(span => span.innerHTML = '<span class="loading"></span> Analyzing...');
-        const isOriginalValid = validateFormulaInput(originalFormulaInput, originalFormulaFeedbackEl, checkChargeOriginalBtn);
-        const originalFormulaStr = originalFormulaInput.value.trim();
-        const replacementFormulaStr = replacementFormulaInput.value.trim();
-        if (!originalFormulaStr) {
-            showError('Please enter a formula for the Original Compound.');
-            resetButtonToAnalyze();
-            return;
-        }
-        if (replacementFormulaStr && !validateFormulaInput(replacementFormulaInput, replacementFormulaFeedbackEl, checkChargeReplacementBtn)) {
-            resetButtonToAnalyze();
-            return;
-        }
-        setTimeout(() => {
-            compoundData.originalParsed = parseFormula(originalFormulaStr);
-            if (compoundData.originalParsed.unknownElements.length > 0 || (compoundData.originalParsed.weight === 0 && originalFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(originalFormulaStr.replace(/·/g, '')))) {
-                originalFormulaFeedbackEl.textContent = `Error: ${compoundData.originalParsed.unknownElements.join(', ') || 'Invalid formula.'}`;
-                originalFormulaFeedbackEl.classList.add('error');
-                resetButtonToAnalyze();
-                return;
-            }
-            if (replacementFormulaStr) {
-                compoundData.replacementParsed = parseFormula(replacementFormulaStr);
-                if (compoundData.replacementParsed.unknownElements.length > 0 || (compoundData.replacementParsed.weight === 0 && replacementFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(replacementFormulaStr.replace(/·/g, '')))) {
-                    replacementFormulaFeedbackEl.textContent = `Error: ${compoundData.replacementParsed.unknownElements.join(', ') || 'Invalid formula.'}`;
-                    replacementFormulaFeedbackEl.classList.add('error');
-                    resetButtonToAnalyze();
-                    return;
-                }
-                const ionsForSelection = getIonsFromComposition(compoundData.originalParsed.mainComposition);
-                if (ionsForSelection.length === 0) {
-                    showError(`No distinct chemical elements found in the main part of the original formula to conserve.`);
-                    resetButtonToAnalyze();
-                    return;
-                }
-                showIonSelection(ionsForSelection);
-                resetButtonToCalculate();
-            } else {
-                compoundData.replacementParsed = null;
-                calculateAndShowOriginalOnly();
-            }
-        }, 200);
-    }
-
-    function showIonSelection(ions) {
-      ionButtonsDiv.innerHTML = ions.map(ion => 
-        `<button class="ion-btn" data-ion="${ion}">${ion}${getIonDisplayCharge(ion)}</button>`
-      ).join('');
-      ionSelectionPanel.classList.remove('hidden');
-      ionSelectionPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    function getIonDisplayCharge(element) { 
-      const charges = { Ca:'²⁺',Mg:'²⁺',Zn:'²⁺',Fe:'²⁺/³⁺',Cu:'⁺/²⁺',Na:'⁺',K:'⁺',Li:'⁺',Al:'³⁺',Cl:'⁻',Br:'⁻',I:'⁻',F:'⁻',S:'²⁻',P:'³⁻',N:'³⁻'};
-      return charges[element] || '';
-    }
-
-    function selectIon(ion, buttonElement) {
-        selectedIon = ion;
-        document.querySelectorAll('.ion-btn').forEach(btn => btn.classList.remove('selected'));
-        buttonElement.classList.add('selected');
-        document.querySelectorAll('.btn-text').forEach(span => span.textContent = 'Calculate Replacement');
-        document.querySelectorAll('.main-action-btn').forEach(btn => {
-            btn.disabled = false;
-            btn.dataset.action = 'calculate';
-        });
-    }
-
-    function calculateAndShowOriginalOnly() {
-        const originalAmountVal = parseFloat(amountInput.value);
-        const originalUnit = unitSelect.value;
-        const molarityVal = parseFloat(molarityInput.value);
-        const molarityUnit = molarityUnitSelect.value;
-        const volumeVal = parseFloat(volumeInput.value);
-        const volumeUnit = volumeUnitSelect.value;
-        const hasOriginalAmount = !isNaN(originalAmountVal);
-        const hasMolarity = !isNaN(molarityVal);
-        const hasVolume = !isNaN(volumeVal);
-        let currentMolarityM = hasMolarity ? convertMolarityToM(molarityVal, molarityUnit) : NaN;
-        let currentVolumeL = hasVolume ? convertVolumeToL(volumeVal, volumeUnit) : NaN;
-        let originalMoles = NaN;
-        if (hasMolarity && hasVolume) {
-            originalMoles = currentMolarityM * currentVolumeL;
-        } else if (hasOriginalAmount) {
-            originalMoles = (originalUnit === 'mol') ? originalAmountVal :
-                (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
-        } else {
-            showError("Insufficient input. Provide Original Amount, OR Molarity & Volume.");
-            resetButtonToAnalyze();
-            return;
-        }
-        if (isNaN(originalMoles) || originalMoles <= 0) {
-            showError("Could not determine a valid positive amount (moles) for the original compound.");
-            resetButtonToAnalyze();
-            return;
-        }
-        let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">📊</span>Calculation Results</h2>`;
-        resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(originalMoles, 'moles')}</div><div class="main-result-label">Calculated Moles of ${compoundData.originalParsed.displayFormula}</div></div>`;
-        resultsHTML += `<h3>Calculation Details</h3><div class="results-grid">`;
-        resultsHTML += createResultItem(compoundData.originalParsed.weight.toFixed(4) + ' g/mol', 'Molar Mass');
-        resultsHTML += `</div>`;
-        outputPanel.innerHTML = resultsHTML;
-        outputPanel.classList.remove('hidden');
-        outputPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        resetButtonToAnalyze();
-    }
-    
-    function calculateReplacement() {
-        const firstMainBtn = document.querySelector('.main-action-btn');
-        if (!selectedIon && firstMainBtn && firstMainBtn.dataset.action === 'calculate') {
-            showError('Please select an ion to conserve before calculating.');
-            return;
-        }
-        document.querySelectorAll('.btn-text').forEach(span => span.innerHTML = '<span class="loading"></span> Calculating...');
-        document.querySelectorAll('.main-action-btn').forEach(btn => btn.disabled = true);
-        setTimeout(() => {
-            if (!compoundData.originalParsed || !compoundData.replacementParsed ||
-                compoundData.originalParsed.unknownElements.length > 0 ||
-                compoundData.replacementParsed.unknownElements.length > 0) {
-                showError("Formulas seem to have changed or are invalid. Please Analyze Compounds again.");
-                resetButtonToAnalyze();
-                return;
-            }
-            const originalAmountVal = parseFloat(amountInput.value);
-            const originalUnit = unitSelect.value;
-            const molarityVal = parseFloat(molarityInput.value);
-            const molarityUnit = molarityUnitSelect.value;
-            const volumeVal = parseFloat(volumeInput.value);
-            const volumeUnit = volumeUnitSelect.value;
-            const hasOriginalAmount = !isNaN(originalAmountVal);
-            const hasMolarity = !isNaN(molarityVal);
-            const hasVolume = !isNaN(volumeVal);
-            let currentMolarityM = hasMolarity ? convertMolarityToM(molarityVal, molarityUnit) : NaN;
-            let currentVolumeL = hasVolume ? convertVolumeToL(volumeVal, volumeUnit) : NaN;
-            let originalMoles = NaN;
-            let calculatedMolarityForDisplay = null;
-            let calculatedVolumeForDisplay = null;
-            if (hasMolarity && hasVolume) {
-                originalMoles = currentMolarityM * currentVolumeL;
-                if (compoundData.originalParsed && compoundData.originalParsed.weight > 0) {
-                    const massInGrams = originalMoles * compoundData.originalParsed.weight;
-                    const formattedMass = formatValue(massInGrams, 'weight', false);
-                    amountInput.value = formattedMass;
-                    unitSelect.value = massInGrams < 1 ? 'mg' : 'g';
-                } else {
-                    amountInput.value = originalMoles.toPrecision(4);
-                    unitSelect.value = 'mol';
-                }
-            } else if (hasOriginalAmount) {
-                originalMoles = (originalUnit === 'mol') ? originalAmountVal :
-                    (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
-                if (isNaN(originalMoles)) {
-                    showError("Original compound weight error for amount conversion.");
-                    resetButtonToCalculate();
-                    return;
-                }
-                if (hasVolume && currentVolumeL > 0) {
-                    const calcM = originalMoles / currentVolumeL;
-                    calculatedMolarityForDisplay = { value: calcM, unit: 'M' };
-                    molarityInput.value = (molarityUnitSelect.value === 'mM' ? calcM * 1000 : (molarityUnitSelect.value === 'uM' ? calcM * 1000000 : calcM)).toPrecision(4);
-                } else if (hasMolarity && currentMolarityM > 0) {
-                    const calcL = originalMoles / currentMolarityM;
-                    calculatedVolumeForDisplay = { value: calcL, unit: 'L' };
-                    volumeInput.value = (volumeUnitSelect.value === 'mL' ? calcL * 1000 : calcL).toPrecision(4);
-                } else if (!hasVolume && !hasMolarity) {
-                    // This is fine, just use the amount.
-                } else {
-                    showError("To auto-calculate Molarity or Volume, ensure the provided value is > 0.");
-                    resetButtonToCalculate();
-                    return;
-                }
-            } else {
-                showError("Insufficient input. Provide Original Amount, OR Molarity & Volume.");
-                resetButtonToAnalyze();
-                return;
-            }
-            if (isNaN(originalMoles) || originalMoles <= 0) {
-                showError("Could not determine a valid positive amount (moles) for the original compound.");
-                resetButtonToAnalyze();
-                return;
-            }
-            if (!selectedIon) {
-                showError('Please select an ion/element from the original compound to conserve.');
-                resetButtonToCalculate();
-                return;
-            }
-            if (!compoundData.replacementParsed.mainComposition[selectedIon] || compoundData.replacementParsed.mainComposition[selectedIon] === 0) {
-                showError(`The selected element/ion (${selectedIon}) is not found (or has zero stoichiometry) in the main chemical entity of the replacement compound (${compoundData.replacementParsed.displayFormula}). Cannot conserve.`);
-                resetButtonToCalculate();
-                return;
-            }
-            const originalStoichiometry = compoundData.originalParsed.mainComposition[selectedIon];
-            const replacementStoichiometry = compoundData.replacementParsed.mainComposition[selectedIon];
-            if (!originalStoichiometry || originalStoichiometry === 0) {
-                showError(`Selected ion (${selectedIon}) has zero stoichiometry in the main part of the original compound. This shouldn't happen if selected from the list.`);
-                resetButtonToCalculate();
-                return;
-            }
-            const molesOfSelectedIon = originalMoles * originalStoichiometry;
-            const molesOfReplacementCompound = molesOfSelectedIon / replacementStoichiometry;
-            const weightOfReplacementGrams = molesOfReplacementCompound * compoundData.replacementParsed.weight;
-            let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">📊</span>Calculation Results</h2>`;
-            resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(weightOfReplacementGrams, 'weight')}</div><div class="main-result-label">Required Weight of ${compoundData.replacementParsed.displayFormula}</div></div>`;
-            resultsHTML += `<h3>Calculation Details</h3><div class="results-grid">`;
-            resultsHTML += createResultItem(formatValue(originalMoles, 'moles'), `Moles of ${compoundData.originalParsed.displayFormula}`);
-            resultsHTML += createResultItem(formatValue(molesOfReplacementCompound, 'moles'), `Moles of ${compoundData.replacementParsed.displayFormula}`);
-            resultsHTML += createResultItem(`${selectedIon}${getIonDisplayCharge(selectedIon)}`, 'Conserved Element/Ion');
-            if (calculatedMolarityForDisplay) {
-                resultsHTML += createResultItem(`${formatValue(calculatedMolarityForDisplay.value, 'moles')} / L`, 'Calculated Molarity');
-            }
-            if (calculatedVolumeForDisplay) {
-                resultsHTML += createResultItem(formatValue(calculatedVolumeForDisplay.value, 'volume'), 'Calculated Volume');
-            }
-            resultsHTML += `</div><button id="copyResultsBtn" class="secondary-btn">Copy Summary</button>`;
-            outputPanel.innerHTML = resultsHTML;
-            outputPanel.classList.remove('hidden');
-            outputPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            document.getElementById('copyResultsBtn').addEventListener('click', () => copyResultsSummary(weightOfReplacementGrams, molesOfReplacementCompound));
-            resetButtonToAnalyze();
-        }, 200);
-    }
-
-
-function handleCalculateDilution() {
-    dilutionCalcError.classList.add('hidden');
-    dilutionCalcError.textContent = '';
-    
-    const inputs = [stockConc.value, finalConc.value, finalVolume.value];
-    if (inputs.some(val => val === '')) {
-        dilutionPrimaryResult.textContent = '---';
-        dilutionSecondaryResult.classList.add('hidden');
-        return; // Do nothing if any box is empty
-    }
-    
-    const C1_val = parseFloat(stockConc.value);
-    const C2_val = parseFloat(finalConc.value);
-    const V2_val = parseFloat(finalVolume.value);
-
-    if ([C1_val, C2_val, V2_val].some(isNaN)) {
-        dilutionPrimaryResult.textContent = '---';
-        dilutionSecondaryResult.classList.add('hidden');
-        return;
-    }
-
-    const C1_unit = stockConcUnit.value;
-    const C2_unit = finalConcUnit.value;
-    const V2_unit = finalVolumeUnit.value;
-
-    const isMolar = ['M', 'mM', 'uM'].includes(C1_unit);
-    const isMass = ['mg/mL', 'ug/mL', 'ng/mL'].includes(C1_unit);
-
-    // Ensure units are of the same type (both molar or both mass)
-    if ((isMolar && !['M', 'mM', 'uM'].includes(C2_unit)) || (isMass && !['mg/mL', 'ug/mL', 'ng/mL'].includes(C2_unit))) {
-        dilutionCalcError.textContent = "Error: Stock and Final units must both be molar (M, mM) or mass (mg/mL, µg/mL).";
-        dilutionCalcError.classList.remove('hidden');
-        dilutionPrimaryResult.textContent = 'Error';
-        return;
-    }
-
-    // --- Helper function to convert all mass-based units to g/L ---
-    const convertMassToGL = (val, unit) => {
-        switch(unit) {
-            case 'mg/mL': return val;       // 1 mg/mL = 1 g/L
-            case 'ug/mL': return val / 1000;  // 1 µg/mL = 1 mg/L = 0.001 g/L
-            case 'ng/mL': return val / 1000000; // 1 ng/mL = 1 µg/L = 1e-6 g/L
-            default: return NaN;
-        }
-    };
-
-    let C1_standard, C2_standard;
-
-    if (isMolar) {
-        C1_standard = convertMolarityToM(C1_val, C1_unit);
-        C2_standard = convertMolarityToM(C2_val, C2_unit);
-    } else { // isMass
-        C1_standard = convertMassToGL(C1_val, C1_unit);
-        C2_standard = convertMassToGL(C2_val, C2_unit);
-    }
-    
-    const V2_liters = convertVolumeToL(V2_val, V2_unit);
-
-    if (C1_standard < C2_standard && C2_standard > 0) { 
-      dilutionCalcError.textContent = "Error: Stock concentration (C₁) must be >= final concentration (C₂).";
-      dilutionCalcError.classList.remove('hidden');
-      dilutionPrimaryResult.textContent = 'Error';
-      dilutionSecondaryResult.classList.add('hidden');
-      return;
-    }
-    
-    let V1_liters = (C1_standard === 0) ? 0 : (C2_standard * V2_liters) / C1_standard;
-
-    // Update the main result display
-    const finalUnit = finalVolumeUnit.value;
-    let V1_display_val;
-    if (finalUnit === 'L') V1_display_val = V1_liters;
-    else if (finalUnit === 'mL') V1_display_val = V1_liters * 1000;
-    else V1_display_val = V1_liters * 1000000; // uL
-    dilutionPrimaryResult.textContent = `${V1_display_val.toPrecision(4)} ${finalUnit}`;
-
-    // Update the secondary result display
-    const volume_diluent_liters = V2_liters - V1_liters;
-    const diluent_display_val = (finalUnit === 'L') ? volume_diluent_liters : 
-                                (finalUnit === 'mL') ? volume_diluent_liters * 1000 : 
-                                                       volume_diluent_liters * 1000000;
-    dilutionSecondaryResult.innerHTML = `Add <strong>${diluent_display_val.toPrecision(4)} ${finalUnit}</strong> of diluent to reach the final volume.`;
-    dilutionSecondaryResult.classList.remove('hidden');
-}
-    
-    function copyResultsSummary(weightGrams, moles) {
-        const summary = `
-ChemFormulator Calculation Summary
---------------------------------
-Original Compound: ${compoundData.originalParsed.displayFormula}
-Replacement Compound: ${compoundData.replacementParsed.displayFormula}
-Conserved Element/Ion: ${selectedIon}
---------------------------------
-Required Weight: ${formatValue(weightGrams, 'weight')}
-Required Moles: ${formatValue(moles, 'moles')}
-        `.trim().replace(/^\s+/gm, '');
-        const textarea = document.createElement('textarea');
-        textarea.value = summary;
-        textarea.style.position = 'fixed'; 
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        let success = false;
-        try {
-            success = document.execCommand('copy');
-        } catch (err) {
-            console.error('Fallback: Oops, unable to copy', err);
-        }
-        document.body.removeChild(textarea);
-        const copyBtn = document.getElementById('copyResultsBtn');
-        if (copyBtn) {
-            if (success) {
-                copyBtn.textContent = 'Copied!';
-            } else {
-                copyBtn.textContent = 'Copy Failed';
-            }
-            setTimeout(() => { copyBtn.textContent = 'Copy Summary'; }, 2000);
-        }
-    }
-
-    function clearAll() {
-        originalFormulaInput.value = '';
-        replacementFormulaInput.value = '';
-        amountInput.value = '';
-        molarityInput.value = '';
-        volumeInput.value = '';
-        unitSelect.value = 'mg';
-        molarityUnitSelect.value = 'mM';
-        volumeUnitSelect.value = 'mL';
-        originalFormulaInput.classList.remove('input-error');
-        originalFormulaFeedbackEl.textContent = '';
-        originalFormulaFeedbackEl.className = 'formula-feedback-message';
+        // Initially hide charge check buttons
         checkChargeOriginalBtn.classList.add('hidden');
-        replacementFormulaInput.classList.remove('input-error');
-        replacementFormulaFeedbackEl.textContent = '';
-        replacementFormulaFeedbackEl.className = 'formula-feedback-message';
         checkChargeReplacementBtn.classList.add('hidden');
-        stockConcInput.value = '';
-        finalConcInput.value = '';
-        finalVolumeInput.value = '';
-        stockConcUnitSelect.value = 'mM';
-        finalConcUnitSelect.value = 'mM';
-        finalVolumeUnitSelect.value = 'mL';
-        dilutionCalcErrorEl.textContent = '';
-        dilutionResultOutputEl.classList.add('hidden');
-        dilutionResultOutputEl.innerHTML = '';
-        compoundData = { originalParsed: null, replacementParsed: null };
-        hideError();
-        hideOutput();
-        resetButtonToAnalyze();
-    }
+        originalFormulaInput.addEventListener('input', () => checkChargeOriginalBtn.classList.add('hidden'));
+        replacementFormulaInput.addEventListener('input', () => checkChargeReplacementBtn.classList.add('hidden'));
 
-    function createResultItem(value, label) {
-        return `
-            <div class="result-item">
-              <div class="result-value">${value}</div>
-              <div class="result-label">${label}</div>
-            </div>`;
-    }
 
-    function showError(message) {
-      errorDisplayDiv.innerHTML = message;
-      errorDisplayDiv.classList.remove('hidden');
-      errorDisplayDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function hideError() {
-      errorDisplayDiv.classList.add('hidden');
-      errorDisplayDiv.innerHTML = '';
-    }
-
-    function hideOutput() {
-      outputPanel.classList.add('hidden');
-      outputPanel.innerHTML = '';
-      dilutionResultOutputEl.classList.add('hidden');
-      dilutionResultOutputEl.innerHTML = '';
-    }
-
-    function resetButtonToAnalyze() {
-        document.querySelectorAll('.btn-text').forEach(span => {
-            span.textContent = 'Analyze Compounds';
-        });
-        document.querySelectorAll('.main-action-btn').forEach(btn => {
-            btn.disabled = false;
-            btn.dataset.action = 'analyze';
-        });
-        if (typeof ionSelectionPanel !== 'undefined') {
-            ionSelectionPanel.classList.add('hidden');
-        }
-        if (typeof selectedIon !== 'undefined') {
-            selectedIon = null;
-        }
-    }
-
-    function resetButtonToCalculate() {
-        document.querySelectorAll('.main-action-btn').forEach(btn => {
-            if (selectedIon && ionButtonsDiv.children.length > 0) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-            }
-            btn.dataset.action = 'calculate';
-        });
-        document.querySelectorAll('.btn-text').forEach(span => {
-            if (ionButtonsDiv.children.length > 0 && !selectedIon) {
-                span.textContent = 'Select Ion, then Calculate';
-            } else {
-                span.textContent = 'Calculate Replacement';
-            }
-        });
-    }
-
-  </script>
+    </script>
 </body>
 </html>
