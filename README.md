@@ -57,11 +57,21 @@ ChemCalc is a standalone HTML application. You only need a modern web browser.
     ```bash
     git clone https://github.com/dotansha/ChemCalc.git
     ```
-2. **Open `ChemCalc_v1_0.html` in your browser:**
+2. **Open `index.html` in your browser:**
     - Double-click the file, or
     - Open it with your browser of choice
 
+`ChemCalc_v1_0.html` is kept as a legacy snapshot.
+
 No installation or dependencies required.
+
+### Smoke Tests
+
+Run the parser/charge and suggestion consistency smoke tests:
+
+```bash
+node tests/chemcalc.smoke.test.js
+```
 
 ---
 

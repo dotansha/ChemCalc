@@ -4,9 +4,10 @@
   <meta name="description" content="A simple and powerful chemistry calculator to analyze chemical compounds, calculate molar mass, and determine mass percentages. Perfect for students and professionals.">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src https:; connect-src 'self' https:;">
   <meta name="google-adsense-account" content="ca-pub-8948405948087873">
   <meta name="msvalidate.01" content="848A490F5967273EFF4F57D7327BB1F5" />
-  <title>ChemFormulator: The Easy Chemistry Calculator</title>
+  <title>ChemCalc: The Easy Chemistry Calculator</title>
   <style>
     /* General Styles */
     * {
@@ -262,6 +263,10 @@
       transition: background-color 0.2s;
       border-bottom: 1px solid #f7f7f7;
       font-size: 0.9rem; 
+      width: 100%;
+      text-align: left;
+      background: white;
+      border: none;
     }
     .suggestion-item:hover { background-color: #f8f9ff; }
     .suggestion-item:last-child { border-bottom: none; }
@@ -557,7 +562,7 @@
   <div class="background-overlay"></div>
   
   <header>
-    <h1>ChemFormulator</h1>
+    <h1>ChemCalc</h1>
     <p>Enhanced Reagent Converter with Ion Conservation & Solution Calculations</p>
   </header>
 
@@ -643,12 +648,6 @@
           💡 Provide Original Amount, <strong>OR</strong> Molarity & Volume. If Original Amount is given with Molarity <strong>OR</strong> Volume, the missing parameter will be calculated.
         </div>
       </div>
-      <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-    <button class="calculate-btn main-action-btn" style="flex: 1;">
-        <span class="btn-text">Analyze Compounds</span>
-    </button>
-    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
-      </div>
       <div id="dilutionCalculatorSection" class="calculator-section">
         <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
         <div class="flex-inputs">
@@ -694,14 +693,6 @@
          <span id="dilutionCalcError" class="dilution-error-message"></span>
       </div>
 
-
-      <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-    <button class="calculate-btn main-action-btn" style="flex: 1;">
-        <span class="btn-text">Analyze Compounds</span>
-    </button>
-    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
-      </div>
-
       <div id="ionSelectionPanel" class="ion-selection-panel hidden">
         <h3><span class="molecule-icon" style="font-size:14px;">⚛️</span>Conserve Ion Concentration</h3>
         <p>Select the element/ion from the original compound's main chemical entity whose molar quantity you wish to conserve:</p>
@@ -717,15 +708,28 @@
 
   <footer>
     <div class="footer-content">
-        <p>ChemFormulator is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
+        <p>ChemCalc is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
         
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
      crossorigin="anonymous"></script>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-8948405948087873"
+             data-ad-slot="0000000000"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-8948405948087873",
+            enable_page_level_ads: true
+          });
+        </script>
 
         <div class="footer-links">
-            <a href="mailto:dotansh@bgu.ac.il?subject=ChemFormulator%20Feedback">Report an Issue</a>
+            <a href="mailto:dotansh@bgu.ac.il?subject=ChemCalc%20Feedback">Report an Issue</a>
             <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-            <span>ChemFormulator v1.5</span>
+            <span>ChemCalc v1.5</span>
         </div>
     </div>
   </footer>
@@ -765,7 +769,7 @@
         'ferric citrate': 'FeC₆H₅O₇',
         'glycerol': 'C₃H₈O₃',
         'glycine': 'C₂H₅NO₂',
-        'guanidine hydrochloride': 'CH₅N₃·HCl',
+        'guanidine hydrochloride': 'CH₅N₃HCl',
         'hydrochloric acid': 'HCl',
         'iodine': 'I₂',
         'iptg': 'C₉H₁₈O₅S',
@@ -795,12 +799,14 @@
         'sodium azide': 'NaN₃',
         'sodium bicarbonate': 'NaHCO₃',
         'sodium chloride': 'NaCl',
+        'sodium dihydrogen phosphate': 'NaH₂PO₄',
         'sodium dihydrogen phospate': 'NaH₂PO₄',
         'sodium hydrogen phosphate': 'Na₂HPO₄',
         'sodium hydroxide': 'NaOH',
         'sodium iodide': 'NaI',
         'sodium molybdate': 'Na₂MoO₄',
         'sodium periodate': 'NaIO₄',
+        'sodium phosphate dibasic anhydrous': 'Na₂HPO₄',
         'sodium phosphate dibasic anhydrose': 'Na₂HPO₄',
         'sodium phosphate monobasic anhydrous': 'NaH₂PO₄',
         'sodium sulfate anhydrous': 'Na₂SO₄',
@@ -810,8 +816,12 @@
         'zinc sulfate heptahydrate': 'ZnSO₄·7H₂O'
     };
    
-    const commonIonCharges = { 'H':1,'H3O':1,'Li':1,'Na':1,'K':1,'Rb':1,'Cs':1,'Fr':1,'Ag':1,'Cu':[1,2],'NH4':1,'Be':2,'Mg':2,'Ca':2,'Sr':2,'Ba':2,'Ra':2,'Zn':2,'Cd':2,'Mn':[2,3,4,6,7],'Fe':[2,3],'Co':[2,3],'Ni':2,'Pb':[2,4],'Sn':[2,4],'Hg':[1,2],'Hg2':2,'Al':3,'Cr':[2,3,6],'Bi':[3,5],'Sc':3,'Y':3,'La':3,'Au':[1,3],'Ti':[3,4],'F':-1,'Cl':-1,'Br':-1,'I':-1,'At':-1,'OH':-1,'CN':-1,'SCN':-1,'NO3':-1,'NO2':-1,'MnO4':-1,'ClO':-1,'ClO2':-1,'ClO3':-1,'ClO4':-1,'HCO3':-1,'HSO4':-1,'HSO3':-1,'HS':-1,'H2PO4':-1,'CH3COO':-1,'C2H3O3':-1,'C6H5COO':-1,'CNO':-1,'IO3':-1,'IO4':-1,'N3':-1,'OCN':-1,'O':-2,'O2':-2,'S':-2,'SO4':-2,'SO3':-2,'CO3':-2,'CrO4':-2,'Cr2O7':-2,'S2O3':-2,'HPO4':-2,'C2O4':-2,'Te':-2,'Se':-2,'MoO4':-2,'N':-3,'P':-3,'As':-3,'PO4':-3,'AsO4':-3,'BO3':-3,'ASO3':-3,'BrO3':-3,'C6H5O7':-3,'SiO4':-4,'VO2':1,'UO2':2};
-    const commonCompounds = ['Acetic acid','AlK(SO₄)₂','Al₂O₃','Ammonium Acetate','Ammonium Chloride','Ammonium dihydrogen phosphate','Ammonium Molybdate Tetrahydrate','Ammonium Phosphate Dibasic','Ammonium Sulfate','(NH₄)₂SO₄','Bicine','Boric Acid','Calcium chloride anhydrous','Calcium chloride dihydrate','Calcium nitrate tetrahydrate','Calcium Sulfate anhydrous','Calcium Sulfate dihydrate','CaCO₃','CaSO₄','Charcoal','CH₃COOH','Citric Acid - anhydrous','Citric acid monohydrate','Cobalt(II) chloride','Copper(II) chloride','Copper(II) sulfate pentahydrate','Copper(II) sulfate anhydrous','D-Glucose monohydrate','D-sorbitol','Diatomaceous Earth','EDTA','Ethanolamine','Ethylene glycol','Ferric Ammonium Citrate','Ferric citrate','Glycerol','Glycine','Guanidine hydrochloride','H₂O','H₂SO₄','H₃PO₄','HCl','Hydrochloric acid','Iodine','IPTG','Iron(II) Sulfate Heptahydrate','Iron(III) citrate','K₂Cr₂O₇','Kanamycin sulfate','KCl','L - Arginine','L - Histidine','L - Lysine','L - Methionine','L-2-aminobutyric acid','Lactose monohydrate','LiCl','Lithium chloride','Magnesium chloride anhydrous','Magnesium chloride hexahydrate','Magnesium Sulfate Heptahydrate','MgSO₄','Malt Extract','Manganese(II) chloride tetrahydrate','Manganese(II) Sulfate monohydrate','Manganese sulphate','NaCl','Na₂CO₃','Na₂HPO₄','Na₂SO₄','NaHCO₃','NaH₂PO₄','NaHSO₄','NaOH','Peptone','Phosphoric Acid','Potassium chloride','Potassium citrate tribasic monohydrate','Potassium Hydroxide pellets','Potassium phosphate monobasic','Potassium Sulfate','Propylene Glycol','Sodium acetate trihydrate','Sodium azide','Sodium bicarbonate','Sodium Chloride','Sodium dihydrogen phospate','Sodium hydrogen phosphate','Sodium hydroxide','Sodium iodide','Sodium molybdate','Sodium periodate','Sodium phosphate dibasic anhydrose','Sodium phosphate monobasic anhydrous','Sodium sulfate anhydrous','Sulfuric acid','Zinc acetate','Zinc Chloride','Zinc Sulfate Heptahydrate'].sort();
+    const commonIonCharges = { 'H':1,'H3O':1,'Li':1,'Na':1,'K':1,'Rb':1,'Cs':1,'Fr':1,'Ag':1,'Cu':[1,2],'NH4':1,'Be':2,'Mg':2,'Ca':2,'Sr':2,'Ba':2,'Ra':2,'Zn':2,'Cd':2,'Mn':[2,3,4,6,7],'Fe':[2,3],'Co':[2,3],'Ni':2,'Pb':[2,4],'Sn':[2,4],'Hg':[1,2],'Hg2':2,'Al':3,'Cr':[2,3,6],'Bi':[3,5],'Sc':3,'Y':3,'La':3,'Au':[1,3],'Ti':[3,4],'F':-1,'Cl':-1,'Br':-1,'I':-1,'At':-1,'OH':-1,'CN':-1,'SCN':-1,'NO3':-1,'NO2':-1,'MnO4':-1,'ClO':-1,'ClO2':-1,'ClO3':-1,'ClO4':-1,'HCO3':-1,'HSO4':-1,'HSO3':-1,'HS':-1,'H2PO4':-1,'CH3COO':-1,'C2H3O2':-1,'C6H5COO':-1,'CNO':-1,'IO3':-1,'IO4':-1,'N3':-1,'OCN':-1,'O':-2,'O2':-2,'S':-2,'SO4':-2,'SO3':-2,'CO3':-2,'CrO4':-2,'Cr2O7':-2,'S2O3':-2,'HPO4':-2,'C2O4':-2,'Te':-2,'Se':-2,'MoO4':-2,'N':-3,'P':-3,'As':-3,'PO4':-3,'AsO4':-3,'AsO3':-3,'ASO3':-3,'BO3':-3,'BrO3':-1,'C6H5O7':-3,'SiO4':-4,'VO2':1,'UO2':2};
+    const toDisplayName = (compoundName) => compoundName.replace(/\b\w/g, (char) => char.toUpperCase());
+    const commonCompounds = Array.from(new Set([
+        ...Object.keys(compoundNameToFormulaMap).map(toDisplayName),
+        ...Object.values(compoundNameToFormulaMap)
+    ])).sort((a, b) => a.localeCompare(b));
     // Global State
     let selectedIon = null;
     let compoundData = { originalParsed: null, replacementParsed: null }; 
@@ -937,11 +947,20 @@
         compound.toLowerCase().includes(value.toLowerCase())
       ).slice(0, 8);
       if (suggestions.length > 0) {
-        suggestionsDiv.innerHTML = suggestions.map(suggestion => 
-          `<div class="suggestion-item" onclick="selectSuggestion('${inputId}', '${suggestion}', '${suggestionsId}')">${suggestion}</div>`
-        ).join('');
+        suggestionsDiv.textContent = '';
+        const fragment = document.createDocumentFragment();
+        suggestions.forEach((suggestion) => {
+          const suggestionItem = document.createElement('button');
+          suggestionItem.type = 'button';
+          suggestionItem.className = 'suggestion-item';
+          suggestionItem.textContent = suggestion;
+          suggestionItem.addEventListener('click', () => selectSuggestion(inputId, suggestion, suggestionsId));
+          fragment.appendChild(suggestionItem);
+        });
+        suggestionsDiv.appendChild(fragment);
         suggestionsDiv.classList.remove('hidden');
       } else {
+        suggestionsDiv.textContent = '';
         suggestionsDiv.classList.add('hidden');
       }
     }
@@ -964,6 +983,15 @@
             normalized += subscriptMap[char] || superscriptMap[char] || char;
         }
         return normalized;
+    }
+
+    function escapeHTML(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
     
     // --- CORE LOGIC ---
@@ -1290,7 +1318,7 @@
             }
         }
         if (unlistedIons.length > 0) {
-             feedbackEl.innerHTML = `ℹ️ Unrecognized ion(s): ${unlistedIons.join(', ')}.`;
+             feedbackEl.textContent = `ℹ️ Unrecognized ion(s): ${unlistedIons.join(', ')}.`;
              feedbackEl.classList.add('info');
         } else if (hasAmbiguousCharge) {
             feedbackEl.textContent = `⚠️ Balance ambiguous due to multi-valent ions (e.g., Fe, Cu).`;
@@ -1406,7 +1434,7 @@
             return;
         }
         let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">📊</span>Calculation Results</h2>`;
-        resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(originalMoles, 'moles')}</div><div class="main-result-label">Calculated Moles of ${compoundData.originalParsed.displayFormula}</div></div>`;
+        resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(originalMoles, 'moles')}</div><div class="main-result-label">Calculated Moles of ${escapeHTML(compoundData.originalParsed.displayFormula)}</div></div>`;
         resultsHTML += `<h3>Calculation Details</h3><div class="results-grid">`;
         resultsHTML += createResultItem(compoundData.originalParsed.weight.toFixed(4) + ' g/mol', 'Molar Mass');
         resultsHTML += `</div>`;
@@ -1511,7 +1539,7 @@
             const molesOfReplacementCompound = molesOfSelectedIon / replacementStoichiometry;
             const weightOfReplacementGrams = molesOfReplacementCompound * compoundData.replacementParsed.weight;
             let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">📊</span>Calculation Results</h2>`;
-            resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(weightOfReplacementGrams, 'weight')}</div><div class="main-result-label">Required Weight of ${compoundData.replacementParsed.displayFormula}</div></div>`;
+            resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(weightOfReplacementGrams, 'weight')}</div><div class="main-result-label">Required Weight of ${escapeHTML(compoundData.replacementParsed.displayFormula)}</div></div>`;
             resultsHTML += `<h3>Calculation Details</h3><div class="results-grid">`;
             resultsHTML += createResultItem(formatValue(originalMoles, 'moles'), `Moles of ${compoundData.originalParsed.displayFormula}`);
             resultsHTML += createResultItem(formatValue(molesOfReplacementCompound, 'moles'), `Moles of ${compoundData.replacementParsed.displayFormula}`);
@@ -1587,7 +1615,7 @@
     
     function copyResultsSummary(weightGrams, moles) {
         const summary = `
-ChemFormulator Calculation Summary
+	ChemCalc Calculation Summary
 --------------------------------
 Original Compound: ${compoundData.originalParsed.displayFormula}
 Replacement Compound: ${compoundData.replacementParsed.displayFormula}
@@ -1655,20 +1683,20 @@ Required Moles: ${formatValue(moles, 'moles')}
     function createResultItem(value, label) {
         return `
             <div class="result-item">
-              <div class="result-value">${value}</div>
-              <div class="result-label">${label}</div>
+              <div class="result-value">${escapeHTML(value)}</div>
+              <div class="result-label">${escapeHTML(label)}</div>
             </div>`;
     }
 
     function showError(message) {
-      errorDisplayDiv.innerHTML = message;
+      errorDisplayDiv.textContent = message;
       errorDisplayDiv.classList.remove('hidden');
       errorDisplayDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function hideError() {
       errorDisplayDiv.classList.add('hidden');
-      errorDisplayDiv.innerHTML = '';
+      errorDisplayDiv.textContent = '';
     }
 
     function hideOutput() {
