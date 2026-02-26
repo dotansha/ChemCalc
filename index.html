@@ -1,1127 +1,1774 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="description" content="A simple and powerful chemistry calculator to analyze chemical compounds, calculate molar mass, and determine mass percentages. Perfect for students and professionals.">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-adsense-account" content="ca-pub-8948405948087873">
-    <meta name="msvalidate.01" content="848A490F5967273EFF4F57D7327BB1F5" />
-    <title>ChemFormulator: The Easy Chemistry Calculator</title>
-    <style>
-        /* General Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta name="description" content="A simple and powerful chemistry calculator to analyze chemical compounds, calculate molar mass, and determine mass percentages. Perfect for students and professionals.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src https:; connect-src 'self' https:;">
+  <meta name="google-adsense-account" content="ca-pub-8948405948087873">
+  <meta name="msvalidate.01" content="848A490F5967273EFF4F57D7327BB1F5" />
+  <title>ChemCalc: The Easy Chemistry Calculator</title>
+  <link rel="canonical" href="https://dotansha.github.io/ChemCalc/" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ChemCalc: The Easy Chemistry Calculator" />
+  <meta property="og:description" content="Calculate molar mass, solution prep, ion-conserving replacements, and dilutions with ChemCalc." />
+  <meta property="og:url" content="https://dotansha.github.io/ChemCalc/" />
+  <meta property="og:site_name" content="ChemCalc" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="ChemCalc: The Easy Chemistry Calculator" />
+  <meta name="twitter:description" content="Calculate molar mass, solution prep, ion-conserving replacements, and dilutions with ChemCalc." />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ChemCalc",
+      "url": "https://dotansha.github.io/ChemCalc/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any",
+      "description": "A chemistry calculator for molar mass, dilution, and ion-conserving replacement calculations.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
+  <style>
+    /* General Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px; 
+    }
 
-        .background-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            pointer-events: none;
-            z-index: -1;
-        }
+    .background-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      pointer-events: none;
+      z-index: -1; 
+    }
 
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem 0;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 1200px;
-            border-radius: 0 0 15px 15px;
-            margin-bottom: 1.5rem;
-        }
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem 0; 
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1200px; 
+      border-radius: 0 0 15px 15px; 
+      margin-bottom: 1.5rem; 
+    }
 
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.3rem;
-        }
+    header h1 {
+      font-size: 2.5rem; 
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+    }
 
-        header p {
-            color: #666;
-            font-size: 1rem;
-            font-weight: 300;
-        }
+    header p {
+      color: #666;
+      font-size: 1rem; 
+      font-weight: 300;
+    }
 
-        .container {
-            max-width: 1200px;
-            width: 95%;
-            margin: 0 auto 2rem auto;
-            padding: 0 1rem;
-            position: relative;
-            z-index: 5;
-        }
+    .container {
+      max-width: 1200px;
+      width: 95%; 
+      margin: 0 auto 2rem auto; 
+      padding: 0 1rem; 
+      position: relative;
+      z-index: 5;
+    }
 
-        .main-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
+    .main-panel {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem; 
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); 
+      margin-bottom: 2rem;
+    }
 
-        .flex-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
+    .flex-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr; 
+      gap: 2rem; 
+      margin-bottom: 2rem;
+    }
 
-        @media (max-width: 900px) {
-            .flex-row {
-                grid-template-columns: 1fr;
-            }
-        }
+    @media (max-width: 900px) { 
+      .flex-row {
+        grid-template-columns: 1fr; 
+      }
+    }
 
-        .compound-section, .calculator-section {
-            background: linear-gradient(135deg, #f8f9ff, #e8ecff);
-            border-radius: 15px;
-            padding: 1.5rem;
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            transition: all 0.3s ease;
-        }
-        .calculator-section {
-            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
-            border-color: rgba(59, 130, 246, 0.15);
-            margin-bottom: 1.5rem;
-        }
+    .compound-section, .calculator-section { 
+      background: linear-gradient(135deg, #f8f9ff, #e8ecff);
+      border-radius: 15px;
+      padding: 1.5rem; 
+      border: 1px solid rgba(102, 126, 234, 0.1); 
+      transition: all 0.3s ease;
+    }
+    .calculator-section { 
+         background: linear-gradient(135deg, #e0f2fe, #f0f9ff); 
+         border-color: rgba(59, 130, 246, 0.15);
+         margin-bottom: 1.5rem;
+    }
 
 
-        .compound-section:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
-        }
+    .compound-section:hover {
+      transform: translateY(-3px); 
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15); 
+    }
 
-        .compound-section h2, .calculator-section h3 {
-            color: #4a5568;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .calculator-section h3 {
-            color: #1e3a8a;
-        }
+    .compound-section h2, .calculator-section h3 { 
+      color: #4a5568;
+      margin-bottom: 1rem; 
+      font-size: 1.3rem; 
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .calculator-section h3 { 
+        color: #1e3a8a; 
+    }
 
-        .molecule-icon {
-            width: 22px;
-            height: 22px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 11px;
-        }
+    .molecule-icon {
+      width: 22px; 
+      height: 22px; 
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 11px; 
+    }
 
-        label {
-            display: block;
-            margin-bottom: 0.4rem;
-            font-weight: 600;
-            color: #4a5568;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    label {
+      display: block;
+      margin-bottom: 0.4rem; 
+      font-weight: 600;
+      color: #4a5568;
+      font-size: 0.85rem; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-        input, select {
-            width: 100%;
-            padding: 0.9rem;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            background: white;
-            line-height: 1.4;
-        }
+    input, select {
+        width: 100%;
+        padding: 0.9rem;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+        line-height: 1.4;
+    }
+    
+    .formula-input-group {
+        margin-bottom: 0.8rem;
+    }
 
-        .formula-input-group {
-            margin-bottom: 0.8rem;
-        }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1); 
+    }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
-        }
+    input.input-error {
+        border-color: #e53e3e !important; 
+        box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2) !important;
+    }
+    .formula-feedback-message { 
+        font-size: 0.75rem;
+        margin-top: -0.6rem;
+        margin-bottom: 0.8rem;
+        display: block; 
+        min-height: 1em; 
+    }
+    .formula-feedback-message.error { color: #c53030; }
+    .formula-feedback-message.success { color: #15803d; }
+    .formula-feedback-message.warning { color: #ca8a04; }
+    .formula-feedback-message.info { color: #4b5563; }
+    
+    .charge-check-btn {
+        background-color: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.3rem 0.8rem;
+        margin-left: 0.5rem;
+        vertical-align: middle;
+    }
+    .charge-check-btn:hover {
+        background-color: #e2e8f0;
+        border-color: #cbd5e1;
+    }
 
-        input.input-error {
-            border-color: #e53e3e !important;
-            box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2) !important;
-        }
-        .formula-feedback-message {
-            font-size: 0.75rem;
-            margin-top: -0.6rem;
-            margin-bottom: 0.8rem;
-            display: block;
-            min-height: 1em;
-        }
-        .formula-feedback-message.error { color: #c53030; }
-        .formula-feedback-message.success { color: #15803d; }
-        .formula-feedback-message.warning { color: #ca8a04; }
-        .formula-feedback-message.info { color: #4b5563; }
+    .formula-input-container {
+      position: relative;
+    }
 
-        .charge-check-btn {
-            background-color: #f1f5f9;
-            color: #475569;
-            border: 1px solid #e2e8f0;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.3rem 0.8rem;
-            margin-left: 0.5rem;
-            vertical-align: middle;
-        }
-        .charge-check-btn:hover {
-            background-color: #e2e8f0;
-            border-color: #cbd5e1;
-        }
+    .hydration-op-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      border-radius: 6px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-        .formula-input-container {
-            position: relative;
-        }
+    .hydration-op-btn.add {
+      right: 6px;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+    }
 
-        .hydration-op-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            border-radius: 6px;
-            padding: 0.4rem 0.7rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+    .hydration-op-btn.subtract {
+      right: 62px;
+      background-color: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .hydration-op-btn:hover {
+        transform: translateY(-50%) scale(1.05);
+    }
 
-        .hydration-op-btn.add {
-            right: 6px;
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-        }
+    .suggestions {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      max-height: 130px; 
+      overflow-y: auto;
+      position: absolute;
+      width: 100%;
+      z-index: 100;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); 
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+    }
 
-        .hydration-op-btn.subtract {
-            right: 62px;
-            background-color: #f1f5f9;
-            color: #475569;
-            border: 1px solid #e2e8f0;
-        }
+    .suggestion-item {
+      padding: 0.7rem; 
+      cursor: pointer;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid #f7f7f7;
+      font-size: 0.9rem; 
+      width: 100%;
+      text-align: left;
+      background: white;
+      border: none;
+    }
+    .suggestion-item:hover { background-color: #f8f9ff; }
+    .suggestion-item:last-child { border-bottom: none; }
 
-        .hydration-op-btn:hover {
-            transform: translateY(-50%) scale(1.05);
-        }
+    .ion-selection-panel {
+      background: linear-gradient(135deg, #fff9e6, #fff3cd);
+      border-radius: 15px;
+      padding: 1.5rem; 
+      border-left: 3px solid #f59e0b; 
+      margin: 1.5rem 0; 
+      animation: slideIn 0.4s ease-out; 
+    }
 
-        .suggestions {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            max-height: 130px;
-            overflow-y: auto;
-            position: absolute;
-            width: 100%;
-            z-index: 100;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            top: 100%;
-            left: 0;
-            margin-top: 4px;
-        }
+    .ion-selection-panel h3 {
+      color: #92400e;
+      margin-bottom: 0.8rem; 
+      font-size: 1.2rem; 
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+     .ion-selection-panel p {
+        font-size: 0.9rem;
+        color: #a16207; 
+        margin-bottom: 1rem;
+    }
 
-        .suggestion-item {
-            padding: 0.7rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-bottom: 1px solid #f7f7f7;
-            font-size: 0.9rem;
-        }
-        .suggestion-item:hover { background-color: #f8f9ff; }
-        .suggestion-item:last-child { border-bottom: none; }
+    .ion-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
 
-        .ion-selection-panel {
-            background: linear-gradient(135deg, #fff9e6, #fff3cd);
-            border-radius: 15px;
-            padding: 1.5rem;
-            border-left: 3px solid #f59e0b;
-            margin: 1.5rem 0;
-            animation: slideIn 0.4s ease-out;
-        }
+    .ion-btn {
+      background: white;
+      border: 2px solid #f59e0b;
+      color: #92400e;
+      padding: 0.5rem 0.9rem; 
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 0.85rem; 
+    }
 
-        .ion-selection-panel h3 {
-            color: #92400e;
-            margin-bottom: 0.8rem;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .ion-selection-panel p {
-            font-size: 0.9rem;
-            color: #a16207;
-            margin-bottom: 1rem;
-        }
+    .ion-btn:hover, .ion-btn.selected {
+      background: #f59e0b;
+      color: white;
+      transform: translateY(-2px); 
+    }
+    .ion-btn.selected {
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+    }
+    
+    .flex-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+      gap: 1rem 1.5rem; 
+    }
 
-        .ion-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .ion-btn {
-            background: white;
-            border: 2px solid #f59e0b;
-            color: #92400e;
-            padding: 0.5rem 0.9rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .ion-btn:hover, .ion-btn.selected {
-            background: #f59e0b;
-            color: white;
-            transform: translateY(-2px);
-        }
-        .ion-btn.selected {
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
-        }
-
-        .flex-inputs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem 1.5rem;
-        }
-
+    #dilutionCalculatorSection .flex-inputs {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    }
+    @media (min-width: 768px) { 
         #dilutionCalculatorSection .flex-inputs {
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(2, 1fr); 
         }
-        @media (min-width: 768px) {
-            #dilutionCalculatorSection .flex-inputs {
-                grid-template-columns: repeat(2, 1fr);
-            }
+    }
+     @media (min-width: 1024px) { 
+        #dilutionCalculatorSection .flex-inputs {
+            grid-template-columns: repeat(3, 1fr); 
         }
-        @media (min-width: 1024px) {
-            #dilutionCalculatorSection .flex-inputs {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
+    }
+    
+    .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin: 1.5rem auto;
+    }
 
-        .action-buttons-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem auto;
-        }
+    .calculate-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem; 
+      font-size: 1.1rem; 
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25); 
+      margin: 0; 
+    }
+    
+    .calculate-btn.dilution-calc-btn { 
+        background: linear-gradient(135deg, #38bdf8, #3b82f6); 
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+    }
+    .calculate-btn.dilution-calc-btn:hover:not(:disabled) {
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+    }
 
-        .calculate-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
-            margin: 0;
-        }
+    .calculate-btn:hover:not(:disabled) {
+      transform: translateY(-2px); 
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.35); 
+    }
+    .calculate-btn:active:not(:disabled) { transform: translateY(-1px); }
+    .calculate-btn:disabled {
+      opacity: 0.5; 
+      cursor: not-allowed;
+      background: #b0b0e0; 
+    }
 
-        .calculate-btn.dilution-calc-btn {
-            background: linear-gradient(135deg, #38bdf8, #3b82f6);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
-        }
-        .calculate-btn.dilution-calc-btn:hover:not(:disabled) {
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
-        }
+    .secondary-btn {
+        background-color: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .secondary-btn:hover {
+        background-color: #e2e8f0;
+        border-color: #cbd5e1;
+    }
 
-        .calculate-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.35);
-        }
-        .calculate-btn:active:not(:disabled) { transform: translateY(-1px); }
-        .calculate-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: #b0b0e0;
-        }
+    .output-panel {
+      background: linear-gradient(135deg, #f0fff4, #e6fffa);
+      border-radius: 15px;
+      padding: 2rem; 
+      border-left: 3px solid #4CAF50; 
+      margin-top: 1.5rem; 
+      animation: slideIn 0.4s ease-out; 
+    }
+    .dilution-output-panel { 
+        background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+        border-left-color: #3b82f6;
+        padding: 1.5rem;
+    }
 
-        .secondary-btn {
-            background-color: #f1f5f9;
-            color: #475569;
-            border: 1px solid #e2e8f0;
-            padding: 0.8rem 1.5rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .secondary-btn:hover {
-            background-color: #e2e8f0;
-            border-color: #cbd5e1;
-        }
-/* --- ADD THIS ENTIRE BLOCK OF NEW CSS --- */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        .dilution-main-result {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa);
-            color: white;
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            text-align: center;
-            margin: 1rem 0;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
+    .output-panel h2, .output-panel h3 {
+      color: #2d5016;
+      margin-bottom: 1rem; 
+      font-size: 1.3rem; 
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .output-panel h3 {
+        font-size: 1.1rem;
+        color: #3f6212;
+        border-bottom: 1px solid #dcfce7;
+        padding-bottom: 0.5rem;
+        margin-top: 1.5rem;
+    }
 
-        .dilution-main-result-label {
-            display: block;
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 0.25rem;
-        }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+     .dilution-results-grid { 
+        grid-template-columns: 1fr; 
+        gap: 0.8rem;
+    }
 
-        .dilution-main-result-value {
-            display: block;
-            font-size: 2rem;
-            font-weight: 700;
-        }
+    .result-item, .main-result-item {
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); 
+      border: 1px solid #e8f5e9; 
+    }
+    
+    .main-result-item {
+        background: linear-gradient(135deg, #f0fff4, #ffffff);
+        border: 1px solid #4CAF50;
+        grid-column: 1 / -1; 
+        padding: 1.5rem;
+    }
 
-        .dilution-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-        @media (max-width: 600px) {
-            .dilution-grid { grid-template-columns: 1fr; }
-        }
+    .result-value, .main-result-value {
+      font-size: 1.3rem; 
+      font-weight: 700;
+      color: #2d5016;
+      margin-bottom: 0.4rem; 
+      word-wrap: break-word; 
+    }
 
-        .dilution-input-group h4 {
-            font-size: 1rem;
-            color: #1e3a8a;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #dbeafe;
-            padding-bottom: 0.5rem;
-        }
+    .main-result-value {
+        font-size: 1.8rem;
+        color: #15803d;
+    }
 
-        .input-with-unit {
-            display: flex;
-            margin-bottom: 1rem;
-        }
+    .result-label, .main-result-label {
+      font-size: 0.85rem; 
+      color: #555; 
+      letter-spacing: 0.5px;
+    }
+    
+    .main-result-label {
+        font-size: 1rem;
+    }
 
+    #copyResultsBtn {
+        display: block;
+        margin: 1.5rem auto 0 auto;
+    }
 
-        .input-with-unit input {
-            border-right: none;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-            flex: 1; /* <-- ADD: Allows the input to grow and fill space */
-            min-width: 0; /* <-- ADD: Important fix for flexbox in some browsers */
-        }
-        .input-with-unit select {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-            background-color: #f8fafc;
-            width: auto;
-            min-width: 85px; /* <-- CHANGE: A slightly larger fixed width */
-        }
+    .message-box {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        border-left-width: 4px;
+        border-left-style: solid;
+    }
+    .error-message {
+      background: linear-gradient(135deg, #fff5f5, #fed7d7);
+      color: #c53030;
+      border-left-color: #e53e3e;
+    }
+     .info-note {
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      color: #0c4a6e;
+      padding: 0.8rem 1rem; 
+      border-radius: 8px; 
+      border-left: 3px solid #0ea5e9; 
+      margin-top: 1rem;
+      font-size: 0.85rem; 
+    }
 
-        .dilution-secondary-output {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid #dbeafe;
-            font-size: 0.9rem;
-            text-align: center;
-            color: #475569;
-        }
-        .output-panel {
-            background: linear-gradient(135deg, #f0fff4, #e6fffa);
-            border-radius: 15px;
-            padding: 2rem;
-            border-left: 3px solid #4CAF50;
-            margin-top: 1.5rem;
-            animation: slideIn 0.4s ease-out;
-        }
-        .dilution-output-panel {
-            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
-            border-left-color: #3b82f6;
-            padding: 1.5rem;
-        }
+    footer {
+      background: rgba(40, 40, 40, 0.95); 
+      backdrop-filter: blur(8px); 
+      color: #e0e0e0; 
+      text-align: center;
+      padding: 1.5rem; 
+      margin-top: 3rem; 
+      width: 100%;
+      max-width: 1200px; 
+      border-radius: 15px 15px 0 0; 
+    }
+    .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap; 
+      gap: 1.5rem; 
+      margin: 0;
+    }
+    .footer-links a {
+      color: #e0e0e0;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      font-size: 0.9rem; 
+    }
+    .footer-links a:hover { color: #8a9bf8; }
+    
+    .loading {
+      display: inline-block;
+      width: 18px; 
+      height: 18px; 
+      border: 2px solid rgba(255,255,255,.3); 
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite; 
+      margin-right: 5px; 
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .output-panel h2, .output-panel h3 {
-            color: #2d5016;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .output-panel h3 {
-            font-size: 1.1rem;
-            color: #3f6212;
-            border-bottom: 1px solid #dcfce7;
-            padding-bottom: 0.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .dilution-results-grid {
-            grid-template-columns: 1fr;
-            gap: 0.8rem;
-        }
-
-        .result-item, .main-result-item {
-            background: white;
-            padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-            border: 1px solid #e8f5e9;
-        }
-
-        .main-result-item {
-            background: linear-gradient(135deg, #f0fff4, #ffffff);
-            border: 1px solid #4CAF50;
-            grid-column: 1 / -1;
-            padding: 1.5rem;
-        }
-
-        .result-value, .main-result-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #2d5016;
-            margin-bottom: 0.4rem;
-            word-wrap: break-word;
-        }
-
-        .main-result-value {
-            font-size: 1.8rem;
-            color: #15803d;
-        }
-
-        .result-label, .main-result-label {
-            font-size: 0.85rem;
-            color: #555;
-            letter-spacing: 0.5px;
-        }
-
-        .main-result-label {
-            font-size: 1rem;
-        }
-
-        #copyResultsBtn {
-            display: block;
-            margin: 1.5rem auto 0 auto;
-        }
-
-        .message-box {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            border-left-width: 4px;
-            border-left-style: solid;
-        }
-        .error-message {
-            background: linear-gradient(135deg, #fff5f5, #fed7d7);
-            color: #c53030;
-            border-left-color: #e53e3e;
-        }
-        .info-note {
-            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-            color: #0c4a6e;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            border-left: 3px solid #0ea5e9;
-            margin-top: 1rem;
-            font-size: 0.85rem;
-        }
-
-        footer {
-            background: rgba(40, 40, 40, 0.95);
-            backdrop-filter: blur(8px);
-            color: #e0e0e0;
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 3rem;
-            width: 100%;
-            max-width: 1200px;
-            border-radius: 15px 15px 0 0;
-        }
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 0;
-        }
-        .footer-links a {
-            color: #e0e0e0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            font-size: 0.9rem;
-        }
-        .footer-links a:hover { color: #8a9bf8; }
-
-        .loading {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 0.8s linear infinite;
-            margin-right: 5px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .hidden { display: none !important; }
-    </style>
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
-    <div class="background-overlay"></div>
+  <div class="background-overlay"></div>
+  
+  <header>
+    <h1>ChemCalc</h1>
+    <p>Enhanced Reagent Converter with Ion Conservation & Solution Calculations</p>
+  </header>
 
-    <header>
-        <h1>ChemFormulator</h1>
-        <p>Enhanced Reagent Converter with Ion Conservation & Solution Calculations</p>
-    </header>
-
-    <div class="container">
-        <div class="main-panel">
-            <div class="flex-row">
-                <div class="compound-section">
-                    <h2><span class="molecule-icon">A</span>Original Compound</h2>
-
-                    <label for="originalFormula">Chemical Formula</label>
-                    <div class="formula-input-group">
-                        <div class="formula-input-container">
-                            <input type="text" id="originalFormula" placeholder="e.g. NaH₂(PO₄)" />
-                            <div id="originalSuggestions" class="suggestions hidden"></div>
-                            <button id="removeHydrationOriginal" class="hydration-op-btn subtract">-H₂O</button>
-                            <button id="addHydrationOriginal" class="hydration-op-btn add">+H₂O</button>
-                        </div>
-                    </div>
-                    <span id="originalFormulaFeedback" class="formula-feedback-message"></span>
-                    <button id="checkChargeOriginalBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
-
-                    <label for="amount">Amount</label>
-                    <input type="number" id="amount" placeholder="e.g. 100 (optional if M & V given)" step="any" />
-
-                    <label for="unit">Unit</label>
-                    <select id="unit">
-                        <option value="mg" selected>Milligrams (mg)</option>
-                        <option value="g">Grams (g)</option>
-                        <option value="mol">Moles (mol)</option>
-                    </select>
-                </div>
-
-                <div class="compound-section">
-                    <h2><span class="molecule-icon">B</span>Replacement Compound</h2>
-
-                    <label for="replacementFormula">Chemical Formula</label>
-                    <div class="formula-input-group">
-                        <div class="formula-input-container">
-                            <input type="text" id="replacementFormula" placeholder="e.g. Na₂H(PO₄)" />
-                            <div id="replacementSuggestions" class="suggestions hidden"></div>
-                            <button id="removeHydrationReplacement" class="hydration-op-btn subtract">-H₂O</button>
-                            <button id="addHydrationReplacement" class="hydration-op-btn add">+H₂O</button>
-                        </div>
-                    </div>
-                    <span id="replacementFormulaFeedback" class="formula-feedback-message"></span>
-                    <button id="checkChargeReplacementBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
-                </div>
+  <div class="container">
+    <div class="main-panel">
+      <div class="flex-row">
+        <div class="compound-section">
+          <h2><span class="molecule-icon">A</span>Original Compound</h2>
+          
+          <label for="originalFormula">Chemical Formula</label>
+          <div class="formula-input-group">
+            <div class="formula-input-container">
+                <input type="text" id="originalFormula" placeholder="e.g. NaH₂(PO₄)" />
+                <div id="originalSuggestions" class="suggestions hidden"></div>
+                <button id="removeHydrationOriginal" class="hydration-op-btn subtract">-H₂O</button>
+                <button id="addHydrationOriginal" class="hydration-op-btn add">+H₂O</button>
             </div>
-            <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-                <button id="analyzeCompoundsBtn" class="calculate-btn main-action-btn" style="flex: 1;">
-                    <span class="btn-text">Analyze Compounds</span>
-                </button>
-                <button id="clearAllBtn" class="secondary-btn" style="flex: 1;">Clear All</button>
+          </div>
+          <span id="originalFormulaFeedback" class="formula-feedback-message"></span>
+          <button id="checkChargeOriginalBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
+
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" placeholder="e.g. 100 (optional if M & V given)" step="any" />
+
+          <label for="unit">Unit</label>
+          <select id="unit">
+            <option value="mg" selected>Milligrams (mg)</option>
+            <option value="g">Grams (g)</option>
+            <option value="mol">Moles (mol)</option>
+          </select>
+        </div>
+
+        <div class="compound-section">
+          <h2><span class="molecule-icon">B</span>Replacement Compound</h2>
+          
+          <label for="replacementFormula">Chemical Formula</label>
+           <div class="formula-input-group">
+            <div class="formula-input-container">
+                <input type="text" id="replacementFormula" placeholder="e.g. Na₂H(PO₄)" />
+                <div id="replacementSuggestions" class="suggestions hidden"></div>
+                <button id="removeHydrationReplacement" class="hydration-op-btn subtract">-H₂O</button>
+                <button id="addHydrationReplacement" class="hydration-op-btn add">+H₂O</button>
             </div>
-            <div class="calculator-section molarity-volume-section">
-                <h3><span class="molecule-icon" style="font-size:14px;">🧪</span>Solution Parameters (Original Compound)</h3>
-                <div class="flex-inputs">
-                    <div>
-                        <label for="molarity">Molarity</label>
-                        <input type="number" id="molarity" placeholder="e.g. 200" step="any" />
-                    </div>
-                    <div>
-                        <label for="molarityUnit">Molarity Unit</label>
-                        <select id="molarityUnit">
-                            <option value="M">M (mol/L)</option>
-                            <option value="mM" selected>mM (mmol/L)</option>
-                            <option value="uM">µM (µmol/L)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="volume">Volume</label>
-                        <input type="number" id="volume" placeholder="e.g. 500" step="any" />
-                    </div>
-                    <div>
-                        <label for="volumeUnit">Volume Unit</label>
-                        <select id="volumeUnit">
-                            <option value="mL" selected>Milliliters (mL)</option>
-                            <option value="L">Liters (L)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="info-note">
-                    💡 Provide Original Amount, <strong>OR</strong> Molarity & Volume. If Original Amount is given with Molarity <strong>OR</strong> Volume, the missing parameter will be calculated.
-                </div>
+          </div>
+          <span id="replacementFormulaFeedback" class="formula-feedback-message"></span>
+          <button id="checkChargeReplacementBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
+        </div>
+      </div>
+<div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
+    <button class="calculate-btn main-action-btn" style="flex: 1;">
+        <span class="btn-text">Analyze Compounds</span>
+    </button>
+    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
+</div>
+      <div class="calculator-section molarity-volume-section">
+        <h3><span class="molecule-icon" style="font-size:14px;">🧪</span>Solution Parameters (Original Compound)</h3>
+        <div class="flex-inputs">
+          <div>
+            <label for="molarity">Molarity</label>
+            <input type="number" id="molarity" placeholder="e.g. 200" step="any" />
+          </div>
+          <div>
+            <label for="molarityUnit">Molarity Unit</label>
+            <select id="molarityUnit">
+              <option value="M">M (mol/L)</option>
+              <option value="mM" selected>mM (mmol/L)</option>
+              <option value="uM">µM (µmol/L)</option>
+            </select>
+          </div>
+          <div>
+            <label for="volume">Volume</label>
+            <input type="number" id="volume" placeholder="e.g. 500" step="any" />
+          </div>
+           <div>
+            <label for="volumeUnit">Volume Unit</label>
+            <select id="volumeUnit">
+              <option value="mL" selected>Milliliters (mL)</option>
+              <option value="L">Liters (L)</option>
+            </select>
+          </div>
+        </div>
+        <div class="info-note">
+          💡 Provide Original Amount, <strong>OR</strong> Molarity & Volume. If Original Amount is given with Molarity <strong>OR</strong> Volume, the missing parameter will be calculated.
+        </div>
+      </div>
+      <div id="dilutionCalculatorSection" class="calculator-section">
+        <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
+        <div class="flex-inputs">
+            <div>
+                <label for="stockConc">Stock Conc. (C₁)</label>
+                <input type="number" id="stockConc" placeholder="e.g., 10" step="any">
             </div>
-
-            <div id="dilutionCalculatorSection" class="calculator-section">
-                <h3><span class="molecule-icon" style="font-size:14px;">💧</span>Solution Dilution Calculator</h3>
-
-                <div class="dilution-main-result">
-                    <span class="dilution-main-result-label">Volume of Stock to Add (V₁)</span>
-                    <span id="dilutionPrimaryResult" class="dilution-main-result-value">---</span>
-                </div>
-
-                <div class="dilution-grid">
-                    <div class="dilution-input-group">
-                        <h4>Stock Solution (C₁V₁)</h4>
-                        <label for="stockConc">Stock Concentration (C₁)</label>
-                        <div class="input-with-unit">
-                            <input type="number" id="stockConc" placeholder="e.g., 10" step="any">
-                            <select id="stockConcUnit">
-                                <option value="M">M</option>
-                                <option value="mM" selected>mM</option>
-                                <option value="uM">µM</option>
-                                <option value="mg/mL">mg/mL</option>
-                                <option value="ug/mL">µg/mL</option>
-                                <option value="ng/mL">ng/mL</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="dilution-input-group">
-                        <h4>Final Solution (C₂V₂)</h4>
-                        <label for="finalConc">Final Concentration (C₂)</label>
-                        <div class="input-with-unit">
-                            <input type="number" id="finalConc" placeholder="e.g., 100" step="any">
-                            <select id="finalConcUnit">
-                                <option value="M">M</option>
-                                <option value="mM" selected>mM</option>
-                                <option value="uM">µM</option>
-                                <option value="mg/mL">mg/mL</option>
-                                <option value="ug/mL">µg/mL</option>
-                                <option value="ng/mL">ng/mL</option>
-                            </select>
-                        </div>
-
-                        <label for="finalVolume">Final Volume (V₂)</label>
-                        <div class="input-with-unit">
-                            <input type="number" id="finalVolume" placeholder="e.g., 50" step="any">
-                            <select id="finalVolumeUnit">
-                                <option value="L">L</option>
-                                <option value="mL" selected>mL</option>
-                                <option value="uL">µL</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="dilutionSecondaryResult" class="dilution-secondary-output hidden"></div>
-                <div id="dilutionCalcError" class="message-box error-message hidden" style="margin-top: 1rem;"></div>
-                <div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-                    <button id="calculateDilutionBtn" class="calculate-btn dilution-calc-btn" style="flex: 1;">
-                        <span class="btn-text">Calculate Dilution</span>
-                    </button>
-                    <button id="clearDilutionBtn" class="secondary-btn" style="flex: 1;">Clear Dilution</button>
-                </div>
+            <div>
+                <label for="stockConcUnit">Stock Conc. Unit</label>
+                <select id="stockConcUnit">
+                    <option value="M">M (mol/L)</option>
+                    <option value="mM" selected>mM (mmol/L)</option>
+                    <option value="uM">µM (µmol/L)</option>
+                </select>
             </div>
-
-
-            <div id="ionSelectionPanel" class="ion-selection-panel hidden">
-                <h3><span class="molecule-icon" style="font-size:14px;">⚛️</span>Conserve Ion Concentration</h3>
-                <p>Select the element/ion from the original compound's main chemical entity whose molar quantity you wish to conserve:</p>
-                <div id="ionButtons" class="ion-buttons"></div>
+            <div>
+                <label for="finalConc">Final Conc. (C₂)</label>
+                <input type="number" id="finalConc" placeholder="e.g., 10" step="any">
             </div>
-
-            <div id="outputPanel" class="output-panel hidden">
+            <div>
+                <label for="finalConcUnit">Final Conc. Unit</label>
+                <select id="finalConcUnit">
+                    <option value="M">M (mol/L)</option>
+                    <option value="mM" selected>mM (mmol/L)</option>
+                    <option value="uM">µM (µmol/L)</option>
+                </select>
             </div>
-            <div id="errorDisplay" class="message-box error-message hidden"></div>
+            <div>
+                <label for="finalVolume">Final Volume (V₂)</label>
+                <input type="number" id="finalVolume" placeholder="e.g., 50" step="any">
+            </div>
+            <div>
+                <label for="finalVolumeUnit">Final Volume Unit</label>
+                <select id="finalVolumeUnit">
+                    <option value="mL" selected>mL</option>
+                    <option value="L">L</option>
+                </select>
+            </div>
+        </div>
+        <button id="calculateDilutionBtn" class="calculate-btn dilution-calc-btn" style="margin-top:1.5rem;">Calculate Dilution</button>
+        <div id="dilutionResultOutput" class="dilution-output-panel output-panel hidden">
+            </div>
+         <span id="dilutionCalcError" class="dilution-error-message"></span>
+      </div>
 
+      <div id="ionSelectionPanel" class="ion-selection-panel hidden">
+        <h3><span class="molecule-icon" style="font-size:14px;">⚛️</span>Conserve Ion Concentration</h3>
+        <p>Select the element/ion from the original compound's main chemical entity whose molar quantity you wish to conserve:</p>
+        <div id="ionButtons" class="ion-buttons"></div>
+      </div>
+
+      <div id="outputPanel" class="output-panel hidden">
+        </div>
+      <div id="errorDisplay" class="message-box error-message hidden"></div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+        <p>ChemCalc is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
+        
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
+     crossorigin="anonymous"></script>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-8948405948087873"
+             data-ad-slot="9684312383"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "ca-pub-8948405948087873",
+            enable_page_level_ads: true
+          });
+        </script>
+
+        <div class="footer-links">
+            <a href="mailto:dotansh@bgu.ac.il?subject=ChemCalc%20Feedback">Report an Issue</a>
+            <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms of Use</a>
+            <span>ChemCalc v1.5</span>
         </div>
     </div>
+  </footer>
 
-    <footer>
-        <div class="footer-content">
-            <p>ChemFormulator is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
-
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
-            crossorigin="anonymous"></script>
-
-            <div class="footer-links">
-                <a href="mailto:dotansh@bgu.ac.il?subject=ChemFormulator%20Feedback">Report an Issue</a>
-                <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-                <span>ChemFormulator v1.6</span>
-            </div>
-        </div>
-    </footer>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
+  <script>
     // --- DATA CONSTANTS ---
-    const atomicWeights = { H: 1.008, He: 4.0026, Li: 6.94, Be: 9.0122, B: 10.81, C: 12.011, N: 14.007, O: 15.999, F: 18.998, Ne: 20.180, Na: 22.990, Mg: 24.305, Al: 26.982, Si: 28.085, P: 30.974, S: 32.06, Cl: 35.45, Ar: 39.948, K: 39.098, Ca: 40.078, Sc: 44.956, Ti: 47.867, V: 50.942, Cr: 51.996, Mn: 54.938, Fe: 55.845, Co: 58.933, Ni: 58.693, Cu: 63.546, Zn: 65.38, Ga: 69.723, Ge: 72.630, As: 74.922, Se: 78.971, Br: 79.904, Kr: 83.798, Rb: 85.468, Sr: 87.62, Y: 88.906, Zr: 91.224, Nb: 92.906, Mo: 95.95, Tc: 98, Ru: 101.07, Rh: 102.91, Pd: 106.42, Ag: 107.87, Cd: 112.41, In: 114.82, Sn: 118.71, Sb: 121.76, Te: 127.60, I: 126.90, Xe: 131.29, Cs: 132.91, Ba: 137.33, La: 138.91, Ce: 140.12, Pr: 140.91, Nd: 144.24, Pm: 145, Sm: 150.36, Eu: 151.96, Gd: 157.25, Tb: 158.93, Dy: 162.50, Ho: 164.93, Er: 167.26, Tm: 168.93, Yb: 173.05, Lu: 174.97, Hf: 178.49, Ta: 180.95, W: 183.84, Re: 186.21, Os: 190.23, Ir: 192.22, Pt: 195.08, Au: 196.97, Hg: 200.59, Tl: 204.38, Pb: 207.2, Bi: 208.98, Po: 209, At: 210, Rn: 222, Fr: 223, Ra: 226, Ac: 227, Th: 232.04, Pa: 231.04, U: 238.03, Np: 237, Pu: 244, Am: 243, Cm: 247, Bk: 247, Cf: 251, Es: 252, Fm: 257, Md: 258, No: 259, Lr: 262 };
-    const waterMolarMass = (atomicWeights.H * 2) + atomicWeights.O;
+    const atomicWeights = { H:1.008,He:4.0026,Li:6.94,Be:9.0122,B:10.81,C:12.011,N:14.007,O:15.999,F:18.998,Ne:20.180,Na:22.990,Mg:24.305,Al:26.982,Si:28.085,P:30.974,S:32.06,Cl:35.45,Ar:39.948,K:39.098,Ca:40.078,Sc:44.956,Ti:47.867,V:50.942,Cr:51.996,Mn:54.938,Fe:55.845,Co:58.933,Ni:58.693,Cu:63.546,Zn:65.38,Ga:69.723,Ge:72.630,As:74.922,Se:78.971,Br:79.904,Kr:83.798,Rb:85.468,Sr:87.62,Y:88.906,Zr:91.224,Nb:92.906,Mo:95.95,Tc:98,Ru:101.07,Rh:102.91,Pd:106.42,Ag:107.87,Cd:112.41,In:114.82,Sn:118.71,Sb:121.76,Te:127.60,I:126.90,Xe:131.29,Cs:132.91,Ba:137.33,La:138.91,Ce:140.12,Pr:140.91,Nd:144.24,Pm:145,Sm:150.36,Eu:151.96,Gd:157.25,Tb:158.93,Dy:162.50,Ho:164.93,Er:167.26,Tm:168.93,Yb:173.05,Lu:174.97,Hf:178.49,Ta:180.95,W:183.84,Re:186.21,Os:190.23,Ir:192.22,Pt:195.08,Au:196.97,Hg:200.59,Tl:204.38,Pb:207.2,Bi:208.98,Po:209,At:210,Rn:222,Fr:223,Ra:226,Ac:227,Th:232.04,Pa:231.04,U:238.03,Np:237,Pu:244,Am:243,Cm:247,Bk:247,Cf:251,Es:252,Fm:257,Md:258,No:259,Lr:262};
+    const compoundNameToFormulaMap = {
+        'acetic acid': 'CH₃COOH',     
+        'ammonium acetate': 'NH₄CH₃COO',
+        'ammonium chloride': 'NH₄Cl',
+        'ammonium dihydrogen phosphate': 'NH₄H₂PO₄',
+        'ammonium molybdate tetrahydrate': '(NH₄)₂MoO₄·4H₂O',
+        'ammonium phosphate dibasic': '(NH₄)₂HPO₄',
+        'ammonium sulfate': '(NH₄)₂SO₄',    
+        'bicine': 'C₆H₁₃NO₄',
+        'boric acid': 'H₃BO₃',
+        'calcium chloride anhydrous': 'CaCl₂',
+        'calcium chloride dihydrate': 'CaCl₂·2H₂O',
+        'calcium nitrate tetrahydrate': 'Ca(NO₃)₂·4H₂O',
+        'calcium sulfate anhydrous': 'CaSO₄',
+        'calcium sulfate dihydrate': 'CaSO₄·2H₂O',       
+        'charcoal': 'C',      
+        'citric acid anhydrous': 'C₆H₈O₇',
+        'citric acid monohydrate': 'C₆H₈O₇·H₂O',
+        'cobalt(ii) chloride': 'CoCl₂',
+        'copper(ii) chloride': 'CuCl₂',
+        'copper(ii) sulfate pentahydrate': 'CuSO₄·5H₂O',
+        'copper(ii) sulfate anhydrous': 'CuSO₄',
+        'd-glucose monohydrate': 'C₆H₁₂O₆·H₂O',
+        'd-sorbitol': 'C₆H₁₄O₆',
+        'diatomaceous earth': 'SiO₂',
+        'edta': 'C₁₀H₁₆N₂O₈',
+        'ethanolamine': 'C₂H₇NO',
+        'ethylene glycol': 'C₂H₆O₂',
+        'ferric ammonium citrate': 'Fe(NH₄)C₆H₅O₇',
+        'ferric citrate': 'FeC₆H₅O₇',
+        'glycerol': 'C₃H₈O₃',
+        'glycine': 'C₂H₅NO₂',
+        'guanidine hydrochloride': 'CH₅N₃HCl',
+        'hydrochloric acid': 'HCl',
+        'iodine': 'I₂',
+        'iptg': 'C₉H₁₈O₅S',
+        'iron(ii) sulfate heptahydrate': 'FeSO₄·7H₂O',
+        'iron(iii) citrate': 'FeC₆H₅O₇',
+        'l - arginine': 'C₆H₁₄N₄O₂',
+        'l - histidine': 'C₆H₉N₃O₂',
+        'l - lysine': 'C₆H₁₄N₂O₂',
+        'l - methionine': 'C₅H₁₁NO₂S',
+        'l-2-aminobutyric acid': 'C₄H₉NO₂',
+        'lactose monohydrate': 'C₁₂H₂₂O₁₁·H₂O',
+        'lithium chloride': 'LiCl',
+        'magnesium chloride anhydrous': 'MgCl₂',
+        'magnesium chloride hexahydrate': 'MgCl₂·6H₂O',
+        'magnesium sulfate heptahydrate': 'MgSO₄·7H₂O',
+        'manganese(ii) chloride tetrahydrate': 'MnCl₂·4H₂O',
+        'manganese(ii) sulfate monohydrate': 'MnSO₄·H₂O',
+        'manganese sulphate': 'MnSO₄',
+        'phosphoric acid': 'H₃PO₄',
+        'potassium chloride': 'KCl',
+        'potassium citrate tribasic monohydrate': 'K₃C₆H₅O₇·H₂O',
+        'potassium hydroxide pellets': 'KOH',
+        'potassium phosphate monobasic': 'KH₂PO₄',
+        'potassium sulfate': 'K₂SO₄',
+        'propylene glycol': 'C₃H₈O₂',
+        'sodium acetate trihydrate': 'CH₃COONa·3H₂O',
+        'sodium azide': 'NaN₃',
+        'sodium bicarbonate': 'NaHCO₃',
+        'sodium chloride': 'NaCl',
+        'sodium dihydrogen phosphate': 'NaH₂PO₄',
+        'sodium dihydrogen phospate': 'NaH₂PO₄',
+        'sodium hydrogen phosphate': 'Na₂HPO₄',
+        'sodium hydroxide': 'NaOH',
+        'sodium iodide': 'NaI',
+        'sodium molybdate': 'Na₂MoO₄',
+        'sodium periodate': 'NaIO₄',
+        'sodium phosphate dibasic anhydrous': 'Na₂HPO₄',
+        'sodium phosphate dibasic anhydrose': 'Na₂HPO₄',
+        'sodium phosphate monobasic anhydrous': 'NaH₂PO₄',
+        'sodium sulfate anhydrous': 'Na₂SO₄',
+        'sulfuric acid': 'H₂SO₄',
+        'zinc acetate': 'Zn(CH₃COO)₂',
+        'zinc chloride': 'ZnCl₂',
+        'zinc sulfate heptahydrate': 'ZnSO₄·7H₂O'
+    };
+   
+    const commonIonCharges = { 'H':1,'H3O':1,'Li':1,'Na':1,'K':1,'Rb':1,'Cs':1,'Fr':1,'Ag':1,'Cu':[1,2],'NH4':1,'Be':2,'Mg':2,'Ca':2,'Sr':2,'Ba':2,'Ra':2,'Zn':2,'Cd':2,'Mn':[2,3,4,6,7],'Fe':[2,3],'Co':[2,3],'Ni':2,'Pb':[2,4],'Sn':[2,4],'Hg':[1,2],'Hg2':2,'Al':3,'Cr':[2,3,6],'Bi':[3,5],'Sc':3,'Y':3,'La':3,'Au':[1,3],'Ti':[3,4],'F':-1,'Cl':-1,'Br':-1,'I':-1,'At':-1,'OH':-1,'CN':-1,'SCN':-1,'NO3':-1,'NO2':-1,'MnO4':-1,'ClO':-1,'ClO2':-1,'ClO3':-1,'ClO4':-1,'HCO3':-1,'HSO4':-1,'HSO3':-1,'HS':-1,'H2PO4':-1,'CH3COO':-1,'C2H3O2':-1,'C6H5COO':-1,'CNO':-1,'IO3':-1,'IO4':-1,'N3':-1,'OCN':-1,'O':-2,'O2':-2,'S':-2,'SO4':-2,'SO3':-2,'CO3':-2,'CrO4':-2,'Cr2O7':-2,'S2O3':-2,'HPO4':-2,'C2O4':-2,'Te':-2,'Se':-2,'MoO4':-2,'N':-3,'P':-3,'As':-3,'PO4':-3,'AsO4':-3,'AsO3':-3,'ASO3':-3,'BO3':-3,'BrO3':-1,'C6H5O7':-3,'SiO4':-4,'VO2':1,'UO2':2};
+    const toDisplayName = (compoundName) => compoundName.replace(/\b\w/g, (char) => char.toUpperCase());
+    const commonCompounds = Array.from(new Set([
+        ...Object.keys(compoundNameToFormulaMap).map(toDisplayName),
+        ...Object.values(compoundNameToFormulaMap)
+    ])).sort((a, b) => a.localeCompare(b));
+    // Global State
+    let selectedIon = null;
+    let compoundData = { originalParsed: null, replacementParsed: null }; 
 
-    // --- DOM ELEMENT SELECTION ---
+    // --- DOM ELEMENT REFERENCES ---
     const originalFormulaInput = document.getElementById('originalFormula');
     const replacementFormulaInput = document.getElementById('replacementFormula');
-    const originalFormulaFeedback = document.getElementById('originalFormulaFeedback');
-    const replacementFormulaFeedback = document.getElementById('replacementFormulaFeedback');
+    const originalFormulaFeedbackEl = document.getElementById('originalFormulaFeedback');
+    const replacementFormulaFeedbackEl = document.getElementById('replacementFormulaFeedback');
+    const checkChargeOriginalBtn = document.getElementById('checkChargeOriginalBtn');
+    const checkChargeReplacementBtn = document.getElementById('checkChargeReplacementBtn');
     const amountInput = document.getElementById('amount');
     const unitSelect = document.getElementById('unit');
     const molarityInput = document.getElementById('molarity');
     const molarityUnitSelect = document.getElementById('molarityUnit');
     const volumeInput = document.getElementById('volume');
     const volumeUnitSelect = document.getElementById('volumeUnit');
-    const analyzeBtn = document.getElementById('analyzeCompoundsBtn');
-    const clearAllBtn = document.getElementById('clearAllBtn');
     const ionSelectionPanel = document.getElementById('ionSelectionPanel');
-    const ionButtonsContainer = document.getElementById('ionButtons');
-    const outputPanel = document.getElementById('outputPanel');
-    const errorDisplay = document.getElementById('errorDisplay');
+    const ionButtonsDiv = document.getElementById('ionButtons'); 
+    const outputPanel = document.getElementById('outputPanel'); 
+    const errorDisplayDiv = document.getElementById('errorDisplay');
+    const stockConcInput = document.getElementById('stockConc');
+    const stockConcUnitSelect = document.getElementById('stockConcUnit');
+    const finalConcInput = document.getElementById('finalConc');
+    const finalConcUnitSelect = document.getElementById('finalConcUnit');
+    const finalVolumeInput = document.getElementById('finalVolume');
+    const finalVolumeUnitSelect = document.getElementById('finalVolumeUnit');
+    const calculateDilutionBtn = document.getElementById('calculateDilutionBtn');
+    const dilutionResultOutputEl = document.getElementById('dilutionResultOutput');
+    const dilutionCalcErrorEl = document.getElementById('dilutionCalcError');
 
-    // --- PARSING LOGIC ---
-    /**
-     * Parses a chemical formula string into its composition, molar mass, and parts.
-     * This function is designed to be robust and avoid infinite loops.
-     * @param {string} formula The chemical formula string.
-     * @returns {object|null} An object with parsed data or null on failure.
-     */
-    function parseFormula(formula) {
-        if (!formula) return null;
+    // --- EVENT LISTENERS ---
+    document.addEventListener('click', function(event) {
+        const mainBtn = event.target.closest('.main-action-btn');
+        if (mainBtn) {
+            handleMainAction();
+        }
+        if (event.target.closest('.clear-all-btn')) {
+            clearAll();
+        }
+    });
+
+    function handleFormulaInput(event) {
+        const inputElement = event.target;
+        const suggestionsId = (inputElement.id === 'originalFormula') ? 'originalSuggestions' : 'replacementSuggestions';
+        const feedbackElement = (inputElement.id === 'originalFormula') ? originalFormulaFeedbackEl : replacementFormulaFeedbackEl;
+        const chargeCheckBtn = (inputElement.id === 'originalFormula') ? checkChargeOriginalBtn : checkChargeReplacementBtn;
         
-        // Normalize formula: H₂O -> H2O, remove spaces around operators
-        const normalizedFormula = formula.replace(/₂/g, '2').replace(/₃/g, '3').replace(/₄/g, '4').replace(/₅/g, '5').replace(/₆/g, '6').replace(/₇/g, '7').replace(/₈/g, '8').replace(/₉/g, '9')
-                                         .replace(/\s*[·*]\s*/g, '·');
+        const text = inputElement.value.trim().toLowerCase();
+        
+        if (compoundNameToFormulaMap[text]) {
+            inputElement.value = compoundNameToFormulaMap[text];
+            document.getElementById(suggestionsId).classList.add('hidden');
+            validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn);
+        } else {
+            validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn);
+            showSuggestions(inputElement.id, suggestionsId, inputElement.value);
+        }
+    }
 
-        const hydrationMatch = normalizedFormula.match(/(.*)·(\d*)H2O/);
-        const mainFormula = hydrationMatch ? hydrationMatch[1] : normalizedFormula;
-        const hydrationCount = hydrationMatch ? (hydrationMatch[2] ? parseInt(hydrationMatch[2], 10) : 1) : 0;
+    originalFormulaInput.addEventListener('input', handleFormulaInput);
+    replacementFormulaInput.addEventListener('input', handleFormulaInput);
 
-        const tokens = mainFormula.match(/([A-Z][a-z]?)(\d*)|(\()|(\))(\d*)/g);
-        if (!tokens) return null;
+    document.getElementById('addHydrationOriginal').addEventListener('click', () => modifyHydration('originalFormula', 'add'));
+    document.getElementById('removeHydrationOriginal').addEventListener('click', () => modifyHydration('originalFormula', 'remove'));
+    document.getElementById('addHydrationReplacement').addEventListener('click', () => modifyHydration('replacementFormula', 'add'));
+    document.getElementById('removeHydrationReplacement').addEventListener('click', () => modifyHydration('replacementFormula', 'remove'));
 
-        let composition = {};
-        let stack = [{}];
-        let multipliers = [1];
+    calculateDilutionBtn.addEventListener('click', handleCalculateDilution);
+    checkChargeOriginalBtn.addEventListener('click', () => handleChargeCheck('original'));
+    checkChargeReplacementBtn.addEventListener('click', () => handleChargeCheck('replacement'));
+    
+    document.addEventListener('click', (e) => {
+        const originalSuggestionsDiv = document.getElementById('originalSuggestions');
+        const replacementSuggestionsDiv = document.getElementById('replacementSuggestions');
+        if (originalSuggestionsDiv && !originalFormulaInput.contains(e.target) && !originalSuggestionsDiv.contains(e.target)) {
+            originalSuggestionsDiv.classList.add('hidden');
+        }
+        if (replacementSuggestionsDiv && !replacementFormulaInput.contains(e.target) && !replacementSuggestionsDiv.contains(e.target)) {
+            replacementSuggestionsDiv.classList.add('hidden');
+        }
+    });
 
-        for (const token of tokens) {
-            const elementMatch = token.match(/([A-Z][a-z]?)(\d*)/);
-            if (elementMatch) {
-                const element = elementMatch[1];
-                const count = elementMatch[2] ? parseInt(elementMatch[2], 10) : 1;
-                if (atomicWeights[element]) {
-                    stack[stack.length - 1][element] = (stack[stack.length - 1][element] || 0) + count;
-                } else {
-                    return { error: `Invalid element: ${element}` }; // Invalid element
-                }
-            } else if (token === '(') {
-                stack.push({});
-            } else if (token.startsWith(')')) {
-                if (stack.length < 2) return { error: 'Mismatched parentheses.' }; // Mismatched parentheses
-                
-                let count = token.substring(1) ? parseInt(token.substring(1), 10) : 1;
-                let top = stack.pop();
-                let parent = stack[stack.length - 1];
-                for (const el in top) {
-                    parent[el] = (parent[el] || 0) + top[el] * count;
-                }
+    ionButtonsDiv.addEventListener('click', (e) => {
+        if (e.target && e.target.classList.contains('ion-btn')) {
+            selectIon(e.target.dataset.ion, e.target);
+        }
+    });
+    
+    // --- UI & HELPER FUNCTIONS ---
+    function modifyHydration(fieldId, operation) {
+      const input = document.getElementById(fieldId);
+      let currentValue = input.value.trim().replace(/H2O/g, 'H₂O');
+      const hydrateRegex = /·(\d*)H₂O$/;
+      const match = currentValue.match(hydrateRegex);
+      if (match) {
+        let currentHydration = parseInt(match[1]) || 1;
+        let newHydration = (operation === 'add') ? currentHydration + 1 : currentHydration - 1;
+        if (newHydration > 1) {
+          input.value = currentValue.replace(hydrateRegex, `·${newHydration}H₂O`);
+        } else if (newHydration === 1) {
+          input.value = currentValue.replace(hydrateRegex, `·H₂O`);
+        } else {
+          input.value = currentValue.replace(hydrateRegex, '');
+        }
+      } else if (operation === 'add' && currentValue) {
+        input.value = currentValue + '·H₂O';
+      } else if (operation === 'add' && !currentValue) {
+        input.value = 'H₂O';
+      }
+      input.focus();
+      const event = new Event('input', { bubbles: true, cancelable: true });
+      input.dispatchEvent(event);
+    }
+
+    function showSuggestions(inputId, suggestionsId, value) {
+      const suggestionsDiv = document.getElementById(suggestionsId);
+      if (!value || value.length < 1) { 
+        suggestionsDiv.classList.add('hidden');
+        return;
+      }
+      const suggestions = commonCompounds.filter(compound => 
+        compound.toLowerCase().includes(value.toLowerCase())
+      ).slice(0, 8);
+      if (suggestions.length > 0) {
+        suggestionsDiv.textContent = '';
+        const fragment = document.createDocumentFragment();
+        suggestions.forEach((suggestion) => {
+          const suggestionItem = document.createElement('button');
+          suggestionItem.type = 'button';
+          suggestionItem.className = 'suggestion-item';
+          suggestionItem.textContent = suggestion;
+          suggestionItem.addEventListener('click', () => selectSuggestion(inputId, suggestion, suggestionsId));
+          fragment.appendChild(suggestionItem);
+        });
+        suggestionsDiv.appendChild(fragment);
+        suggestionsDiv.classList.remove('hidden');
+      } else {
+        suggestionsDiv.textContent = '';
+        suggestionsDiv.classList.add('hidden');
+      }
+    }
+
+    function selectSuggestion(inputId, suggestion, suggestionsId) {
+      const inputField = document.getElementById(inputId);
+      inputField.value = suggestion;
+      document.getElementById(suggestionsId).classList.add('hidden');
+      const event = new Event('input', { bubbles: true, cancelable: true });
+      inputField.dispatchEvent(event);
+    }
+    
+    const subscriptMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+    const superscriptMap = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9'};
+
+    function normalizeDigits(text) {
+        if (!text) return "";
+        let normalized = "";
+        for (let char of text) {
+            normalized += subscriptMap[char] || superscriptMap[char] || char;
+        }
+        return normalized;
+    }
+
+    function escapeHTML(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+    
+    // --- CORE LOGIC ---
+    const sortedIonKeys = Object.keys(commonIonCharges).sort((a,b) => b.length - a.length);
+    const sortedElementKeys = Object.keys(atomicWeights).sort((a,b) => b.length - a.length);
+
+    function getCompositionOfSimpleFormula(formulaStr) {
+        const composition = {};
+        const regex = /([A-Z][a-z]*)(\d*)/g;
+        let match;
+        while ((match = regex.exec(formulaStr)) !== null) {
+            const element = match[1];
+            const count = parseInt(match[2] || '1', 10);
+            if(atomicWeights[element]) {
+                composition[element] = (composition[element] || 0) + count;
             }
         }
-        
-        if (stack.length !== 1) return { error: 'Mismatched parentheses.' }; // Mismatched parentheses
-        composition = stack[0];
+        return composition;
+    }
 
-        let mainMolarMass = 0;
-        for (const el in composition) {
-            mainMolarMass += composition[el] * atomicWeights[el];
+    function parseFormula(formulaInput) {
+        if (!formulaInput || typeof formulaInput !== 'string' || formulaInput.trim() === "") {
+            return { weight: 0, composition: {}, mainComposition: {}, unknownElements: ["Empty formula"], originalFormula: formulaInput, displayFormula: "", parsedStructure: [] };
         }
-
-        const totalMolarMass = mainMolarMass + (hydrationCount * waterMolarMass);
-        
+        const originalFormula = formulaInput;
+        let formulaToParse = formulaInput.replace(/\s+/g, "").replace(/H₂O/g, "H2O");
+        formulaToParse = normalizeDigits(formulaToParse);
+        let mainPartString = formulaToParse;
+        let hydrateContentString = ""; 
+        let hydrateDisplaySuffix = "";
+        const dotIndex = formulaToParse.lastIndexOf('·');
+        if (dotIndex !== -1) {
+            mainPartString = formulaToParse.substring(0, dotIndex);
+            hydrateContentString = formulaToParse.substring(dotIndex + 1);
+            const originalDotIndex = originalFormula.lastIndexOf('·');
+            if (originalDotIndex !== -1) {
+                let originalHydratePart = originalFormula.substring(originalDotIndex + 1).trim();
+                hydrateDisplaySuffix = "·" + originalHydratePart.replace(/H2O/gi, "H₂O");
+            } else { 
+                hydrateDisplaySuffix = "·" + hydrateContentString.replace(/H2O/gi, "H₂O");
+            }
+        }
+        const fullComposition = {};
+        const mainComposition = {};
+        const unknownElements = [];
+        let parsedStructure = [];
+        function parseSegmentRecursive(segment, overallMultiplier, isMainChemicalPart, currentParsedStructureLevel) {
+            let currentDisplay = "";
+            let i = 0;
+            while (i < segment.length) {
+                if (segment[i] === '(') {
+                    let balance = 1;
+                    let j = i + 1;
+                    while (j < segment.length && balance > 0) {
+                        if (segment[j] === '(') balance++;
+                        else if (segment[j] === ')') balance--;
+                        j++;
+                    }
+                    if (balance !== 0) {
+                        if (!unknownElements.includes("Mismatched parentheses")) unknownElements.push("Mismatched parentheses");
+                        currentParsedStructureLevel.push({type: 'text', value: segment.substring(i)});
+                        return { display: currentDisplay + segment.substring(i) }; 
+                    }
+                    const groupContentString = segment.substring(i + 1, j - 1);
+                    i = j;
+                    let numStr = "";
+                    while (i < segment.length && /\d/.test(segment[i])) {
+                        numStr += segment[i];
+                        i++;
+                    }
+                    const groupMultiplier = numStr ? parseInt(numStr, 10) : 1;
+                    currentDisplay += "(";
+                    let groupParsedStructure = [];
+                    const sub = parseSegmentRecursive(groupContentString, overallMultiplier * groupMultiplier, isMainChemicalPart, groupParsedStructure);
+                    currentDisplay += sub.display;
+                    currentDisplay += ")";
+                    if (groupMultiplier > 1) currentDisplay += groupMultiplier;
+                    let groupSymbol = sub.display; 
+                    if (commonIonCharges[groupSymbol] === undefined) {
+                         if (commonIonCharges[groupContentString]) groupSymbol = groupContentString;
+                    }
+                    currentParsedStructureLevel.push({
+                        type: 'group',
+                        symbol: groupSymbol, 
+                        count: groupMultiplier,
+                    });
+                    continue;
+                }
+                let matchedSymbol = "";
+                let matchedLen = 0;
+                for (const key of sortedIonKeys) {
+                    if(segment.substring(i, i + key.length).toLowerCase() === key.toLowerCase()) {
+                        matchedSymbol = key;
+                        matchedLen = key.length;
+                        break;
+                    }
+                }
+                if(!matchedSymbol) {
+                    for (const key of sortedElementKeys) {
+                         if(segment.substring(i, i + key.length).toLowerCase() === key.toLowerCase()) {
+                            matchedSymbol = key;
+                            matchedLen = key.length;
+                            break;
+                         }
+                    }
+                }
+                if (matchedSymbol) {
+                    currentDisplay += matchedSymbol;
+                    i += matchedLen;
+                    let numStr = "";
+                    while (i < segment.length && /\d/.test(segment[i])) {
+                        numStr += segment[i];
+                        i++;
+                    }
+                    const count = numStr ? parseInt(numStr, 10) : 1;
+                    if (count > 1) currentDisplay += count;
+                    currentParsedStructureLevel.push({
+                        type: 'ion',
+                        symbol: matchedSymbol,
+                        count: count
+                    });
+                    const compositionToUse = getCompositionOfSimpleFormula(matchedSymbol);
+                    for(const [element, atomCount] of Object.entries(compositionToUse)) {
+                         const totalAtomCount = atomCount * count * overallMultiplier;
+                         fullComposition[element] = (fullComposition[element] || 0) + totalAtomCount;
+                        if (isMainChemicalPart) {
+                            mainComposition[element] = (mainComposition[element] || 0) + totalAtomCount;
+                        }
+                    }
+                } else {
+                    if (!unknownElements.includes(`Unrecognized: ${segment[i]}`)) unknownElements.push(`Unrecognized: ${segment[i]}`);
+                    currentDisplay += segment[i]; 
+                    currentParsedStructureLevel.push({type: 'text', value: segment[i]});
+                    i++;
+                }
+            }
+            return { display: currentDisplay };
+        }
+        const mainParsedResult = parseSegmentRecursive(mainPartString, 1, true, parsedStructure);
+        let finalDisplayFormula = mainParsedResult.display;
+        if (hydrateContentString) {
+            const h2oMatch = hydrateContentString.match(/^(\d*)H2O$/i);
+            if (h2oMatch) {
+                const numH2O = h2oMatch[1] ? parseInt(h2oMatch[1], 10) : 1;
+                fullComposition['H'] = (fullComposition['H'] || 0) + numH2O * 2;
+                fullComposition['O'] = (fullComposition['O'] || 0) + numH2O * 1;
+                finalDisplayFormula += hydrateDisplaySuffix;
+            } else {
+                if (!unknownElements.includes(`Invalid hydrate: ${hydrateContentString}`)) unknownElements.push(`Invalid hydrate: ${hydrateContentString}`);
+                finalDisplayFormula += "·" + hydrateContentString; 
+            }
+        }
+        let totalWeight = 0;
+        for (const [element, count] of Object.entries(fullComposition)) {
+            if (atomicWeights[element]) {
+                totalWeight += atomicWeights[element] * count;
+            }
+        }
+         if (totalWeight === 0 && originalFormula.trim().length > 0 && unknownElements.length === 0 && Object.keys(fullComposition).length === 0) {
+             if(!unknownElements.includes("Could not parse formula")) unknownElements.push("Could not parse formula");
+        }
         return {
-            composition: composition,
-            molarMass: totalMolarMass,
-            mainPart: { formula: mainFormula, composition: composition, molarMass: mainMolarMass },
-            hydration: { count: hydrationCount, mass: hydrationCount * waterMolarMass },
-            error: null
+            weight: totalWeight,
+            composition: fullComposition,
+            mainComposition: mainComposition,
+            unknownElements: unknownElements,
+            originalFormula: originalFormula,
+            displayFormula: unknownElements.length > 0 ? `${finalDisplayFormula} (errors: ${unknownElements.join(', ')})` : finalDisplayFormula,
+            parsedStructure: parsedStructure 
         };
     }
-
-    // --- VALIDATION AND UI FEEDBACK ---
-    function validateFormula(inputElement, feedbackElement) {
-        const formula = inputElement.value.trim();
-        feedbackElement.textContent = '';
-        inputElement.classList.remove('input-error');
-        if (!formula) return false;
-
-        const parsed = parseFormula(formula);
-        if (parsed && !parsed.error) {
-            feedbackElement.textContent = `Molar Mass: ${parsed.molarMass.toFixed(3)} g/mol`;
-            feedbackElement.className = 'formula-feedback-message success';
-            return true;
-        } else {
-            feedbackElement.textContent = parsed ? parsed.error : 'Invalid formula';
-            feedbackElement.className = 'formula-feedback-message error';
-            inputElement.classList.add('input-error');
-            return false;
+    
+    function getIonsFromComposition(composition, excludeHO = true) {
+      const ions = [];
+      if (!composition) return ions;
+      for (const element in composition) { 
+        if (composition[element] > 0) { 
+          if (excludeHO && (element === 'H' || element === 'O')) {
+            const otherElementsPresent = Object.keys(composition).some(el => el !== 'H' && el !== 'O' && composition[el] > 0);
+            if (otherElementsPresent) continue;
+          }
+          ions.push(element);
         }
+      }
+      if (ions.length === 0 && excludeHO) {
+        if (composition['O'] && composition['O'] > 0) ions.push('O');
+        if (composition['H'] && composition['H'] > 0) ions.push('H');
+      }
+      return ions.sort(); 
     }
 
-    // --- EVENT HANDLERS ---
-    function handleHydrationChange(type, change) {
-        const inputElement = document.getElementById(`${type}Formula`);
-        const feedbackElement = document.getElementById(`${type}FormulaFeedback`);
-        let formula = inputElement.value.trim();
-
-        const hydrationRegex = /[·*]\s*(\d*)\s*H₂O/i;
-        const match = formula.match(hydrationRegex);
-
-        if (match) {
-            const baseFormula = formula.substring(0, match.index).trim();
-            const currentHydration = match[1] ? parseInt(match[1], 10) : 1;
-            const newHydration = Math.max(0, currentHydration + change);
-
-            if (newHydration > 1) {
-                formula = `${baseFormula}·${newHydration}H₂O`;
-            } else if (newHydration === 1) {
-                formula = `${baseFormula}·H₂O`;
+    function formatValue(value, type, units = true) {
+        if (isNaN(value)) return "N/A";
+        let formattedValue = "";
+        if (type === 'weight') {
+            if (value >= 1) {
+                formattedValue = `${value.toPrecision(5)}${units ? " g" : ""}`;
             } else {
-                formula = baseFormula;
+                formattedValue = `${(value * 1000).toPrecision(4)}${units ? " mg" : ""}`;
             }
-        } else if (change > 0) {
-            formula = formula ? `${formula}·H₂O` : 'H₂O';
-        }
-
-        inputElement.value = formula;
-        validateFormula(inputElement, feedbackElement);
-    }
-    
-    function runAnalysis() {
-        showLoading(true);
-        clearResults();
-
-        const isOriginalValid = validateFormula(originalFormulaInput, originalFormulaFeedback);
-        const isReplacementValid = validateFormula(replacementFormulaInput, replacementFormulaFeedback);
-
-        if (!isOriginalValid || !isReplacementValid) {
-            showError("Please enter valid chemical formulas for both compounds.");
-            showLoading(false);
-            return;
-        }
-
-        const originalParsed = parseFormula(originalFormulaInput.value);
-        const replacementParsed = parseFormula(replacementFormulaInput.value);
-
-        displayIonSelection(originalParsed, replacementParsed);
-        showLoading(false);
-    }
-
-    function displayIonSelection(originalParsed, replacementParsed) {
-        ionButtonsContainer.innerHTML = '';
-        const commonElements = Object.keys(originalParsed.mainPart.composition)
-            .filter(el => replacementParsed.mainPart.composition.hasOwnProperty(el));
-
-        if (commonElements.length === 0) {
-            showError("No common elements found between the main parts of the compounds to base the conversion on.");
-            return;
-        }
-
-        commonElements.forEach(el => {
-            const btn = document.createElement('button');
-            btn.className = 'ion-btn';
-            btn.textContent = el;
-            btn.dataset.ion = el;
-            btn.addEventListener('click', (e) => {
-                // Remove 'selected' from any other button
-                ionButtonsContainer.querySelectorAll('.ion-btn').forEach(b => b.classList.remove('selected'));
-                // Add 'selected' to the clicked button
-                e.target.classList.add('selected');
-                
-                runFinalCalculation(originalParsed, replacementParsed, el);
-            });
-            ionButtonsContainer.appendChild(btn);
-        });
-
-        ionSelectionPanel.classList.remove('hidden');
-    }
-
-    function runFinalCalculation(originalParsed, replacementParsed, conservedIon) {
-        const amount = parseFloat(amountInput.value);
-        const unit = unitSelect.value;
-        const molarity = parseFloat(molarityInput.value);
-        const molarityUnit = molarityUnitSelect.value;
-        const volume = parseFloat(volumeInput.value);
-        const volumeUnit = volumeUnitSelect.value;
-
-        let originalMoles = 0;
-
-        // Determine original moles from inputs
-        if (!isNaN(molarity) && !isNaN(volume)) {
-            const molarityInM = molarity * (molarityUnit === 'mM' ? 1e-3 : molarityUnit === 'uM' ? 1e-6 : 1);
-            const volumeInL = volume * (volumeUnit === 'mL' ? 1e-3 : 1);
-            originalMoles = molarityInM * volumeInL;
-        } else if (!isNaN(amount)) {
-             if (unit === 'g') originalMoles = amount / originalParsed.molarMass;
-             else if (unit === 'mg') originalMoles = (amount / 1000) / originalParsed.molarMass;
-             else originalMoles = amount; // unit is 'mol'
+        } else if (type === 'moles') {
+            const valueInMmol = value * 1000;
+            formattedValue = `${valueInMmol.toFixed(2)}${units ? " mmol" : ""}`;
+        } else if (type === 'volume') {
+            if (value >= 1 && units) {
+                formattedValue = `${value.toPrecision(4)} L`;
+            } else if (units) {
+                formattedValue = `${(value * 1000).toPrecision(4)} mL`;
+            } else {
+                formattedValue = value.toPrecision(4);
+            }
         } else {
-            showError("Please provide either Amount OR Molarity and Volume.");
-            return;
+            formattedValue = value.toPrecision(4);
         }
-
-        if (originalMoles <= 0) {
-             showError("Calculated amount of original compound is zero or negative. Please check inputs.");
-             return;
-        }
-        
-        const molesOfIon = originalMoles * originalParsed.mainPart.composition[conservedIon];
-        const replacementMoles = molesOfIon / replacementParsed.mainPart.composition[conservedIon];
-        const replacementMassG = replacementMoles * replacementParsed.molarMass;
-
-        displayResults(originalParsed, replacementParsed, originalMoles, replacementMoles, replacementMassG, conservedIon);
+        return formattedValue;
     }
 
-    function displayResults(original, replacement, originalMoles, replacementMoles, replacementMassG, ion) {
-        outputPanel.innerHTML = `
-            <h2><span class="molecule-icon">📈</span>Conversion Results</h2>
-            <p style="text-align:center; margin-top:-1rem; margin-bottom:1.5rem; color:#3f6212;">Based on conserving the molar amount of <strong>${ion}</strong>.</p>
-            
-            <div class="results-grid">
-                <div class="main-result-item">
-                    <div class="main-result-label">Required Amount of ${replacement.mainPart.formula}</div>
-                    <div class="main-result-value">${(replacementMassG * 1000).toFixed(3)} mg</div>
-                    <div class="result-label" style="font-size: 1rem;">(${(replacementMassG).toFixed(4)} g or ${replacementMoles.toExponential(3)} mol)</div>
-                </div>
-
-                <div class="result-item">
-                    <div class="result-label">Original Moles</div>
-                    <div class="result-value">${originalMoles.toExponential(3)} mol</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-label">Replacement Moles</div>
-                    <div class="result-value">${replacementMoles.toExponential(3)} mol</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-label">Original MW</div>
-                    <div class="result-value">${original.molarMass.toFixed(3)} g/mol</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-label">Replacement MW</div>
-                    <div class="result-value">${replacement.molarMass.toFixed(3)} g/mol</div>
-                </div>
-            </div>`;
-        outputPanel.classList.remove('hidden');
+    function convertMolarityToM(value, unit) {
+      if (isNaN(value)) return NaN;
+      switch(unit) {
+        case 'M': return value;
+        case 'mM': return value / 1000;
+        case 'uM': return value / 1000000;
+        default: return value; 
+      }
     }
 
-    // --- HELPER FUNCTIONS ---
-    function clearResults() {
-        outputPanel.classList.add('hidden');
-        outputPanel.innerHTML = '';
-        ionSelectionPanel.classList.add('hidden');
-        ionButtonsContainer.innerHTML = '';
-        errorDisplay.classList.add('hidden');
-        errorDisplay.textContent = '';
+    function convertVolumeToL(value, unit) {
+        if (isNaN(value)) return NaN;
+        switch(unit) {
+            case 'L': return value;
+            case 'mL': return value / 1000;
+            default: return value;
+        }
     }
     
+    function handleMainAction() {
+        hideError();
+        originalFormulaFeedbackEl.textContent = '';
+        originalFormulaInput.classList.remove('input-error');
+        replacementFormulaFeedbackEl.textContent = '';
+        replacementFormulaInput.classList.remove('input-error');
+        hideOutput();
+        const firstMainBtn = document.querySelector('.main-action-btn');
+        const currentAction = firstMainBtn.dataset.action || 'analyze';
+        if (currentAction === 'analyze') {
+            analyzeCompounds();
+        } else if (currentAction === 'calculate') {
+            calculateReplacement();
+        }
+    }
+
+    function validateFormulaInput(inputElement, feedbackElement, chargeCheckBtn) {
+        const text = inputElement.value.trim();
+        feedbackElement.textContent = ''; 
+        feedbackElement.className = 'formula-feedback-message'; 
+        chargeCheckBtn.classList.add('hidden');
+        if (!text) { 
+            inputElement.classList.remove('input-error');
+            return true; 
+        }
+        const potentialName = text.toLowerCase();
+        if (compoundNameToFormulaMap[potentialName]) {
+            inputElement.classList.remove('input-error');
+            return true;
+        }
+        const isPartialName = Object.keys(compoundNameToFormulaMap).some(key => key.startsWith(potentialName));
+        if (isPartialName) {
+            inputElement.classList.remove('input-error');
+            return true;
+        }
+        const parsed = parseFormula(text);
+        if (parsed.unknownElements.length > 0 || (parsed.weight === 0 && text.length > 0 && !/^(\d*)H2O$/i.test(text.replace(/·/g,'')))) {
+            inputElement.classList.add('input-error');
+            let errorMsg = parsed.unknownElements.join(', ');
+            if (parsed.weight === 0 && text.length > 0 && !parsed.unknownElements.length && !/^(\d*)H2O$/i.test(text.replace(/·/g,''))) {
+                 errorMsg = "Could not determine molecular weight. Check formula.";
+            } else if (!errorMsg && parsed.unknownElements.length > 0) {
+                 errorMsg = parsed.unknownElements.join(', ');
+            } else if (!errorMsg) {
+                 errorMsg = "Invalid formula structure.";
+            }
+            feedbackElement.textContent = `Error: ${errorMsg}`;
+            feedbackElement.classList.add('error');
+            return false;
+        } else {
+            inputElement.classList.remove('input-error');
+            feedbackElement.textContent = ''; 
+            chargeCheckBtn.classList.remove('hidden'); 
+            return true;
+        }
+    }
+    
+    function handleChargeCheck(type) {
+        const inputEl = type === 'original' ? originalFormulaInput : replacementFormulaInput;
+        const feedbackEl = type === 'original' ? originalFormulaFeedbackEl : replacementFormulaFeedbackEl;
+        const formulaStr = inputEl.value.trim();
+        feedbackEl.textContent = ''; 
+        feedbackEl.className = 'formula-feedback-message'; 
+        if (!formulaStr) {
+            feedbackEl.textContent = "Enter a formula to check charge balance.";
+            feedbackEl.classList.add('info');
+            return;
+        }
+        const parsed = parseFormula(formulaStr);
+        if (parsed.unknownElements.length > 0 || parsed.weight === 0) {
+            feedbackEl.textContent = "Formula must be valid before checking charge balance.";
+            feedbackEl.classList.add('error');
+            return;
+        }
+        let totalCharge = 0;
+        let hasAmbiguousCharge = false;
+        let unlistedIons = [];
+        for (const part of parsed.parsedStructure) {
+            let chargeInfo = commonIonCharges[part.symbol];
+            if (chargeInfo) {
+                if (Array.isArray(chargeInfo)) { 
+                    hasAmbiguousCharge = true;
+                } else {
+                    totalCharge += chargeInfo * part.count;
+                }
+            } else {
+                if (part.type !== 'text') unlistedIons.push(part.symbol);
+            }
+        }
+        if (unlistedIons.length > 0) {
+             feedbackEl.textContent = `ℹ️ Unrecognized ion(s): ${unlistedIons.join(', ')}.`;
+             feedbackEl.classList.add('info');
+        } else if (hasAmbiguousCharge) {
+            feedbackEl.textContent = `⚠️ Balance ambiguous due to multi-valent ions (e.g., Fe, Cu).`;
+            feedbackEl.classList.add('warning');
+        } else if (totalCharge === 0) {
+            feedbackEl.textContent = "✅ Charges appear balanced (Net Charge: 0).";
+            feedbackEl.classList.add('success');
+        } else {
+            feedbackEl.textContent = `⚠️ Potential charge imbalance. Net Charge: ${totalCharge > 0 ? '+' : ''}${totalCharge}.`;
+            feedbackEl.classList.add('warning');
+        }
+    }
+
+    function analyzeCompounds() {
+        selectedIon = null;
+        ionSelectionPanel.classList.add('hidden');
+        ionButtonsDiv.innerHTML = '';
+        document.querySelectorAll('.main-action-btn').forEach(btn => btn.disabled = true);
+        document.querySelectorAll('.btn-text').forEach(span => span.innerHTML = '<span class="loading"></span> Analyzing...');
+        const isOriginalValid = validateFormulaInput(originalFormulaInput, originalFormulaFeedbackEl, checkChargeOriginalBtn);
+        const originalFormulaStr = originalFormulaInput.value.trim();
+        const replacementFormulaStr = replacementFormulaInput.value.trim();
+        if (!originalFormulaStr) {
+            showError('Please enter a formula for the Original Compound.');
+            resetButtonToAnalyze();
+            return;
+        }
+        if (replacementFormulaStr && !validateFormulaInput(replacementFormulaInput, replacementFormulaFeedbackEl, checkChargeReplacementBtn)) {
+            resetButtonToAnalyze();
+            return;
+        }
+        setTimeout(() => {
+            compoundData.originalParsed = parseFormula(originalFormulaStr);
+            if (compoundData.originalParsed.unknownElements.length > 0 || (compoundData.originalParsed.weight === 0 && originalFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(originalFormulaStr.replace(/·/g, '')))) {
+                originalFormulaFeedbackEl.textContent = `Error: ${compoundData.originalParsed.unknownElements.join(', ') || 'Invalid formula.'}`;
+                originalFormulaFeedbackEl.classList.add('error');
+                resetButtonToAnalyze();
+                return;
+            }
+            if (replacementFormulaStr) {
+                compoundData.replacementParsed = parseFormula(replacementFormulaStr);
+                if (compoundData.replacementParsed.unknownElements.length > 0 || (compoundData.replacementParsed.weight === 0 && replacementFormulaStr.length > 0 && !/^(\d*)H2O$/i.test(replacementFormulaStr.replace(/·/g, '')))) {
+                    replacementFormulaFeedbackEl.textContent = `Error: ${compoundData.replacementParsed.unknownElements.join(', ') || 'Invalid formula.'}`;
+                    replacementFormulaFeedbackEl.classList.add('error');
+                    resetButtonToAnalyze();
+                    return;
+                }
+                const ionsForSelection = getIonsFromComposition(compoundData.originalParsed.mainComposition);
+                if (ionsForSelection.length === 0) {
+                    showError(`No distinct chemical elements found in the main part of the original formula to conserve.`);
+                    resetButtonToAnalyze();
+                    return;
+                }
+                showIonSelection(ionsForSelection);
+                resetButtonToCalculate();
+            } else {
+                compoundData.replacementParsed = null;
+                calculateAndShowOriginalOnly();
+            }
+        }, 200);
+    }
+
+    function showIonSelection(ions) {
+      ionButtonsDiv.innerHTML = ions.map(ion => 
+        `<button class="ion-btn" data-ion="${ion}">${ion}${getIonDisplayCharge(ion)}</button>`
+      ).join('');
+      ionSelectionPanel.classList.remove('hidden');
+      ionSelectionPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function getIonDisplayCharge(element) { 
+      const charges = { Ca:'²⁺',Mg:'²⁺',Zn:'²⁺',Fe:'²⁺/³⁺',Cu:'⁺/²⁺',Na:'⁺',K:'⁺',Li:'⁺',Al:'³⁺',Cl:'⁻',Br:'⁻',I:'⁻',F:'⁻',S:'²⁻',P:'³⁻',N:'³⁻'};
+      return charges[element] || '';
+    }
+
+    function selectIon(ion, buttonElement) {
+        selectedIon = ion;
+        document.querySelectorAll('.ion-btn').forEach(btn => btn.classList.remove('selected'));
+        buttonElement.classList.add('selected');
+        document.querySelectorAll('.btn-text').forEach(span => span.textContent = 'Calculate Replacement');
+        document.querySelectorAll('.main-action-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.dataset.action = 'calculate';
+        });
+    }
+
+    function calculateAndShowOriginalOnly() {
+        const originalAmountVal = parseFloat(amountInput.value);
+        const originalUnit = unitSelect.value;
+        const molarityVal = parseFloat(molarityInput.value);
+        const molarityUnit = molarityUnitSelect.value;
+        const volumeVal = parseFloat(volumeInput.value);
+        const volumeUnit = volumeUnitSelect.value;
+        const hasOriginalAmount = !isNaN(originalAmountVal);
+        const hasMolarity = !isNaN(molarityVal);
+        const hasVolume = !isNaN(volumeVal);
+        let currentMolarityM = hasMolarity ? convertMolarityToM(molarityVal, molarityUnit) : NaN;
+        let currentVolumeL = hasVolume ? convertVolumeToL(volumeVal, volumeUnit) : NaN;
+        let originalMoles = NaN;
+        if (hasMolarity && hasVolume) {
+            originalMoles = currentMolarityM * currentVolumeL;
+        } else if (hasOriginalAmount) {
+            originalMoles = (originalUnit === 'mol') ? originalAmountVal :
+                (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
+        } else {
+            showError("Insufficient input. Provide Original Amount, OR Molarity & Volume.");
+            resetButtonToAnalyze();
+            return;
+        }
+        if (isNaN(originalMoles) || originalMoles <= 0) {
+            showError("Could not determine a valid positive amount (moles) for the original compound.");
+            resetButtonToAnalyze();
+            return;
+        }
+        let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">📊</span>Calculation Results</h2>`;
+        resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(originalMoles, 'moles')}</div><div class="main-result-label">Calculated Moles of ${escapeHTML(compoundData.originalParsed.displayFormula)}</div></div>`;
+        resultsHTML += `<h3>Calculation Details</h3><div class="results-grid">`;
+        resultsHTML += createResultItem(compoundData.originalParsed.weight.toFixed(4) + ' g/mol', 'Molar Mass');
+        resultsHTML += `</div>`;
+        outputPanel.innerHTML = resultsHTML;
+        outputPanel.classList.remove('hidden');
+        outputPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        resetButtonToAnalyze();
+    }
+    
+    function calculateReplacement() {
+        const firstMainBtn = document.querySelector('.main-action-btn');
+        if (!selectedIon && firstMainBtn && firstMainBtn.dataset.action === 'calculate') {
+            showError('Please select an ion to conserve before calculating.');
+            return;
+        }
+        document.querySelectorAll('.btn-text').forEach(span => span.innerHTML = '<span class="loading"></span> Calculating...');
+        document.querySelectorAll('.main-action-btn').forEach(btn => btn.disabled = true);
+        setTimeout(() => {
+            if (!compoundData.originalParsed || !compoundData.replacementParsed ||
+                compoundData.originalParsed.unknownElements.length > 0 ||
+                compoundData.replacementParsed.unknownElements.length > 0) {
+                showError("Formulas seem to have changed or are invalid. Please Analyze Compounds again.");
+                resetButtonToAnalyze();
+                return;
+            }
+            const originalAmountVal = parseFloat(amountInput.value);
+            const originalUnit = unitSelect.value;
+            const molarityVal = parseFloat(molarityInput.value);
+            const molarityUnit = molarityUnitSelect.value;
+            const volumeVal = parseFloat(volumeInput.value);
+            const volumeUnit = volumeUnitSelect.value;
+            const hasOriginalAmount = !isNaN(originalAmountVal);
+            const hasMolarity = !isNaN(molarityVal);
+            const hasVolume = !isNaN(volumeVal);
+            let currentMolarityM = hasMolarity ? convertMolarityToM(molarityVal, molarityUnit) : NaN;
+            let currentVolumeL = hasVolume ? convertVolumeToL(volumeVal, volumeUnit) : NaN;
+            let originalMoles = NaN;
+            let calculatedMolarityForDisplay = null;
+            let calculatedVolumeForDisplay = null;
+            if (hasMolarity && hasVolume) {
+                originalMoles = currentMolarityM * currentVolumeL;
+                if (compoundData.originalParsed && compoundData.originalParsed.weight > 0) {
+                    const massInGrams = originalMoles * compoundData.originalParsed.weight;
+                    const formattedMass = formatValue(massInGrams, 'weight', false);
+                    amountInput.value = formattedMass;
+                    unitSelect.value = massInGrams < 1 ? 'mg' : 'g';
+                } else {
+                    amountInput.value = originalMoles.toPrecision(4);
+                    unitSelect.value = 'mol';
+                }
+            } else if (hasOriginalAmount) {
+                originalMoles = (originalUnit === 'mol') ? originalAmountVal :
+                    (compoundData.originalParsed?.weight > 0 ? (originalUnit === 'g' ? originalAmountVal : originalAmountVal / 1000) / compoundData.originalParsed.weight : NaN);
+                if (isNaN(originalMoles)) {
+                    showError("Original compound weight error for amount conversion.");
+                    resetButtonToCalculate();
+                    return;
+                }
+                if (hasVolume && currentVolumeL > 0) {
+                    const calcM = originalMoles / currentVolumeL;
+                    calculatedMolarityForDisplay = { value: calcM, unit: 'M' };
+                    molarityInput.value = (molarityUnitSelect.value === 'mM' ? calcM * 1000 : (molarityUnitSelect.value === 'uM' ? calcM * 1000000 : calcM)).toPrecision(4);
+                } else if (hasMolarity && currentMolarityM > 0) {
+                    const calcL = originalMoles / currentMolarityM;
+                    calculatedVolumeForDisplay = { value: calcL, unit: 'L' };
+                    volumeInput.value = (volumeUnitSelect.value === 'mL' ? calcL * 1000 : calcL).toPrecision(4);
+                } else if (!hasVolume && !hasMolarity) {
+                    // This is fine, just use the amount.
+                } else {
+                    showError("To auto-calculate Molarity or Volume, ensure the provided value is > 0.");
+                    resetButtonToCalculate();
+                    return;
+                }
+            } else {
+                showError("Insufficient input. Provide Original Amount, OR Molarity & Volume.");
+                resetButtonToAnalyze();
+                return;
+            }
+            if (isNaN(originalMoles) || originalMoles <= 0) {
+                showError("Could not determine a valid positive amount (moles) for the original compound.");
+                resetButtonToAnalyze();
+                return;
+            }
+            if (!selectedIon) {
+                showError('Please select an ion/element from the original compound to conserve.');
+                resetButtonToCalculate();
+                return;
+            }
+            if (!compoundData.replacementParsed.mainComposition[selectedIon] || compoundData.replacementParsed.mainComposition[selectedIon] === 0) {
+                showError(`The selected element/ion (${selectedIon}) is not found (or has zero stoichiometry) in the main chemical entity of the replacement compound (${compoundData.replacementParsed.displayFormula}). Cannot conserve.`);
+                resetButtonToCalculate();
+                return;
+            }
+            const originalStoichiometry = compoundData.originalParsed.mainComposition[selectedIon];
+            const replacementStoichiometry = compoundData.replacementParsed.mainComposition[selectedIon];
+            if (!originalStoichiometry || originalStoichiometry === 0) {
+                showError(`Selected ion (${selectedIon}) has zero stoichiometry in the main part of the original compound. This shouldn't happen if selected from the list.`);
+                resetButtonToCalculate();
+                return;
+            }
+            const molesOfSelectedIon = originalMoles * originalStoichiometry;
+            const molesOfReplacementCompound = molesOfSelectedIon / replacementStoichiometry;
+            const weightOfReplacementGrams = molesOfReplacementCompound * compoundData.replacementParsed.weight;
+            let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">📊</span>Calculation Results</h2>`;
+            resultsHTML += `<div class="main-result-item"><div class="main-result-value">${formatValue(weightOfReplacementGrams, 'weight')}</div><div class="main-result-label">Required Weight of ${escapeHTML(compoundData.replacementParsed.displayFormula)}</div></div>`;
+            resultsHTML += `<h3>Calculation Details</h3><div class="results-grid">`;
+            resultsHTML += createResultItem(formatValue(originalMoles, 'moles'), `Moles of ${compoundData.originalParsed.displayFormula}`);
+            resultsHTML += createResultItem(formatValue(molesOfReplacementCompound, 'moles'), `Moles of ${compoundData.replacementParsed.displayFormula}`);
+            resultsHTML += createResultItem(`${selectedIon}${getIonDisplayCharge(selectedIon)}`, 'Conserved Element/Ion');
+            if (calculatedMolarityForDisplay) {
+                resultsHTML += createResultItem(`${formatValue(calculatedMolarityForDisplay.value, 'moles')} / L`, 'Calculated Molarity');
+            }
+            if (calculatedVolumeForDisplay) {
+                resultsHTML += createResultItem(formatValue(calculatedVolumeForDisplay.value, 'volume'), 'Calculated Volume');
+            }
+            resultsHTML += `</div><button id="copyResultsBtn" class="secondary-btn">Copy Summary</button>`;
+            outputPanel.innerHTML = resultsHTML;
+            outputPanel.classList.remove('hidden');
+            outputPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            document.getElementById('copyResultsBtn').addEventListener('click', () => copyResultsSummary(weightOfReplacementGrams, molesOfReplacementCompound));
+            resetButtonToAnalyze();
+        }, 200);
+    }
+
+    function handleCalculateDilution() {
+        dilutionCalcErrorEl.textContent = ''; 
+        dilutionResultOutputEl.classList.add('hidden');
+        dilutionResultOutputEl.innerHTML = '';
+        const M1_val = parseFloat(stockConcInput.value);
+        const M1_unit = stockConcUnitSelect.value;
+        const M2_val = parseFloat(finalConcInput.value);
+        const M2_unit = finalConcUnitSelect.value;
+        const V2_val = parseFloat(finalVolumeInput.value);
+        const V2_unit = finalVolumeUnitSelect.value;
+        if (isNaN(M1_val) || isNaN(M2_val) || isNaN(V2_val)) {
+            dilutionCalcErrorEl.textContent = "Error: All concentration and volume fields must be numbers.";
+            return;
+        }
+        if (M1_val <= 0 || M2_val < 0 || V2_val <= 0) { 
+             dilutionCalcErrorEl.textContent = "Error: Concentrations and final volume must be positive (final conc. can be 0).";
+            return;
+        }
+        const M1_molar = convertMolarityToM(M1_val, M1_unit);
+        const M2_molar = convertMolarityToM(M2_val, M2_unit);
+        const V2_liters = convertVolumeToL(V2_val, V2_unit);
+        if (M1_molar < M2_molar && M2_molar > 0) { 
+            dilutionCalcErrorEl.textContent = "Error: Stock concentration (C₁) must be greater than or equal to final concentration (C₂).";
+            return;
+        }
+        if (M1_molar === 0 && M2_molar > 0) {
+             dilutionCalcErrorEl.textContent = "Error: Stock concentration (C₁) cannot be zero if final concentration (C₂) is greater than zero.";
+            return;
+        }
+        let V1_liters;
+        if (M1_molar === 0) { 
+            V1_liters = (M2_molar === 0) ? 0 : NaN; 
+            if (isNaN(V1_liters)) {
+                 dilutionCalcErrorEl.textContent = "Error: Cannot achieve a non-zero final concentration with a 0M stock.";
+                 return;
+            }
+        } else {
+            V1_liters = (M2_molar * V2_liters) / M1_molar;
+        }
+        const volume_diluent_liters = V2_liters - V1_liters;
+        if (V1_liters < 0 || volume_diluent_liters < 0) { 
+            dilutionCalcErrorEl.textContent = "Error: Calculation resulted in negative volume. Check inputs.";
+            return;
+        }
+        let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">💧</span>Dilution Results</h2>`;
+        resultsHTML += `<div class="dilution-results-grid results-grid">`; 
+        resultsHTML += createResultItem(formatValue(V1_liters, 'volume'), `Required Volume of Stock (V₁)`);
+        resultsHTML += createResultItem(formatValue(volume_diluent_liters, 'volume'), `Volume of Diluent to Add`);
+        resultsHTML += `</div>`;
+        dilutionResultOutputEl.innerHTML = resultsHTML;
+        dilutionResultOutputEl.classList.remove('hidden');
+        dilutionResultOutputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    function copyResultsSummary(weightGrams, moles) {
+        const summary = `
+	ChemCalc Calculation Summary
+--------------------------------
+Original Compound: ${compoundData.originalParsed.displayFormula}
+Replacement Compound: ${compoundData.replacementParsed.displayFormula}
+Conserved Element/Ion: ${selectedIon}
+--------------------------------
+Required Weight: ${formatValue(weightGrams, 'weight')}
+Required Moles: ${formatValue(moles, 'moles')}
+        `.trim().replace(/^\s+/gm, '');
+        const textarea = document.createElement('textarea');
+        textarea.value = summary;
+        textarea.style.position = 'fixed'; 
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        let success = false;
+        try {
+            success = document.execCommand('copy');
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+        }
+        document.body.removeChild(textarea);
+        const copyBtn = document.getElementById('copyResultsBtn');
+        if (copyBtn) {
+            if (success) {
+                copyBtn.textContent = 'Copied!';
+            } else {
+                copyBtn.textContent = 'Copy Failed';
+            }
+            setTimeout(() => { copyBtn.textContent = 'Copy Summary'; }, 2000);
+        }
+    }
+
     function clearAll() {
         originalFormulaInput.value = '';
         replacementFormulaInput.value = '';
         amountInput.value = '';
         molarityInput.value = '';
         volumeInput.value = '';
-        originalFormulaFeedback.textContent = '';
-        replacementFormulaFeedback.textContent = '';
+        unitSelect.value = 'mg';
+        molarityUnitSelect.value = 'mM';
+        volumeUnitSelect.value = 'mL';
         originalFormulaInput.classList.remove('input-error');
+        originalFormulaFeedbackEl.textContent = '';
+        originalFormulaFeedbackEl.className = 'formula-feedback-message';
+        checkChargeOriginalBtn.classList.add('hidden');
         replacementFormulaInput.classList.remove('input-error');
-        clearResults();
-    }
-    
-    function showError(message) {
-        errorDisplay.textContent = message;
-        errorDisplay.classList.remove('hidden');
+        replacementFormulaFeedbackEl.textContent = '';
+        replacementFormulaFeedbackEl.className = 'formula-feedback-message';
+        checkChargeReplacementBtn.classList.add('hidden');
+        stockConcInput.value = '';
+        finalConcInput.value = '';
+        finalVolumeInput.value = '';
+        stockConcUnitSelect.value = 'mM';
+        finalConcUnitSelect.value = 'mM';
+        finalVolumeUnitSelect.value = 'mL';
+        dilutionCalcErrorEl.textContent = '';
+        dilutionResultOutputEl.classList.add('hidden');
+        dilutionResultOutputEl.innerHTML = '';
+        compoundData = { originalParsed: null, replacementParsed: null };
+        hideError();
+        hideOutput();
+        resetButtonToAnalyze();
     }
 
-    function showLoading(isLoading) {
-        const btnText = analyzeBtn.querySelector('.btn-text');
-        if (isLoading) {
-            analyzeBtn.disabled = true;
-            btnText.innerHTML = '<span class="loading"></span> Analyzing...';
-        } else {
-            analyzeBtn.disabled = false;
-            btnText.innerHTML = 'Analyze Compounds';
+    function createResultItem(value, label) {
+        return `
+            <div class="result-item">
+              <div class="result-value">${escapeHTML(value)}</div>
+              <div class="result-label">${escapeHTML(label)}</div>
+            </div>`;
+    }
+
+    function showError(message) {
+      errorDisplayDiv.textContent = message;
+      errorDisplayDiv.classList.remove('hidden');
+      errorDisplayDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideError() {
+      errorDisplayDiv.classList.add('hidden');
+      errorDisplayDiv.textContent = '';
+    }
+
+    function hideOutput() {
+      outputPanel.classList.add('hidden');
+      outputPanel.innerHTML = '';
+      dilutionResultOutputEl.classList.add('hidden');
+      dilutionResultOutputEl.innerHTML = '';
+    }
+
+    function resetButtonToAnalyze() {
+        document.querySelectorAll('.btn-text').forEach(span => {
+            span.textContent = 'Analyze Compounds';
+        });
+        document.querySelectorAll('.main-action-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.dataset.action = 'analyze';
+        });
+        if (typeof ionSelectionPanel !== 'undefined') {
+            ionSelectionPanel.classList.add('hidden');
+        }
+        if (typeof selectedIon !== 'undefined') {
+            selectedIon = null;
         }
     }
 
-    // --- INITIAL EVENT LISTENERS ---
-    originalFormulaInput.addEventListener('input', () => validateFormula(originalFormulaInput, originalFormulaFeedback));
-    replacementFormulaInput.addEventListener('input', () => validateFormula(replacementFormulaInput, replacementFormulaFeedback));
-    
-    document.getElementById('addHydrationOriginal').addEventListener('click', () => handleHydrationChange('original', 1));
-    document.getElementById('removeHydrationOriginal').addEventListener('click', () => handleHydrationChange('original', -1));
-    document.getElementById('addHydrationReplacement').addEventListener('click', () => handleHydrationChange('replacement', 1));
-    document.getElementById('removeHydrationReplacement').addEventListener('click', () => handleHydrationChange('replacement', -1));
+    function resetButtonToCalculate() {
+        document.querySelectorAll('.main-action-btn').forEach(btn => {
+            if (selectedIon && ionButtonsDiv.children.length > 0) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+            btn.dataset.action = 'calculate';
+        });
+        document.querySelectorAll('.btn-text').forEach(span => {
+            if (ionButtonsDiv.children.length > 0 && !selectedIon) {
+                span.textContent = 'Select Ion, then Calculate';
+            } else {
+                span.textContent = 'Calculate Replacement';
+            }
+        });
+    }
 
-    analyzeBtn.addEventListener('click', runAnalysis);
-    clearAllBtn.addEventListener('click', clearAll);
-    
-    // Placeholder for dilution calculator logic if it were to be implemented
-    document.getElementById('calculateDilutionBtn').addEventListener('click', () => {
-         // This logic is separate and was not part of the reported bug.
-         // For now, we can just show an alert.
-         alert("Dilution calculator logic not implemented in this fix.");
-    });
-});
-</script>
+  </script>
 </body>
 </html>
