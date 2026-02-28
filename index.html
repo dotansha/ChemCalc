@@ -190,6 +190,18 @@
         background: white;
         line-height: 1.4;
     }
+
+    #originalFormula,
+    #replacementFormula {
+        line-height: 1.65;
+        padding-top: 0.85rem;
+        padding-bottom: 0.85rem;
+        font-family: "Segoe UI", "Noto Sans", "Arial Unicode MS", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #originalFormula::placeholder,
+    #replacementFormula::placeholder {
+        line-height: 1.65;
+    }
     
     .formula-input-group {
         margin-bottom: 0.8rem;
@@ -250,6 +262,12 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.25;
+      min-height: 2.1rem;
+      white-space: nowrap;
     }
 
     .hydration-op-btn.add {
@@ -273,7 +291,7 @@
       background: white;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
-      max-height: 130px; 
+      max-height: 240px; 
       overflow-y: auto;
       position: absolute;
       width: 100%;
@@ -325,6 +343,23 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
+    }
+
+    .ion-action-controls {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .ion-action-controls .calculate-btn {
+      width: 100%;
+      max-width: 420px;
+    }
+    .ion-action-note {
+      margin-top: 0.6rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #92400e;
     }
 
     .ion-btn {
@@ -724,6 +759,12 @@
         <h3><span class="molecule-icon" style="font-size:14px;">⚛️</span>Conserve Ion Concentration</h3>
         <p>Select the element/ion from the original compound's main chemical entity whose molar quantity you wish to conserve:</p>
         <div id="ionButtons" class="ion-buttons"></div>
+        <div class="ion-action-controls">
+          <button class="calculate-btn main-action-btn" data-action="calculate" disabled>
+            <span class="btn-text">Select Ion, then Calculate</span>
+          </button>
+        </div>
+        <p class="ion-action-note">Continue from here after selecting an ion.</p>
       </div>
 
       <div id="outputPanel" class="output-panel hidden">
@@ -851,6 +892,41 @@
         ...Object.keys(compoundNameToFormulaMap).map(toDisplayName),
         ...Object.values(compoundNameToFormulaMap)
     ])).sort((a, b) => a.localeCompare(b));
+    const suggestionAliasExclusions = new Set([
+        'sodium dihydrogen phospate',
+        'sodium phosphate dibasic anhydrose'
+    ]);
+    const compoundUsageWeights = {
+        H2O: 400,
+        NaCl: 320,
+        NaOH: 290,
+        NaH2PO4: 265,
+        Na2HPO4: 260,
+        NaHCO3: 255,
+        Na2SO4: 235,
+        Na2CO3: 220,
+        NaN3: 180,
+        KCl: 260,
+        K2SO4: 180,
+        KH2PO4: 175,
+        HCl: 280,
+        H2SO4: 270,
+        H3PO4: 250,
+        CaCl2: 220,
+        CaSO4: 165,
+        MgSO4: 220,
+        MgCl2: 180,
+        CuSO4: 170,
+        FeSO4: 160,
+        ZnSO4: 150,
+        CH3COOH: 190,
+        CH3COONa: 140,
+        C6H8O7: 150,
+        C6H12O6: 140,
+        Na2MoO4: 35,
+        NaIO4: 25
+    };
+    let suggestionCatalogCache = null;
     // Global State
     let selectedIon = null;
     let compoundData = { originalParsed: null, replacementParsed: null }; 
@@ -966,15 +1042,82 @@
       input.dispatchEvent(event);
     }
 
+    function normalizeForSuggestionSearch(value) {
+      return normalizeDigits(String(value || ""))
+        .replace(/·/g, '.')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+    }
+
+    function compactSuggestionToken(value) {
+      return normalizeForSuggestionSearch(value).replace(/[^a-z0-9]/g, '');
+    }
+
+    function getFormulaUsageWeight(formula) {
+      const normalized = normalizeDigits(formula).replace(/\s+/g, '');
+      const noHydrate = normalized.replace(/·\d*H2O$/i, '').replace(/·H2O$/i, '');
+      const weightKey = noHydrate.replace(/·/g, '');
+      return compoundUsageWeights[weightKey] || 80;
+    }
+
+    function getSuggestionCatalog() {
+      if (suggestionCatalogCache) return suggestionCatalogCache;
+      suggestionCatalogCache = Object.entries(compoundNameToFormulaMap)
+        .filter(([name]) => !suggestionAliasExclusions.has(name))
+        .map(([name, formula]) => {
+          const displayName = toDisplayName(name);
+          return {
+            displayLabel: `${displayName} (${formula})`,
+            value: formula,
+            popularity: getFormulaUsageWeight(formula),
+            formulaNorm: normalizeForSuggestionSearch(formula),
+            formulaCompact: compactSuggestionToken(formula),
+            nameNorm: normalizeForSuggestionSearch(displayName),
+            nameCompact: compactSuggestionToken(displayName)
+          };
+        });
+      return suggestionCatalogCache;
+    }
+
+    function getSuggestionScore(entry, queryNorm, queryCompact) {
+      const formulaIndex = entry.formulaCompact.indexOf(queryCompact);
+      const nameIndex = entry.nameCompact.indexOf(queryCompact);
+      if (formulaIndex === -1 && nameIndex === -1) return Number.NEGATIVE_INFINITY;
+
+      let score = entry.popularity * 10;
+      if (entry.formulaCompact === queryCompact || entry.nameCompact === queryCompact) score += 5000;
+
+      const shortQuery = queryCompact.length <= 2;
+      if (entry.formulaCompact.startsWith(queryCompact)) score += shortQuery ? 550 : 2200;
+      if (entry.nameCompact.startsWith(queryCompact)) score += shortQuery ? 450 : 1800;
+
+      if (formulaIndex >= 0) score += 320 - Math.min(formulaIndex, 20) * 12;
+      if (nameIndex >= 0) score += 240 - Math.min(nameIndex, 20) * 10;
+
+      if (entry.formulaNorm.startsWith(queryNorm)) score += shortQuery ? 120 : 450;
+      if (entry.nameNorm.startsWith(queryNorm)) score += shortQuery ? 100 : 350;
+
+      return score;
+    }
+
     function showSuggestions(inputId, suggestionsId, value) {
       const suggestionsDiv = document.getElementById(suggestionsId);
-      if (!value || value.length < 1) { 
+      const queryNorm = normalizeForSuggestionSearch(value);
+      const queryCompact = compactSuggestionToken(value);
+      if (!queryCompact || queryCompact.length < 1) { 
         suggestionsDiv.classList.add('hidden');
+        suggestionsDiv.textContent = '';
         return;
       }
-      const suggestions = commonCompounds.filter(compound => 
-        compound.toLowerCase().includes(value.toLowerCase())
-      ).slice(0, 8);
+
+      const suggestions = getSuggestionCatalog()
+        .map(entry => ({ entry, score: getSuggestionScore(entry, queryNorm, queryCompact) }))
+        .filter(item => Number.isFinite(item.score))
+        .sort((a, b) => b.score - a.score || a.entry.displayLabel.localeCompare(b.entry.displayLabel))
+        .slice(0, 14)
+        .map(item => item.entry);
+
       if (suggestions.length > 0) {
         suggestionsDiv.textContent = '';
         const fragment = document.createDocumentFragment();
@@ -982,8 +1125,8 @@
           const suggestionItem = document.createElement('button');
           suggestionItem.type = 'button';
           suggestionItem.className = 'suggestion-item';
-          suggestionItem.textContent = suggestion;
-          suggestionItem.addEventListener('click', () => selectSuggestion(inputId, suggestion, suggestionsId));
+          suggestionItem.textContent = suggestion.displayLabel;
+          suggestionItem.addEventListener('click', () => selectSuggestion(inputId, suggestion.value, suggestionsId));
           fragment.appendChild(suggestionItem);
         });
         suggestionsDiv.appendChild(fragment);
