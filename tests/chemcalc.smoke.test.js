@@ -14,6 +14,22 @@ if (!appScript) {
   throw new Error("Could not find the main ChemCalc script block in index.html");
 }
 
+const cspMetaMatch = html.match(/<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]+)"/i);
+assert.ok(cspMetaMatch, "Expected a CSP meta tag in index.html");
+const cspContent = cspMetaMatch[1];
+assert.ok(cspContent.includes("object-src 'none'"), "CSP should explicitly disable plugin objects");
+assert.ok(!/frame-src\s+https:\s*;/.test(cspContent), "CSP should not allow all HTTPS frame sources");
+assert.ok(!/connect-src\s+'self'\s+https:\s*;/.test(cspContent), "CSP should not allow all HTTPS connect sources");
+
+assert.ok(!html.includes("tree/Publish"), "Footer link should not point to the retired Publish branch");
+assert.ok(
+  html.includes('href="https://github.com/dotansha/ChemCalc"'),
+  "Footer should link to the ChemCalc repository root"
+);
+["presetToolsSection", "copyShareLinkBtn", "bufferCalculatorSection", "calculateBufferBtn", "bufferPreset"].forEach((requiredId) => {
+  assert.ok(html.includes(`id="${requiredId}"`), `Expected UI element with id="${requiredId}"`);
+});
+
 function createClassList() {
   const classes = new Set();
   return {
@@ -90,6 +106,12 @@ const context = {
   console,
   document: documentStub,
   Event: EventStub,
+  URLSearchParams,
+  location: {
+    origin: "https://dotansha.github.io",
+    pathname: "/ChemCalc/",
+    search: ""
+  },
   setTimeout: (callback) => {
     callback();
     return 0;
@@ -100,7 +122,7 @@ context.window = context;
 
 vm.createContext(context);
 vm.runInContext(
-  `${appScript}\nthis.__chemcalcExports = { parseFormula, commonIonCharges, compoundNameToFormulaMap, commonCompounds };`,
+  `${appScript}\nthis.__chemcalcExports = { parseFormula, commonIonCharges, compoundNameToFormulaMap, commonCompounds, encodeShareState, decodeShareState, buildShareableUrlFromState, calculateBufferPlan, getBufferPresetConfig, applyBufferPreset };`,
   context
 );
 
@@ -108,7 +130,13 @@ const {
   parseFormula,
   commonIonCharges,
   compoundNameToFormulaMap,
-  commonCompounds
+  commonCompounds,
+  encodeShareState,
+  decodeShareState,
+  buildShareableUrlFromState,
+  calculateBufferPlan,
+  getBufferPresetConfig,
+  applyBufferPreset
 } = context.__chemcalcExports;
 
 const requiredChargeEntries = [
@@ -177,6 +205,109 @@ ambiguousMatrix.forEach((formula) => {
   assert.strictEqual(hasAmbiguousCharge, true, `Expected ambiguous charge detection for ${formula}`);
 });
 
+const hydrateNotationPairs = [
+  ["CuSO4·5H2O", "CuSO4.5H2O"],
+  ["Na2CO3·10H2O", "Na2CO3.10H2O"]
+];
+
+hydrateNotationPairs.forEach(([canonicalNotation, dotNotation]) => {
+  const canonicalParsed = parseFormula(canonicalNotation);
+  const dotParsed = parseFormula(dotNotation);
+  assert.strictEqual(
+    canonicalParsed.unknownElements.length,
+    0,
+    `Unexpected parse errors for ${canonicalNotation}: ${canonicalParsed.unknownElements.join(", ")}`
+  );
+  assert.strictEqual(
+    dotParsed.unknownElements.length,
+    0,
+    `Expected dot hydrate notation to parse for ${dotNotation}: ${dotParsed.unknownElements.join(", ")}`
+  );
+  assert.ok(
+    Math.abs(canonicalParsed.weight - dotParsed.weight) < 1e-9,
+    `Expected equivalent hydrate weights for ${canonicalNotation} and ${dotNotation}`
+  );
+});
+
+const shareState = {
+  originalFormula: "NaCl",
+  replacementFormula: "KCl",
+  amount: "100",
+  unit: "mg",
+  bufferPreset: "pbs",
+  bufferPka: "7.21",
+  bufferTargetPh: "7.40"
+};
+const encodedShare = encodeShareState(shareState);
+assert.ok(encodedShare.includes("o=NaCl"), "Encoded share payload should include original formula");
+const decodedShare = decodeShareState(`?${encodedShare}`);
+assert.strictEqual(decodedShare.originalFormula, "NaCl", "Decoded share payload should restore original formula");
+assert.strictEqual(decodedShare.bufferPreset, "pbs", "Decoded share payload should restore buffer preset");
+assert.strictEqual(decodedShare.bufferTargetPh, "7.40", "Decoded share payload should restore buffer pH");
+const shareUrl = buildShareableUrlFromState(shareState);
+assert.ok(
+  shareUrl.startsWith("https://dotansha.github.io/ChemCalc/?"),
+  `Share URL should be rooted to current page path, got ${shareUrl}`
+);
+
+const bufferPlan = calculateBufferPlan({
+  pKa: "7.21",
+  targetPh: "7.40",
+  totalConcValue: "50",
+  totalConcUnit: "mM",
+  finalVolumeValue: "500",
+  finalVolumeUnit: "mL",
+  acidMw: "136.09",
+  baseMw: "158.96",
+  acidName: "NaH2PO4",
+  baseName: "Na2HPO4"
+});
+assert.ok(!bufferPlan.error, `Expected valid buffer plan, got error: ${bufferPlan.error}`);
+assert.strictEqual(bufferPlan.acidName, "NaH2PO4", "Buffer plan should retain acid component label");
+assert.strictEqual(bufferPlan.baseName, "Na2HPO4", "Buffer plan should retain base component label");
+assert.ok(
+  Math.abs((bufferPlan.acidConcM + bufferPlan.baseConcM) - 0.05) < 1e-12,
+  "Buffer concentrations should sum to total concentration in M"
+);
+assert.ok(
+  Math.abs((bufferPlan.acidMoles + bufferPlan.baseMoles) - 0.025) < 1e-12,
+  "Buffer moles should sum to total moles for the target volume"
+);
+assert.ok(bufferPlan.acidMassG > 0 && bufferPlan.baseMassG > 0, "Buffer plan should compute masses when MW values are provided");
+
+const invalidBufferPlan = calculateBufferPlan({
+  pKa: "",
+  targetPh: "7.4",
+  totalConcValue: "50",
+  totalConcUnit: "mM",
+  finalVolumeValue: "500",
+  finalVolumeUnit: "mL",
+  acidMw: "",
+  baseMw: ""
+});
+assert.ok(invalidBufferPlan.error, "Invalid buffer inputs should return an error message");
+
+const pbsPreset = getBufferPresetConfig("pbs");
+assert.strictEqual(pbsPreset.pKa, 7.21, "PBS preset should expose phosphate pKa");
+assert.strictEqual(pbsPreset.acidName, "NaH2PO4 (monobasic)", "PBS preset acid label mismatch");
+assert.strictEqual(pbsPreset.baseName, "Na2HPO4 (dibasic)", "PBS preset base label mismatch");
+
+applyBufferPreset("tris", { forceValues: true });
+const trisPka = parseFloat(documentStub.getElementById("bufferPka").value);
+const trisAcidMw = parseFloat(documentStub.getElementById("bufferAcidMW").value);
+const trisBaseMw = parseFloat(documentStub.getElementById("bufferBaseMW").value);
+assert.ok(Math.abs(trisPka - 8.06) < 1e-12, "Tris preset should auto-fill pKa 8.06");
+assert.ok(Math.abs(trisAcidMw - 157.6) < 1e-12, "Tris preset should auto-fill Tris-HCl MW");
+assert.ok(Math.abs(trisBaseMw - 121.14) < 1e-12, "Tris preset should auto-fill Tris base MW");
+assert.ok(
+  documentStub.getElementById("bufferAcidMwLabel").textContent.includes("Tris-HCl"),
+  "Tris preset should update acid MW label"
+);
+assert.ok(
+  documentStub.getElementById("bufferBaseMwLabel").textContent.includes("Tris base"),
+  "Tris preset should update base MW label"
+);
+
 commonCompounds.forEach((suggestion) => {
   const lower = suggestion.toLowerCase();
   const hasNameMapping = Boolean(compoundNameToFormulaMap[lower]);
@@ -188,4 +319,9 @@ commonCompounds.forEach((suggestion) => {
   );
 });
 
-console.log(`ChemCalc smoke tests passed: ${neutralMatrix.length + ambiguousMatrix.length + requiredChargeEntries.length} charge assertions + ${commonCompounds.length} suggestion checks.`);
+const chargeAssertions = neutralMatrix.length + ambiguousMatrix.length + requiredChargeEntries.length;
+const metadataAssertions = 10;
+const featureAssertions = 16;
+console.log(
+  `ChemCalc smoke tests passed: ${chargeAssertions} charge assertions + ${hydrateNotationPairs.length} hydrate notation checks + ${commonCompounds.length} suggestion checks + ${metadataAssertions} metadata checks + ${featureAssertions} feature checks.`
+);

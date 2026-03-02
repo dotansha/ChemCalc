@@ -4,7 +4,7 @@
   <meta name="description" content="A simple and powerful chemistry calculator to analyze chemical compounds, calculate molar mass, and determine mass percentages. Perfect for students and professionals.">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src https:; connect-src 'self' https:;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src https://googleads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com; connect-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com; form-action 'self';">
   <meta name="google-adsense-account" content="ca-pub-8948405948087873">
   <meta name="msvalidate.01" content="848A490F5967273EFF4F57D7327BB1F5" />
   <title>ChemCalc: The Easy Chemistry Calculator</title>
@@ -392,6 +392,9 @@
     #dilutionCalculatorSection .flex-inputs {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
     }
+    #bufferCalculatorSection .flex-inputs {
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    }
     @media (min-width: 768px) { 
         #dilutionCalculatorSection .flex-inputs {
             grid-template-columns: repeat(2, 1fr); 
@@ -400,6 +403,9 @@
      @media (min-width: 1024px) { 
         #dilutionCalculatorSection .flex-inputs {
             grid-template-columns: repeat(3, 1fr); 
+        }
+        #bufferCalculatorSection .flex-inputs {
+            grid-template-columns: repeat(4, 1fr);
         }
     }
     
@@ -458,6 +464,50 @@
     .secondary-btn:hover {
         background-color: #e2e8f0;
         border-color: #cbd5e1;
+    }
+
+    .tool-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 1rem;
+    }
+    .tool-buttons .secondary-btn {
+        border-radius: 12px;
+        padding: 0.65rem 1rem;
+    }
+    .preset-status {
+        margin-top: 0.7rem;
+        min-height: 1.2em;
+    }
+    .history-list {
+        margin-top: 0.8rem;
+        display: grid;
+        gap: 0.45rem;
+    }
+    .history-item-btn {
+        width: 100%;
+        text-align: left;
+        border: 1px solid #dbeafe;
+        background: #eff6ff;
+        color: #1e3a8a;
+        border-radius: 10px;
+        padding: 0.65rem 0.8rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .history-item-btn:hover {
+        background: #dbeafe;
+        border-color: #93c5fd;
+    }
+    .history-empty {
+        color: #64748b;
+        font-size: 0.85rem;
+    }
+    .buffer-preset-note {
+        margin-top: 1rem;
+        margin-bottom: 0;
     }
 
     .output-panel {
@@ -755,6 +805,89 @@
          <span id="dilutionCalcError" class="dilution-error-message"></span>
       </div>
 
+      <div id="presetToolsSection" class="calculator-section">
+        <h3><span class="molecule-icon" style="font-size:14px;">📁</span>Presets, History, and Share</h3>
+        <div class="flex-inputs">
+          <div>
+            <label for="presetName">Preset Name</label>
+            <input type="text" id="presetName" placeholder="e.g. PBS 1x from NaCl stock">
+          </div>
+          <div>
+            <label for="presetSelect">Saved Presets</label>
+            <select id="presetSelect">
+              <option value="">No saved presets</option>
+            </select>
+          </div>
+        </div>
+        <div class="tool-buttons">
+          <button id="savePresetBtn" class="secondary-btn" type="button">Save Preset</button>
+          <button id="applyPresetBtn" class="secondary-btn" type="button">Load Preset</button>
+          <button id="deletePresetBtn" class="secondary-btn" type="button">Delete Preset</button>
+          <button id="copyShareLinkBtn" class="secondary-btn" type="button">Copy Share Link</button>
+        </div>
+        <span id="presetStatus" class="formula-feedback-message preset-status"></span>
+        <h4 style="margin-top:1rem; color:#334155; font-size:0.95rem;">Recent Sessions</h4>
+        <div id="historyList" class="history-list"></div>
+      </div>
+
+      <div id="bufferCalculatorSection" class="calculator-section">
+        <h3><span class="molecule-icon" style="font-size:14px;">🧫</span>Buffer Calculator (Henderson-Hasselbalch)</h3>
+        <div class="flex-inputs">
+          <div>
+            <label for="bufferPreset">Buffer Preset</label>
+            <select id="bufferPreset">
+              <option value="custom" selected>Custom (manual pair)</option>
+              <option value="pbs">PBS (phosphate pair)</option>
+              <option value="tris">Tris / Tris-HCl</option>
+              <option value="acetate">Acetate / Acetic acid</option>
+            </select>
+          </div>
+          <div>
+            <label for="bufferPka">Acid pKa</label>
+            <input type="number" id="bufferPka" placeholder="e.g. 7.21" step="any">
+          </div>
+          <div>
+            <label for="bufferTargetPh">Target pH</label>
+            <input type="number" id="bufferTargetPh" placeholder="e.g. 7.40" step="any">
+          </div>
+          <div>
+            <label for="bufferTotalConc">Total Buffer Concentration</label>
+            <input type="number" id="bufferTotalConc" placeholder="e.g. 50" step="any">
+          </div>
+          <div>
+            <label for="bufferConcUnit">Concentration Unit</label>
+            <select id="bufferConcUnit">
+              <option value="M">M (mol/L)</option>
+              <option value="mM" selected>mM (mmol/L)</option>
+              <option value="uM">uM (umol/L)</option>
+            </select>
+          </div>
+          <div>
+            <label for="bufferFinalVolume">Final Volume</label>
+            <input type="number" id="bufferFinalVolume" placeholder="e.g. 500" step="any">
+          </div>
+          <div>
+            <label for="bufferVolumeUnit">Volume Unit</label>
+            <select id="bufferVolumeUnit">
+              <option value="mL" selected>mL</option>
+              <option value="L">L</option>
+            </select>
+          </div>
+          <div>
+            <label id="bufferAcidMwLabel" for="bufferAcidMW">Acid MW (optional)</label>
+            <input type="number" id="bufferAcidMW" placeholder="g/mol" step="any">
+          </div>
+          <div>
+            <label id="bufferBaseMwLabel" for="bufferBaseMW">Base MW (optional)</label>
+            <input type="number" id="bufferBaseMW" placeholder="g/mol" step="any">
+          </div>
+        </div>
+        <p id="bufferPresetHint" class="info-note buffer-preset-note">Choose a preset to auto-fill pKa and default molecular weights.</p>
+        <button id="calculateBufferBtn" class="calculate-btn dilution-calc-btn" style="margin-top:1.5rem;">Calculate Buffer Mix</button>
+        <div id="bufferResultOutput" class="dilution-output-panel output-panel hidden"></div>
+        <span id="bufferCalcError" class="dilution-error-message"></span>
+      </div>
+
       <div id="ionSelectionPanel" class="ion-selection-panel hidden">
         <h3><span class="molecule-icon" style="font-size:14px;">⚛️</span>Conserve Ion Concentration</h3>
         <p>Select the element/ion from the original compound's main chemical entity whose molar quantity you wish to conserve:</p>
@@ -792,7 +925,7 @@
 
         <div class="footer-links">
             <a href="mailto:dotansh@bgu.ac.il?subject=ChemCalc%20Feedback">Report an Issue</a>
-            <a href="https://github.com/dotansha/ChemCalc/tree/Publish" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+            <a href="https://github.com/dotansha/ChemCalc" target="_blank" rel="noopener noreferrer">View on GitHub</a>
             <a href="privacy.html">Privacy Policy</a>
             <a href="terms.html">Terms of Use</a>
             <span>ChemCalc v1.5</span>
@@ -922,6 +1055,55 @@
         Na2MoO4: 35,
         NaIO4: 25
     };
+    const STORAGE_KEYS = {
+        presets: 'chemcalc.presets.v1',
+        history: 'chemcalc.history.v1'
+    };
+    const BUFFER_PRESETS = {
+        custom: {
+            key: 'custom',
+            displayName: 'Custom',
+            acidName: 'Acid form',
+            baseName: 'Base form',
+            hint: 'Custom mode: enter pKa and optional molecular weights for your conjugate pair.',
+            autoFill: false
+        },
+        pbs: {
+            key: 'pbs',
+            displayName: 'PBS (phosphate pair)',
+            acidName: 'NaH2PO4 (monobasic)',
+            baseName: 'Na2HPO4 (dibasic)',
+            pKa: 7.21,
+            acidMw: 119.98,
+            baseMw: 141.96,
+            hint: 'PBS preset uses H2PO4-/HPO4^2- (pKa2 approximately 7.21 at 25C).',
+            autoFill: true
+        },
+        tris: {
+            key: 'tris',
+            displayName: 'Tris / Tris-HCl',
+            acidName: 'Tris-HCl',
+            baseName: 'Tris base',
+            pKa: 8.06,
+            acidMw: 157.60,
+            baseMw: 121.14,
+            hint: 'Tris preset uses Tris-H+/Tris (pKa approximately 8.06 at 25C).',
+            autoFill: true
+        },
+        acetate: {
+            key: 'acetate',
+            displayName: 'Acetate / Acetic acid',
+            acidName: 'Acetic acid',
+            baseName: 'Sodium acetate (anhydrous)',
+            pKa: 4.76,
+            acidMw: 60.05,
+            baseMw: 82.03,
+            hint: 'Acetate preset uses acetic acid/acetate (pKa approximately 4.76 at 25C).',
+            autoFill: true
+        }
+    };
+    const MAX_SAVED_PRESETS = 30;
+    const MAX_HISTORY_ITEMS = 10;
     let suggestionCatalogCache = null;
     // Global State
     let selectedIon = null;
@@ -953,6 +1135,29 @@
     const calculateDilutionBtn = document.getElementById('calculateDilutionBtn');
     const dilutionResultOutputEl = document.getElementById('dilutionResultOutput');
     const dilutionCalcErrorEl = document.getElementById('dilutionCalcError');
+    const presetNameInput = document.getElementById('presetName');
+    const presetSelect = document.getElementById('presetSelect');
+    const presetStatusEl = document.getElementById('presetStatus');
+    const historyListEl = document.getElementById('historyList');
+    const savePresetBtn = document.getElementById('savePresetBtn');
+    const applyPresetBtn = document.getElementById('applyPresetBtn');
+    const deletePresetBtn = document.getElementById('deletePresetBtn');
+    const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
+    const bufferPresetSelect = document.getElementById('bufferPreset');
+    const bufferPresetHintEl = document.getElementById('bufferPresetHint');
+    const bufferAcidMwLabelEl = document.getElementById('bufferAcidMwLabel');
+    const bufferBaseMwLabelEl = document.getElementById('bufferBaseMwLabel');
+    const bufferPkaInput = document.getElementById('bufferPka');
+    const bufferTargetPhInput = document.getElementById('bufferTargetPh');
+    const bufferTotalConcInput = document.getElementById('bufferTotalConc');
+    const bufferConcUnitSelect = document.getElementById('bufferConcUnit');
+    const bufferFinalVolumeInput = document.getElementById('bufferFinalVolume');
+    const bufferVolumeUnitSelect = document.getElementById('bufferVolumeUnit');
+    const bufferAcidMwInput = document.getElementById('bufferAcidMW');
+    const bufferBaseMwInput = document.getElementById('bufferBaseMW');
+    const calculateBufferBtn = document.getElementById('calculateBufferBtn');
+    const bufferResultOutputEl = document.getElementById('bufferResultOutput');
+    const bufferCalcErrorEl = document.getElementById('bufferCalcError');
 
     // --- EVENT LISTENERS ---
     document.addEventListener('click', function(event) {
@@ -992,8 +1197,14 @@
     document.getElementById('removeHydrationReplacement').addEventListener('click', () => modifyHydration('replacementFormula', 'remove'));
 
     calculateDilutionBtn.addEventListener('click', handleCalculateDilution);
+    calculateBufferBtn.addEventListener('click', handleCalculateBuffer);
+    bufferPresetSelect.addEventListener('change', handleBufferPresetChange);
     checkChargeOriginalBtn.addEventListener('click', () => handleChargeCheck('original'));
     checkChargeReplacementBtn.addEventListener('click', () => handleChargeCheck('replacement'));
+    savePresetBtn.addEventListener('click', handleSavePreset);
+    applyPresetBtn.addEventListener('click', handleApplyPreset);
+    deletePresetBtn.addEventListener('click', handleDeletePreset);
+    copyShareLinkBtn.addEventListener('click', handleCopyShareLink);
     
     document.addEventListener('click', (e) => {
         const originalSuggestionsDiv = document.getElementById('originalSuggestions');
@@ -1036,6 +1247,432 @@
       input.focus();
       const event = new Event('input', { bubbles: true, cancelable: true });
       input.dispatchEvent(event);
+    }
+
+    function getLocalStorage() {
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          return window.localStorage;
+        }
+      } catch (err) {
+        return null;
+      }
+      return null;
+    }
+
+    function loadStoredArray(key) {
+      const storage = getLocalStorage();
+      if (!storage) return [];
+      try {
+        const raw = storage.getItem(key);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function saveStoredArray(key, value) {
+      const storage = getLocalStorage();
+      if (!storage) return false;
+      try {
+        storage.setItem(key, JSON.stringify(value));
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function setPresetStatus(message, tone = 'info') {
+      presetStatusEl.textContent = message || '';
+      presetStatusEl.className = 'formula-feedback-message preset-status';
+      if (message && tone) presetStatusEl.classList.add(tone);
+    }
+
+    function applySelectValue(selectEl, value) {
+      if (!selectEl || value === undefined || value === null || value === '') return;
+      if (!selectEl.options) {
+        selectEl.value = value;
+        return;
+      }
+      const hasValue = Array.from(selectEl.options).some((option) => option.value === value);
+      if (hasValue) selectEl.value = value;
+    }
+
+    function getBufferPresetConfig(presetKey) {
+      if (!presetKey || !BUFFER_PRESETS[presetKey]) return BUFFER_PRESETS.custom;
+      return BUFFER_PRESETS[presetKey];
+    }
+
+    function formatPresetNumber(value) {
+      if (!Number.isFinite(value)) return '';
+      return Number(value).toString();
+    }
+
+    function applyBufferPreset(presetKey, options = {}) {
+      const { forceValues = false } = options;
+      const preset = getBufferPresetConfig(presetKey);
+      if (bufferPresetSelect) {
+        bufferPresetSelect.value = preset.key;
+      }
+
+      if (bufferAcidMwLabelEl) {
+        bufferAcidMwLabelEl.textContent = `Acid MW (${preset.acidName}, optional)`;
+      }
+      if (bufferBaseMwLabelEl) {
+        bufferBaseMwLabelEl.textContent = `Base MW (${preset.baseName}, optional)`;
+      }
+      if (bufferAcidMwInput) {
+        bufferAcidMwInput.placeholder = `${preset.acidName} g/mol`;
+      }
+      if (bufferBaseMwInput) {
+        bufferBaseMwInput.placeholder = `${preset.baseName} g/mol`;
+      }
+      if (bufferPresetHintEl) {
+        bufferPresetHintEl.textContent = preset.hint;
+      }
+
+      if (preset.autoFill) {
+        if (forceValues || !String(bufferPkaInput.value || '').trim()) {
+          bufferPkaInput.value = formatPresetNumber(preset.pKa);
+        }
+        if (forceValues || !String(bufferAcidMwInput.value || '').trim()) {
+          bufferAcidMwInput.value = formatPresetNumber(preset.acidMw);
+        }
+        if (forceValues || !String(bufferBaseMwInput.value || '').trim()) {
+          bufferBaseMwInput.value = formatPresetNumber(preset.baseMw);
+        }
+      }
+      return preset;
+    }
+
+    function handleBufferPresetChange() {
+      applyBufferPreset(bufferPresetSelect.value, { forceValues: true });
+      bufferCalcErrorEl.textContent = '';
+      bufferResultOutputEl.classList.add('hidden');
+      bufferResultOutputEl.innerHTML = '';
+    }
+
+    function getCurrentFormState() {
+      return {
+        originalFormula: originalFormulaInput.value.trim(),
+        replacementFormula: replacementFormulaInput.value.trim(),
+        amount: amountInput.value.trim(),
+        unit: unitSelect.value,
+        molarity: molarityInput.value.trim(),
+        molarityUnit: molarityUnitSelect.value,
+        volume: volumeInput.value.trim(),
+        volumeUnit: volumeUnitSelect.value,
+        stockConc: stockConcInput.value.trim(),
+        stockConcUnit: stockConcUnitSelect.value,
+        finalConc: finalConcInput.value.trim(),
+        finalConcUnit: finalConcUnitSelect.value,
+        finalVolume: finalVolumeInput.value.trim(),
+        finalVolumeUnit: finalVolumeUnitSelect.value,
+        bufferPreset: bufferPresetSelect.value,
+        bufferPka: bufferPkaInput.value.trim(),
+        bufferTargetPh: bufferTargetPhInput.value.trim(),
+        bufferTotalConc: bufferTotalConcInput.value.trim(),
+        bufferConcUnit: bufferConcUnitSelect.value,
+        bufferFinalVolume: bufferFinalVolumeInput.value.trim(),
+        bufferVolumeUnit: bufferVolumeUnitSelect.value,
+        bufferAcidMw: bufferAcidMwInput.value.trim(),
+        bufferBaseMw: bufferBaseMwInput.value.trim()
+      };
+    }
+
+    function applyFormState(state) {
+      if (!state || typeof state !== 'object') return;
+      originalFormulaInput.value = state.originalFormula || '';
+      replacementFormulaInput.value = state.replacementFormula || '';
+      amountInput.value = state.amount || '';
+      molarityInput.value = state.molarity || '';
+      volumeInput.value = state.volume || '';
+      stockConcInput.value = state.stockConc || '';
+      finalConcInput.value = state.finalConc || '';
+      finalVolumeInput.value = state.finalVolume || '';
+      applySelectValue(bufferPresetSelect, state.bufferPreset);
+      applyBufferPreset(bufferPresetSelect.value, { forceValues: false });
+      bufferPkaInput.value = state.bufferPka || '';
+      bufferTargetPhInput.value = state.bufferTargetPh || '';
+      bufferTotalConcInput.value = state.bufferTotalConc || '';
+      bufferFinalVolumeInput.value = state.bufferFinalVolume || '';
+      bufferAcidMwInput.value = state.bufferAcidMw || '';
+      bufferBaseMwInput.value = state.bufferBaseMw || '';
+
+      applySelectValue(unitSelect, state.unit);
+      applySelectValue(molarityUnitSelect, state.molarityUnit);
+      applySelectValue(volumeUnitSelect, state.volumeUnit);
+      applySelectValue(stockConcUnitSelect, state.stockConcUnit);
+      applySelectValue(finalConcUnitSelect, state.finalConcUnit);
+      applySelectValue(finalVolumeUnitSelect, state.finalVolumeUnit);
+      applySelectValue(bufferConcUnitSelect, state.bufferConcUnit);
+      applySelectValue(bufferVolumeUnitSelect, state.bufferVolumeUnit);
+
+      [originalFormulaInput, replacementFormulaInput].forEach((inputEl) => {
+        const event = new Event('input', { bubbles: true, cancelable: true });
+        inputEl.dispatchEvent(event);
+      });
+
+      dilutionCalcErrorEl.textContent = '';
+      dilutionResultOutputEl.classList.add('hidden');
+      dilutionResultOutputEl.innerHTML = '';
+      bufferCalcErrorEl.textContent = '';
+      bufferResultOutputEl.classList.add('hidden');
+      bufferResultOutputEl.innerHTML = '';
+      hideError();
+      hideOutput();
+      resetButtonToAnalyze();
+    }
+
+    const shareFieldMappings = [
+      ['o', 'originalFormula'],
+      ['r', 'replacementFormula'],
+      ['a', 'amount'],
+      ['u', 'unit'],
+      ['m', 'molarity'],
+      ['mu', 'molarityUnit'],
+      ['v', 'volume'],
+      ['vu', 'volumeUnit'],
+      ['s1', 'stockConc'],
+      ['s1u', 'stockConcUnit'],
+      ['s2', 'finalConc'],
+      ['s2u', 'finalConcUnit'],
+      ['sv', 'finalVolume'],
+      ['svu', 'finalVolumeUnit'],
+      ['bpr', 'bufferPreset'],
+      ['bpka', 'bufferPka'],
+      ['bph', 'bufferTargetPh'],
+      ['btc', 'bufferTotalConc'],
+      ['btu', 'bufferConcUnit'],
+      ['bv', 'bufferFinalVolume'],
+      ['bvu', 'bufferVolumeUnit'],
+      ['bamw', 'bufferAcidMw'],
+      ['bbmw', 'bufferBaseMw']
+    ];
+
+    function encodeShareState(state) {
+      const params = new URLSearchParams();
+      shareFieldMappings.forEach(([key, stateKey]) => {
+        const value = state?.[stateKey];
+        if (value === undefined || value === null) return;
+        const normalized = String(value).trim();
+        if (!normalized) return;
+        params.set(key, normalized);
+      });
+      return params.toString();
+    }
+
+    function decodeShareState(queryString) {
+      const source = String(queryString || '').replace(/^\?/, '');
+      const params = new URLSearchParams(source);
+      const state = {};
+      shareFieldMappings.forEach(([key, stateKey]) => {
+        const value = params.get(key);
+        if (value !== null) state[stateKey] = value;
+      });
+      return state;
+    }
+
+    function buildShareableUrlFromState(state) {
+      const query = encodeShareState(state);
+      let baseUrl = '';
+      if (typeof window !== 'undefined' && window.location) {
+        baseUrl = `${window.location.origin || ''}${window.location.pathname || ''}`;
+      }
+      if (!query) return baseUrl;
+      if (!baseUrl) return `?${query}`;
+      return `${baseUrl}?${query}`;
+    }
+
+    async function copyTextToClipboard(text) {
+      if (!text) return false;
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          // Continue to legacy fallback.
+        }
+      }
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      let success = false;
+      try {
+        success = document.execCommand('copy');
+      } catch (err) {
+        success = false;
+      }
+      document.body.removeChild(textarea);
+      return success;
+    }
+
+    async function handleCopyShareLink() {
+      const link = buildShareableUrlFromState(getCurrentFormState());
+      if (!link) {
+        setPresetStatus('Could not build a share link in this environment.', 'error');
+        return;
+      }
+      const success = await copyTextToClipboard(link);
+      setPresetStatus(success ? 'Share link copied to clipboard.' : 'Copy failed. You can copy from browser address bar.', success ? 'success' : 'warning');
+    }
+
+    function loadPresets() {
+      return loadStoredArray(STORAGE_KEYS.presets).filter((entry) => entry && entry.id && entry.name && entry.state);
+    }
+
+    function savePresets(presets) {
+      return saveStoredArray(STORAGE_KEYS.presets, presets.slice(0, MAX_SAVED_PRESETS));
+    }
+
+    function renderPresetSelect() {
+      const presets = loadPresets();
+      presetSelect.textContent = '';
+      if (presets.length === 0) {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'No saved presets';
+        presetSelect.appendChild(option);
+        return;
+      }
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Select a preset';
+      presetSelect.appendChild(defaultOption);
+      presets.forEach((preset) => {
+        const option = document.createElement('option');
+        option.value = preset.id;
+        option.textContent = preset.name;
+        presetSelect.appendChild(option);
+      });
+    }
+
+    function handleSavePreset() {
+      const presetName = presetNameInput.value.trim();
+      if (!presetName) {
+        setPresetStatus('Enter a preset name before saving.', 'error');
+        return;
+      }
+      const state = getCurrentFormState();
+      if (!state.originalFormula && !state.replacementFormula && !state.stockConc && !state.bufferPka) {
+        setPresetStatus('Add formula or calculator inputs before saving a preset.', 'warning');
+        return;
+      }
+
+      const presets = loadPresets();
+      const existingIndex = presets.findIndex((preset) => preset.name.toLowerCase() === presetName.toLowerCase());
+      const existingId = existingIndex >= 0 ? presets[existingIndex].id : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const newPreset = {
+        id: existingId,
+        name: presetName,
+        state,
+        updatedAt: new Date().toISOString()
+      };
+
+      if (existingIndex >= 0) presets.splice(existingIndex, 1);
+      presets.unshift(newPreset);
+      if (!savePresets(presets)) {
+        setPresetStatus('Could not save preset. Local storage may be unavailable.', 'error');
+        return;
+      }
+      renderPresetSelect();
+      presetSelect.value = newPreset.id;
+      setPresetStatus(`Preset "${presetName}" saved.`, 'success');
+    }
+
+    function handleApplyPreset() {
+      const selectedPresetId = presetSelect.value;
+      if (!selectedPresetId) {
+        setPresetStatus('Select a preset to load.', 'warning');
+        return;
+      }
+      const presets = loadPresets();
+      const preset = presets.find((entry) => entry.id === selectedPresetId);
+      if (!preset) {
+        setPresetStatus('Selected preset was not found.', 'error');
+        renderPresetSelect();
+        return;
+      }
+      applyFormState(preset.state);
+      presetNameInput.value = preset.name;
+      setPresetStatus(`Preset "${preset.name}" loaded.`, 'success');
+    }
+
+    function handleDeletePreset() {
+      const selectedPresetId = presetSelect.value;
+      if (!selectedPresetId) {
+        setPresetStatus('Select a preset to delete.', 'warning');
+        return;
+      }
+      const presets = loadPresets();
+      const preset = presets.find((entry) => entry.id === selectedPresetId);
+      const nextPresets = presets.filter((entry) => entry.id !== selectedPresetId);
+      if (!savePresets(nextPresets)) {
+        setPresetStatus('Could not delete preset. Local storage may be unavailable.', 'error');
+        return;
+      }
+      renderPresetSelect();
+      setPresetStatus(preset ? `Preset "${preset.name}" deleted.` : 'Preset deleted.', 'info');
+    }
+
+    function loadHistory() {
+      return loadStoredArray(STORAGE_KEYS.history).filter((entry) => entry && entry.state && entry.label);
+    }
+
+    function saveHistory(history) {
+      return saveStoredArray(STORAGE_KEYS.history, history.slice(0, MAX_HISTORY_ITEMS));
+    }
+
+    function renderHistoryList() {
+      historyListEl.textContent = '';
+      const history = loadHistory();
+      if (history.length === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'history-empty';
+        emptyState.textContent = 'No history yet. Calculations you run will appear here.';
+        historyListEl.appendChild(emptyState);
+        return;
+      }
+      history.forEach((entry) => {
+        const historyButton = document.createElement('button');
+        historyButton.type = 'button';
+        historyButton.className = 'history-item-btn';
+        const timestamp = entry.timestamp ? new Date(entry.timestamp).toLocaleString() : '';
+        historyButton.textContent = timestamp ? `${entry.label} (${timestamp})` : entry.label;
+        historyButton.addEventListener('click', () => {
+          applyFormState(entry.state);
+          setPresetStatus(`Loaded history item: ${entry.label}`, 'info');
+        });
+        historyListEl.appendChild(historyButton);
+      });
+    }
+
+    function recordHistoryEntry(label) {
+      const state = getCurrentFormState();
+      if (!state.originalFormula && !state.replacementFormula && !state.stockConc && !state.bufferPka) return;
+      const history = loadHistory();
+      const newEntry = {
+        label: label || 'ChemCalc session',
+        timestamp: Date.now(),
+        state
+      };
+      history.unshift(newEntry);
+      saveHistory(history);
+      renderHistoryList();
+    }
+
+    function restoreStateFromShareQuery() {
+      if (typeof window === 'undefined' || !window.location || !window.location.search) return;
+      const decodedState = decodeShareState(window.location.search);
+      if (Object.keys(decodedState).length === 0) return;
+      applyFormState(decodedState);
+      setPresetStatus('Loaded values from shared link.', 'info');
     }
 
     function normalizeForSuggestionSearch(value) {
@@ -1186,7 +1823,8 @@
         }
         const originalFormula = formulaInput;
         let formulaToParse = formulaInput.replace(/\s+/g, "").replace(/H₂O/g, "H2O");
-        formulaToParse = normalizeDigits(formulaToParse);
+        // Accept both hydrate separators: middle dot (·) and plain dot (.).
+        formulaToParse = normalizeDigits(formulaToParse).replace(/[.∙•⋅]/g, '·');
         let mainPartString = formulaToParse;
         let hydrateContentString = ""; 
         let hydrateDisplaySuffix = "";
@@ -1375,6 +2013,13 @@
             formattedValue = value.toPrecision(4);
         }
         return formattedValue;
+    }
+
+    function formatMolarity(valueM) {
+        if (!Number.isFinite(valueM)) return "N/A";
+        if (valueM >= 1) return `${valueM.toPrecision(4)} M`;
+        if (valueM >= 0.001) return `${(valueM * 1000).toPrecision(4)} mM`;
+        return `${(valueM * 1000000).toPrecision(4)} uM`;
     }
 
     function convertMolarityToM(value, unit) {
@@ -1609,6 +2254,7 @@
         outputPanel.innerHTML = resultsHTML;
         outputPanel.classList.remove('hidden');
         outputPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        recordHistoryEntry('Original compound analysis');
         resetButtonToAnalyze();
     }
     
@@ -1723,6 +2369,7 @@
             outputPanel.classList.remove('hidden');
             outputPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             document.getElementById('copyResultsBtn').addEventListener('click', () => copyResultsSummary(weightOfReplacementGrams, molesOfReplacementCompound));
+            recordHistoryEntry('Replacement calculation');
             resetButtonToAnalyze();
         }, 200);
     }
@@ -1779,6 +2426,119 @@
         dilutionResultOutputEl.innerHTML = resultsHTML;
         dilutionResultOutputEl.classList.remove('hidden');
         dilutionResultOutputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        recordHistoryEntry('Dilution calculation');
+    }
+
+    function calculateBufferPlan({
+        pKa,
+        targetPh,
+        totalConcValue,
+        totalConcUnit,
+        finalVolumeValue,
+        finalVolumeUnit,
+        acidMw,
+        baseMw,
+        acidName = 'Acid form',
+        baseName = 'Base form'
+    }) {
+        const pKaNum = parseFloat(pKa);
+        const targetPhNum = parseFloat(targetPh);
+        const totalConcNum = parseFloat(totalConcValue);
+        const finalVolumeNum = parseFloat(finalVolumeValue);
+        const acidMwNum = parseFloat(acidMw);
+        const baseMwNum = parseFloat(baseMw);
+
+        if (!Number.isFinite(pKaNum) || !Number.isFinite(targetPhNum)) {
+            return { error: 'pKa and target pH must be numbers.' };
+        }
+        if (!Number.isFinite(totalConcNum) || totalConcNum <= 0) {
+            return { error: 'Total buffer concentration must be a positive number.' };
+        }
+        if (!Number.isFinite(finalVolumeNum) || finalVolumeNum <= 0) {
+            return { error: 'Final volume must be a positive number.' };
+        }
+
+        const totalConcM = convertMolarityToM(totalConcNum, totalConcUnit);
+        const finalVolumeL = convertVolumeToL(finalVolumeNum, finalVolumeUnit);
+        if (!Number.isFinite(totalConcM) || totalConcM <= 0) {
+            return { error: 'Total concentration could not be converted to a valid molarity.' };
+        }
+        if (!Number.isFinite(finalVolumeL) || finalVolumeL <= 0) {
+            return { error: 'Final volume could not be converted to a valid liters value.' };
+        }
+
+        const baseToAcidRatio = Math.pow(10, targetPhNum - pKaNum);
+        const acidConcM = totalConcM / (1 + baseToAcidRatio);
+        const baseConcM = totalConcM - acidConcM;
+        const acidMoles = acidConcM * finalVolumeL;
+        const baseMoles = baseConcM * finalVolumeL;
+        const acidMassG = Number.isFinite(acidMwNum) && acidMwNum > 0 ? acidMoles * acidMwNum : null;
+        const baseMassG = Number.isFinite(baseMwNum) && baseMwNum > 0 ? baseMoles * baseMwNum : null;
+
+        return {
+            pKa: pKaNum,
+            targetPh: targetPhNum,
+            acidName,
+            baseName,
+            baseToAcidRatio,
+            acidFraction: acidConcM / totalConcM,
+            baseFraction: baseConcM / totalConcM,
+            acidConcM,
+            baseConcM,
+            acidMoles,
+            baseMoles,
+            acidMassG,
+            baseMassG
+        };
+    }
+
+    function handleCalculateBuffer() {
+        bufferCalcErrorEl.textContent = '';
+        bufferResultOutputEl.classList.add('hidden');
+        bufferResultOutputEl.innerHTML = '';
+        const selectedBufferPreset = getBufferPresetConfig(bufferPresetSelect.value);
+
+        const plan = calculateBufferPlan({
+            pKa: bufferPkaInput.value,
+            targetPh: bufferTargetPhInput.value,
+            totalConcValue: bufferTotalConcInput.value,
+            totalConcUnit: bufferConcUnitSelect.value,
+            finalVolumeValue: bufferFinalVolumeInput.value,
+            finalVolumeUnit: bufferVolumeUnitSelect.value,
+            acidMw: bufferAcidMwInput.value,
+            baseMw: bufferBaseMwInput.value,
+            acidName: selectedBufferPreset.acidName,
+            baseName: selectedBufferPreset.baseName
+        });
+
+        if (plan.error) {
+            bufferCalcErrorEl.textContent = `Error: ${plan.error}`;
+            return;
+        }
+
+        let resultsHTML = `<h2><span class="molecule-icon" style="font-size:14px;">🧫</span>Buffer Mix Results</h2>`;
+        resultsHTML += `<div class="dilution-results-grid results-grid">`;
+        resultsHTML += createResultItem(selectedBufferPreset.displayName, 'Selected preset');
+        resultsHTML += createResultItem(`${plan.pKa.toFixed(2)} -> ${plan.targetPh.toFixed(2)}`, 'pKa and target pH');
+        resultsHTML += createResultItem(`1 : ${plan.baseToAcidRatio.toPrecision(4)}`, `${plan.acidName} : ${plan.baseName} ratio target`);
+        resultsHTML += createResultItem(`${(plan.acidFraction * 100).toFixed(2)}%`, 'Acid fraction of total buffer');
+        resultsHTML += createResultItem(`${(plan.baseFraction * 100).toFixed(2)}%`, 'Base fraction of total buffer');
+        resultsHTML += createResultItem(formatMolarity(plan.acidConcM), `${plan.acidName} concentration`);
+        resultsHTML += createResultItem(formatMolarity(plan.baseConcM), `${plan.baseName} concentration`);
+        resultsHTML += createResultItem(formatValue(plan.acidMoles, 'moles'), `${plan.acidName} amount`);
+        resultsHTML += createResultItem(formatValue(plan.baseMoles, 'moles'), `${plan.baseName} amount`);
+        if (plan.acidMassG !== null) {
+            resultsHTML += createResultItem(formatValue(plan.acidMassG, 'weight'), `${plan.acidName} mass (from MW)`);
+        }
+        if (plan.baseMassG !== null) {
+            resultsHTML += createResultItem(formatValue(plan.baseMassG, 'weight'), `${plan.baseName} mass (from MW)`);
+        }
+        resultsHTML += `</div>`;
+
+        bufferResultOutputEl.innerHTML = resultsHTML;
+        bufferResultOutputEl.classList.remove('hidden');
+        bufferResultOutputEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        recordHistoryEntry('Buffer calculation');
     }
     
     function copyResultsSummary(weightGrams, moles) {
@@ -1839,9 +2599,24 @@ Required Moles: ${formatValue(moles, 'moles')}
         stockConcUnitSelect.value = 'mM';
         finalConcUnitSelect.value = 'mM';
         finalVolumeUnitSelect.value = 'mL';
+        bufferPresetSelect.value = 'custom';
+        bufferPkaInput.value = '';
+        bufferTargetPhInput.value = '';
+        bufferTotalConcInput.value = '';
+        bufferFinalVolumeInput.value = '';
+        bufferAcidMwInput.value = '';
+        bufferBaseMwInput.value = '';
+        bufferConcUnitSelect.value = 'mM';
+        bufferVolumeUnitSelect.value = 'mL';
         dilutionCalcErrorEl.textContent = '';
         dilutionResultOutputEl.classList.add('hidden');
         dilutionResultOutputEl.innerHTML = '';
+        bufferCalcErrorEl.textContent = '';
+        bufferResultOutputEl.classList.add('hidden');
+        bufferResultOutputEl.innerHTML = '';
+        applyBufferPreset('custom', { forceValues: false });
+        presetNameInput.value = '';
+        setPresetStatus('');
         compoundData = { originalParsed: null, replacementParsed: null };
         hideError();
         hideOutput();
@@ -1872,6 +2647,8 @@ Required Moles: ${formatValue(moles, 'moles')}
       outputPanel.innerHTML = '';
       dilutionResultOutputEl.classList.add('hidden');
       dilutionResultOutputEl.innerHTML = '';
+      bufferResultOutputEl.classList.add('hidden');
+      bufferResultOutputEl.innerHTML = '';
     }
 
     function resetButtonToAnalyze() {
@@ -1907,6 +2684,15 @@ Required Moles: ${formatValue(moles, 'moles')}
             }
         });
     }
+
+    function initializePresetAndShareTools() {
+        applyBufferPreset(bufferPresetSelect.value || 'custom', { forceValues: false });
+        renderPresetSelect();
+        renderHistoryList();
+        restoreStateFromShareQuery();
+    }
+
+    initializePresetAndShareTools();
 
   </script>
 </body>
