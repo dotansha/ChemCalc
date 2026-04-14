@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Practical guide to using ChemCalc for reagent replacement, dilution planning, and buffer preparation in chemistry and biology labs." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <title>ChemCalc Lab Preparation Guide</title>
+  <link rel="canonical" href="https://dotansha.github.io/ChemCalc/guide.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ChemCalc Lab Preparation Guide" />
+  <meta property="og:description" content="Learn how to use ChemCalc for reagent substitution, hydrates, dilution math, and buffer planning." />
+  <meta property="og:url" content="https://dotansha.github.io/ChemCalc/guide.html" />
+  <meta property="og:site_name" content="ChemCalc" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="ChemCalc Lab Preparation Guide" />
+  <meta name="twitter:description" content="Learn how to use ChemCalc for reagent substitution, hydrates, dilution math, and buffer planning." />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #1f2937;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      max-width: 960px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 18px;
+      padding: 2rem;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+    h1 {
+      margin-top: 0;
+      color: #1e3a8a;
+      font-size: 2.1rem;
+    }
+    h2 {
+      margin-top: 1.8rem;
+      color: #334155;
+      font-size: 1.35rem;
+    }
+    h3 {
+      margin-top: 1.2rem;
+      color: #475569;
+      font-size: 1.05rem;
+    }
+    p, li {
+      line-height: 1.75;
+      font-size: 1rem;
+    }
+    ul, ol {
+      padding-left: 1.2rem;
+    }
+    .meta {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    .note {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      margin: 1rem 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .panel {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1rem;
+    }
+    a { color: #1d4ed8; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .links {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>ChemCalc Lab Preparation Guide</h1>
+    <p class="meta">Last updated: April 14, 2026</p>
+
+    <p>This guide explains how to use ChemCalc as a practical chemistry workflow tool rather than a generic unit converter. The goal is to help students, lab staff, and researchers plan reagent substitutions, solution preparation, and buffer recipes with enough context to catch common mistakes before they reach the bench.</p>
+
+    <h2>1. Reagent Replacement Is A Stoichiometry Problem</h2>
+    <p>When a protocol specifies one reagent and you only have a related reagent in stock, the correct replacement is rarely based on matching grams. In most cases you need to match the molar quantity of a relevant ion or functional chemical unit. For example, replacing an anhydrous salt with a hydrated salt changes molecular weight because the hydrate contains water of crystallization. The active ion amount is the same per mole of salt, but the mass required to deliver that mole changes.</p>
+    <div class="note">
+      ChemCalc is most useful when the chemistry depends on preserving a species concentration, such as sodium, calcium, chloride, sulfate, phosphate, or a defined buffer pair.
+    </div>
+
+    <h2>2. A Practical Workflow For The Main Calculator</h2>
+    <ol>
+      <li>Enter the original reagent from the protocol and the replacement reagent you actually have.</li>
+      <li>Provide either an original amount or a molarity plus volume pair.</li>
+      <li>Review the parsed formula and molecular weights to confirm the tool understood your input correctly.</li>
+      <li>If multiple ions are possible, choose the one that should be conserved.</li>
+      <li>Use the replacement mass or molar amount as the starting point for your prep worksheet.</li>
+    </ol>
+    <p>This workflow is valuable in teaching and research settings because it makes the chemistry explicit. Instead of hiding the reasoning, the calculator surfaces the formulas, weights, and conserved quantity so the output can be checked quickly.</p>
+
+    <h2>3. Worked Scenarios</h2>
+    <div class="grid">
+      <section class="panel">
+        <h3>Hydrated vs. anhydrous salts</h3>
+        <p>If a recipe calls for magnesium sulfate anhydrous and the lab only has magnesium sulfate heptahydrate, the required mass must increase. The sulfate amount per mole is the same, but the hydrate contributes extra mass from bound water.</p>
+      </section>
+      <section class="panel">
+        <h3>Stock dilution</h3>
+        <p>The dilution panel is best used when the stock concentration is known and the target volume is fixed by the experiment. This helps avoid repeated hand calculations for routine media, stains, and supplement solutions.</p>
+      </section>
+      <section class="panel">
+        <h3>Buffer planning</h3>
+        <p>The buffer section is a planning aid for estimating an acid/base ratio from pKa and target pH. It is useful for first-pass formulation, but the final solution may still need pH adjustment after dissolution and temperature equilibration.</p>
+      </section>
+    </div>
+
+    <h2>4. Common Mistakes ChemCalc Helps Prevent</h2>
+    <ul>
+      <li>Confusing molecular weight changes with active ion changes when switching hydrate state.</li>
+      <li>Matching mass instead of matching molar quantity.</li>
+      <li>Preparing a dilution from the wrong stock concentration unit.</li>
+      <li>Using a buffer ratio as if it were a final verified pH measurement.</li>
+      <li>Typing a common reagent name incorrectly and not checking the parsed output.</li>
+    </ul>
+
+    <h2>5. Verification Checklist Before You Weigh Anything</h2>
+    <ol>
+      <li>Confirm the formula matches the bottle label, including hydrate state.</li>
+      <li>Check whether the protocol depends on an ion, a full salt, or a total concentration.</li>
+      <li>Verify units before and after the calculation.</li>
+      <li>For buffers, confirm whether you will pH-adjust after mixing.</li>
+      <li>For critical work, compare the calculator output with a manual check or SOP.</li>
+    </ol>
+
+    <h2>6. Who This Site Is For</h2>
+    <p>ChemCalc is aimed at users who need a fast but readable workflow: undergraduate teaching labs, graduate research groups, biotech labs, and anyone who regularly prepares solutions from common salts, acids, bases, and buffer systems. The site is intentionally lightweight so it can be used at the bench without an account or a software install.</p>
+
+    <div class="links">
+      <a href="index.html">Open ChemCalc</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+    </div>
+  </main>
+</body>
+</html>

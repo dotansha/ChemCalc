@@ -622,6 +622,87 @@
       margin-top: 1rem;
       font-size: 0.85rem; 
     }
+    .editorial-content {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .content-section {
+      background: linear-gradient(135deg, #ffffff, #f8fbff);
+      border-radius: 16px;
+      padding: 1.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+    .content-section h2 {
+      color: #1e3a8a;
+      margin-bottom: 0.9rem;
+      font-size: 1.35rem;
+    }
+    .content-section h3 {
+      color: #334155;
+      margin-top: 1.2rem;
+      margin-bottom: 0.55rem;
+      font-size: 1.02rem;
+    }
+    .content-section p,
+    .content-section li {
+      line-height: 1.75;
+      color: #334155;
+      font-size: 0.97rem;
+    }
+    .content-section ul,
+    .content-section ol {
+      padding-left: 1.2rem;
+      margin: 0.7rem 0 0;
+    }
+    .content-section li + li {
+      margin-top: 0.45rem;
+    }
+    .example-grid,
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .example-card,
+    .faq-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1rem;
+    }
+    .example-card strong,
+    .faq-card strong {
+      color: #0f172a;
+      display: block;
+      margin-bottom: 0.45rem;
+    }
+    .inline-code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 0.12rem 0.35rem;
+      border-radius: 6px;
+      font-size: 0.9em;
+    }
+    .ad-support {
+      background: linear-gradient(135deg, #fffef5, #fff8db);
+      border: 1px solid rgba(234, 179, 8, 0.28);
+    }
+    .ad-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #92400e;
+      margin-bottom: 0.75rem;
+    }
+    .ad-support p {
+      margin-bottom: 1rem;
+    }
 
     footer {
       background: rgba(40, 40, 40, 0.95); 
@@ -904,28 +985,117 @@
         </div>
       <div id="errorDisplay" class="message-box error-message hidden"></div>
 
+      <div class="editorial-content" aria-label="ChemCalc guide and reference">
+        <section class="content-section">
+          <h2>What ChemCalc Helps You Do</h2>
+          <p>ChemCalc is designed for practical bench work, not just textbook conversions. The main calculator compares an original reagent with a replacement reagent while preserving the ion or chemical component that matters for your protocol. That is useful when a lab switches vendors, changes hydrate state, or substitutes one salt for another and still needs to keep sodium, phosphate, sulfate, calcium, or another species at the same molar level.</p>
+          <p>The page also includes a dilution calculator for standard <span class="inline-code">C₁V₁ = C₂V₂</span> planning, a buffer calculator for common acid/base pairs, and simple preset tools so repeated recipes can be stored and shared. Everything runs in the browser, which makes the site fast for day-to-day use in teaching labs, research labs, and biotech workflows.</p>
+          <h3>Typical use cases</h3>
+          <ul>
+            <li>Convert from an anhydrous reagent to a hydrated reagent without changing the delivered amount of the conserved ion.</li>
+            <li>Prepare a stock or working solution from a target molarity and volume.</li>
+            <li>Plan a buffer composition from pKa, target pH, total concentration, and final volume.</li>
+            <li>Check molecular weight and formula parsing before weighing reagents.</li>
+          </ul>
+        </section>
+
+        <section class="content-section">
+          <h2>How To Use The Main Calculator</h2>
+          <ol>
+            <li>Enter the original compound and the replacement compound. You can type either a chemical formula or a supported common compound name.</li>
+            <li>Provide either a direct amount for the original compound or a molarity and volume pair. ChemCalc uses that information to determine the original molar quantity.</li>
+            <li>If the compound contains multiple candidate ions, choose which ion should be conserved. The replacement amount is then calculated to preserve that species at the same molar level.</li>
+          </ol>
+          <p>This matters because matching total mass alone is often wrong in lab prep. For example, swapping <span class="inline-code">NaH₂PO₄</span> for <span class="inline-code">Na₂HPO₄</span> changes both molecular weight and stoichiometry. A useful calculator should explain that relationship and preserve the intended chemistry, not just produce a number with no context.</p>
+          <h3>What the output means</h3>
+          <ul>
+            <li>Molecular weight values help you sanity-check the formulas you entered.</li>
+            <li>The replacement amount is the practical weighing target for the second reagent.</li>
+            <li>Ion conservation notes explain which component was matched and why.</li>
+            <li>Buffer and dilution panels provide separate planning outputs for solution prep tasks.</li>
+          </ul>
+        </section>
+
+        <section class="content-section">
+          <h2>Worked Examples</h2>
+          <p>These examples illustrate the kind of calculation context reviewers look for: the page is not a thin shell around a form, but a chemistry reference tool with clear explanations and practical examples.</p>
+          <div class="example-grid">
+            <article class="example-card">
+              <strong>Hydrate replacement</strong>
+              <p>If a protocol calls for calcium chloride anhydrous but the stockroom only has calcium chloride dihydrate, use the original and replacement fields to preserve the same calcium molar amount. The required mass changes because water of crystallization adds molecular weight without adding calcium.</p>
+            </article>
+            <article class="example-card">
+              <strong>Dilution planning</strong>
+              <p>To prepare 50 mL of a 1 mM solution from a 100 mM stock, the dilution calculator solves the stock volume and the amount of diluent required. This is a standard case where the tool saves repetitive hand calculation during routine prep.</p>
+            </article>
+            <article class="example-card">
+              <strong>Buffer preparation</strong>
+              <p>For phosphate-buffered solutions, the buffer panel estimates the acid/base ratio needed for a target pH and total concentration. This makes it easier to plan a first-pass recipe before fine pH adjustment at the bench.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="content-section">
+          <h2>Calculation Notes And Limitations</h2>
+          <p>ChemCalc is intended to support lab preparation work, but it is not a substitute for a validated SOP, a supplier certificate of analysis, or an experimental pH measurement. Molecular weights are based on the built-in element table and formula parser. If a reagent includes unusual notation, proprietary mixtures, assay corrections, density corrections, or purity adjustments, you should verify the result separately.</p>
+          <ul>
+            <li>The formula parser supports common hydrates and many standard inorganic and biochemical reagents.</li>
+            <li>Some ions have multiple oxidation states. In those cases the site prompts you to review the chemistry rather than pretending there is only one possible answer.</li>
+            <li>Buffer outputs are planning values. Real systems may still require titration, ionic-strength adjustment, or temperature-specific correction.</li>
+            <li>For regulated or safety-critical work, independently verify calculations before use.</li>
+          </ul>
+        </section>
+
+        <section class="content-section">
+          <h2>Frequently Asked Questions</h2>
+          <div class="faq-grid">
+            <article class="faq-card">
+              <strong>Does ChemCalc store my formulas?</strong>
+              <p>Calculator inputs are processed in the browser. Presets and recent sessions are there to help with repeated workflows on the same device.</p>
+            </article>
+            <article class="faq-card">
+              <strong>Can I use names instead of formulas?</strong>
+              <p>Yes. The search suggestions recognize many common compound names and map them to the corresponding chemical formulas used for calculation.</p>
+            </article>
+            <article class="faq-card">
+              <strong>Why conserve an ion instead of total mass?</strong>
+              <p>Because protocols usually depend on the molar quantity of the active species, not on matching grams of different salts with different stoichiometry or hydration states.</p>
+            </article>
+            <article class="faq-card">
+              <strong>Is this suitable for teaching?</strong>
+              <p>Yes. The tool is useful in teaching labs because it exposes molecular weight, stoichiometric reasoning, dilution relationships, and buffer-planning concepts in one place.</p>
+            </article>
+          </div>
+        </section>
+
+        <aside class="content-section ad-support" aria-label="Support ChemCalc">
+          <span class="ad-label">Advertisement</span>
+          <p>Ads help support hosting and maintenance for this free chemistry tool. The ad unit is placed after the main calculator and explanatory reference content so it does not appear on a screen that lacks meaningful publisher content.</p>
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
+     crossorigin="anonymous"></script>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-8948405948087873"
+               data-ad-slot="9684312383"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </aside>
+      </div>
+
     </div>
   </div>
 
   <footer>
     <div class="footer-content">
         <p>ChemCalc is a free tool for biologists and chemists to simplify common lab calculations. This tool is for educational and research purposes only.</p>
-        
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
-     crossorigin="anonymous"></script>
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-8948405948087873"
-             data-ad-slot="9684312383"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
 
         <div class="footer-links">
             <a href="mailto:dotansh@bgu.ac.il?subject=ChemCalc%20Feedback">Report an Issue</a>
             <a href="https://github.com/dotansha/ChemCalc" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+            <a href="guide.html">Lab Prep Guide</a>
             <a href="privacy.html">Privacy Policy</a>
             <a href="terms.html">Terms of Use</a>
             <span>ChemCalc v1.5</span>

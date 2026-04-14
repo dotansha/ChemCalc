@@ -7,6 +7,7 @@ const vm = require("vm");
 
 const htmlPath = path.join(__dirname, "..", "index.html");
 const html = fs.readFileSync(htmlPath, "utf8");
+const guideHtml = fs.readFileSync(path.join(__dirname, "..", "guide.html"), "utf8");
 const scripts = Array.from(html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)).map((match) => match[1]);
 const appScript = scripts.find((script) => script.includes("const atomicWeights") && script.includes("function parseFormula"));
 
@@ -29,6 +30,21 @@ assert.ok(
 ["presetToolsSection", "copyShareLinkBtn", "bufferCalculatorSection", "calculateBufferBtn", "bufferPreset"].forEach((requiredId) => {
   assert.ok(html.includes(`id="${requiredId}"`), `Expected UI element with id="${requiredId}"`);
 });
+[
+  "What ChemCalc Helps You Do",
+  "How To Use The Main Calculator",
+  "Worked Examples",
+  "Calculation Notes And Limitations",
+  "Frequently Asked Questions"
+].forEach((requiredHeading) => {
+  assert.ok(html.includes(requiredHeading), `Expected editorial section heading "${requiredHeading}"`);
+});
+assert.ok(html.includes('class="content-section ad-support"'), "Expected a dedicated support/ad content block");
+const adSupportIndex = html.indexOf('class="content-section ad-support"');
+const footerIndex = html.indexOf("<footer>");
+assert.ok(adSupportIndex !== -1 && footerIndex !== -1 && adSupportIndex < footerIndex, "Ad support block should appear before the footer");
+assert.ok(html.includes('href="guide.html"'), "Expected the main page footer to link to the lab prep guide");
+assert.ok(guideHtml.includes("ChemCalc Lab Preparation Guide"), "Expected the standalone lab prep guide content page");
 
 function createClassList() {
   const classes = new Set();
