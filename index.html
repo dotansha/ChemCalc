@@ -67,6 +67,7 @@
 
     header {
       background: rgba(255, 255, 255, 0.95);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       padding: 1.5rem 0; 
       text-align: center;
@@ -106,6 +107,7 @@
 
     .main-panel {
       background: rgba(255, 255, 255, 0.95);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 2rem; 
@@ -185,7 +187,7 @@
         padding: 0.9rem;
         border: 1px solid #d1d5db;
         border-radius: 10px;
-        font-size: 0.95rem;
+        font-size: 16px;
         transition: all 0.3s ease;
         background: white;
         line-height: 1.4;
@@ -251,10 +253,15 @@
       position: relative;
     }
 
+    .formula-input-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+      flex-wrap: wrap;
+    }
+
     .hydration-op-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
       border: none;
       border-radius: 6px;
       padding: 0.4rem 0.7rem;
@@ -271,20 +278,18 @@
     }
 
     .hydration-op-btn.add {
-      right: 6px;
       background: linear-gradient(135deg, #4CAF50, #45a049);
       color: white;
     }
 
     .hydration-op-btn.subtract {
-      right: 62px;
       background-color: #f1f5f9;
       color: #475569;
       border: 1px solid #e2e8f0;
     }
     
     .hydration-op-btn:hover {
-        transform: translateY(-50%) scale(1.05);
+        transform: scale(1.05);
     }
 
     .suggestions {
@@ -417,6 +422,14 @@
         margin: 1.5rem auto;
     }
 
+    .button-panel {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
     .calculate-btn {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
@@ -429,6 +442,8 @@
       transition: all 0.3s ease;
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25); 
       margin: 0; 
+      min-height: 48px;
+      touch-action: manipulation;
     }
     
     .calculate-btn.dilution-calc-btn { 
@@ -460,6 +475,8 @@
         border-radius: 50px;
         cursor: pointer;
         transition: all 0.3s ease;
+        min-height: 48px;
+        touch-action: manipulation;
     }
     .secondary-btn:hover {
         background-color: #e2e8f0;
@@ -475,6 +492,7 @@
     .tool-buttons .secondary-btn {
         border-radius: 12px;
         padding: 0.65rem 1rem;
+        flex: 1 1 180px;
     }
     .preset-status {
         margin-top: 0.7rem;
@@ -706,6 +724,7 @@
 
     footer {
       background: rgba(40, 40, 40, 0.95); 
+      -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px); 
       color: #e0e0e0; 
       text-align: center;
@@ -748,6 +767,85 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    @media (max-width: 767px) {
+      body {
+        padding-top: 12px;
+      }
+
+      header {
+        margin-bottom: 1rem;
+        padding: 1.15rem 1rem;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 0.95rem;
+      }
+
+      .container {
+        width: 100%;
+        padding: 0 0.75rem;
+      }
+
+      .main-panel {
+        padding: 1rem;
+        border-radius: 16px;
+      }
+
+      .compound-section,
+      .calculator-section,
+      .content-section,
+      .output-panel,
+      .ion-selection-panel {
+        padding: 1rem;
+      }
+
+      .button-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .formula-input-actions {
+        justify-content: stretch;
+      }
+
+      .formula-input-actions .hydration-op-btn {
+        flex: 1 1 140px;
+      }
+
+      .tool-buttons {
+        flex-direction: column;
+      }
+
+      .tool-buttons .secondary-btn,
+      .footer-links a {
+        width: 100%;
+      }
+
+      .charge-check-btn,
+      .ion-btn {
+        width: 100%;
+        min-height: 44px;
+      }
+
+      .results-grid,
+      .example-grid,
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+
+      footer {
+        padding: 1.25rem 1rem;
+      }
+
+      .footer-links {
+        width: 100%;
+        gap: 0.8rem;
+      }
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -770,8 +868,10 @@
             <div class="formula-input-container">
                 <input type="text" id="originalFormula" placeholder="e.g. NaH₂(PO₄)" />
                 <div id="originalSuggestions" class="suggestions hidden"></div>
-                <button id="removeHydrationOriginal" class="hydration-op-btn subtract">-H₂O</button>
-                <button id="addHydrationOriginal" class="hydration-op-btn add">+H₂O</button>
+            </div>
+            <div class="formula-input-actions">
+                <button id="removeHydrationOriginal" class="hydration-op-btn subtract" type="button">-H₂O</button>
+                <button id="addHydrationOriginal" class="hydration-op-btn add" type="button">+H₂O</button>
             </div>
           </div>
           <span id="originalFormulaFeedback" class="formula-feedback-message"></span>
@@ -796,19 +896,21 @@
             <div class="formula-input-container">
                 <input type="text" id="replacementFormula" placeholder="e.g. Na₂H(PO₄)" />
                 <div id="replacementSuggestions" class="suggestions hidden"></div>
-                <button id="removeHydrationReplacement" class="hydration-op-btn subtract">-H₂O</button>
-                <button id="addHydrationReplacement" class="hydration-op-btn add">+H₂O</button>
+            </div>
+            <div class="formula-input-actions">
+                <button id="removeHydrationReplacement" class="hydration-op-btn subtract" type="button">-H₂O</button>
+                <button id="addHydrationReplacement" class="hydration-op-btn add" type="button">+H₂O</button>
             </div>
           </div>
           <span id="replacementFormulaFeedback" class="formula-feedback-message"></span>
           <button id="checkChargeReplacementBtn" class="charge-check-btn hidden">Check Ionic Balance</button>
         </div>
       </div>
-<div class="button-panel" style="display: flex; gap: 10px; margin-top: 20px; margin-bottom: 20px;">
-    <button class="calculate-btn main-action-btn" style="flex: 1;">
+<div class="button-panel">
+    <button class="calculate-btn main-action-btn">
         <span class="btn-text">Analyze Compounds</span>
     </button>
-    <button class="secondary-btn clear-all-btn" style="flex: 1;">Clear All</button>
+    <button class="secondary-btn clear-all-btn">Clear All</button>
 </div>
       <div class="calculator-section molarity-volume-section">
         <h3><span class="molecule-icon" style="font-size:14px;">🧪</span>Solution Parameters (Original Compound)</h3>
@@ -886,31 +988,6 @@
          <span id="dilutionCalcError" class="dilution-error-message"></span>
       </div>
 
-      <div id="presetToolsSection" class="calculator-section">
-        <h3><span class="molecule-icon" style="font-size:14px;">📁</span>Presets, History, and Share</h3>
-        <div class="flex-inputs">
-          <div>
-            <label for="presetName">Preset Name</label>
-            <input type="text" id="presetName" placeholder="e.g. PBS 1x from NaCl stock">
-          </div>
-          <div>
-            <label for="presetSelect">Saved Presets</label>
-            <select id="presetSelect">
-              <option value="">No saved presets</option>
-            </select>
-          </div>
-        </div>
-        <div class="tool-buttons">
-          <button id="savePresetBtn" class="secondary-btn" type="button">Save Preset</button>
-          <button id="applyPresetBtn" class="secondary-btn" type="button">Load Preset</button>
-          <button id="deletePresetBtn" class="secondary-btn" type="button">Delete Preset</button>
-          <button id="copyShareLinkBtn" class="secondary-btn" type="button">Copy Share Link</button>
-        </div>
-        <span id="presetStatus" class="formula-feedback-message preset-status"></span>
-        <h4 style="margin-top:1rem; color:#334155; font-size:0.95rem;">Recent Sessions</h4>
-        <div id="historyList" class="history-list"></div>
-      </div>
-
       <div id="bufferCalculatorSection" class="calculator-section">
         <h3><span class="molecule-icon" style="font-size:14px;">🧫</span>Buffer Calculator (Henderson-Hasselbalch)</h3>
         <div class="flex-inputs">
@@ -967,6 +1044,31 @@
         <button id="calculateBufferBtn" class="calculate-btn dilution-calc-btn" style="margin-top:1.5rem;">Calculate Buffer Mix</button>
         <div id="bufferResultOutput" class="dilution-output-panel output-panel hidden"></div>
         <span id="bufferCalcError" class="dilution-error-message"></span>
+      </div>
+
+      <div id="presetToolsSection" class="calculator-section">
+        <h3><span class="molecule-icon" style="font-size:14px;">📁</span>Presets, History, and Share</h3>
+        <div class="flex-inputs">
+          <div>
+            <label for="presetName">Preset Name</label>
+            <input type="text" id="presetName" placeholder="e.g. PBS 1x from NaCl stock">
+          </div>
+          <div>
+            <label for="presetSelect">Saved Presets</label>
+            <select id="presetSelect">
+              <option value="">No saved presets</option>
+            </select>
+          </div>
+        </div>
+        <div class="tool-buttons">
+          <button id="savePresetBtn" class="secondary-btn" type="button">Save Preset</button>
+          <button id="applyPresetBtn" class="secondary-btn" type="button">Load Preset</button>
+          <button id="deletePresetBtn" class="secondary-btn" type="button">Delete Preset</button>
+          <button id="copyShareLinkBtn" class="secondary-btn" type="button">Copy Share Link</button>
+        </div>
+        <span id="presetStatus" class="formula-feedback-message preset-status"></span>
+        <h4 style="margin-top:1rem; color:#334155; font-size:0.95rem;">Recent Sessions</h4>
+        <div id="historyList" class="history-list"></div>
       </div>
 
       <div id="ionSelectionPanel" class="ion-selection-panel hidden">

@@ -45,6 +45,9 @@ const footerIndex = html.indexOf("<footer>");
 assert.ok(adSupportIndex !== -1 && footerIndex !== -1 && adSupportIndex < footerIndex, "Ad support block should appear before the footer");
 assert.ok(html.includes('href="guide.html"'), "Expected the main page footer to link to the lab prep guide");
 assert.ok(guideHtml.includes("ChemCalc Lab Preparation Guide"), "Expected the standalone lab prep guide content page");
+const bufferSectionIndex = html.indexOf('id="bufferCalculatorSection"');
+const presetSectionIndex = html.indexOf('id="presetToolsSection"');
+assert.ok(bufferSectionIndex !== -1 && presetSectionIndex !== -1 && bufferSectionIndex < presetSectionIndex, "Expected the buffer section to appear before the presets/history/share section");
 
 function createClassList() {
   const classes = new Set();
