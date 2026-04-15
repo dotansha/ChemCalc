@@ -708,11 +708,14 @@
       font-size: 0.9em;
     }
     .ad-support {
-      background: linear-gradient(135deg, #fffef5, #fff8db);
-      border: 1px solid rgba(234, 179, 8, 0.28);
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      overflow: hidden;
     }
     .ad-label {
-      display: inline-block;
+      display: none;
       font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -721,6 +724,18 @@
       margin-bottom: 0.75rem;
     }
     .ad-slot-wrap {
+      min-height: 0;
+    }
+    .ad-support.is-active {
+      padding: 1.75rem;
+      background: linear-gradient(135deg, #fffef5, #fff8db);
+      border: 1px solid rgba(234, 179, 8, 0.28);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    }
+    .ad-support.is-active .ad-label {
+      display: inline-block;
+    }
+    .ad-support.is-active .ad-slot-wrap {
       min-height: 90px;
     }
     .ad-support.is-collapsed {
@@ -805,6 +820,12 @@
       .content-section,
       .output-panel,
       .ion-selection-panel {
+        padding: 1rem;
+      }
+      .ad-support {
+        padding: 0;
+      }
+      .ad-support.is-active {
         padding: 1rem;
       }
 
@@ -1198,10 +1219,17 @@
               const collapseAdBlock = () => {
                 adBlock.classList.add('is-collapsed');
               };
+              const activateAdBlock = () => {
+                adBlock.classList.add('is-active');
+              };
 
               const maybeCollapseForNoFill = () => {
                 const adStatus = adSlot.getAttribute('data-ad-status');
                 const iframeCount = adSlot.querySelectorAll('iframe').length;
+                if (adStatus === 'filled' || iframeCount > 0) {
+                  activateAdBlock();
+                  return;
+                }
                 if (adStatus === 'unfilled') {
                   collapseAdBlock();
                   return;
