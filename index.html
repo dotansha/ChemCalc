@@ -720,8 +720,11 @@
       color: #92400e;
       margin-bottom: 0.75rem;
     }
-    .ad-support p {
-      margin-bottom: 1rem;
+    .ad-slot-wrap {
+      min-height: 90px;
+    }
+    .ad-support.is-collapsed {
+      display: none;
     }
 
     footer {
@@ -1172,19 +1175,57 @@
           </div>
         </section>
 
-        <aside class="content-section ad-support" aria-label="Support ChemCalc">
+        <aside id="supportAdBlock" class="content-section ad-support" aria-label="Support ChemCalc">
           <span class="ad-label">Advertisement</span>
-          <p>Ads help support hosting and maintenance for this free chemistry tool. The ad unit is placed after the main calculator and explanatory reference content so it does not appear on a screen that lacks meaningful publisher content.</p>
+          <div class="ad-slot-wrap">
           <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948405948087873"
      crossorigin="anonymous"></script>
-          <ins class="adsbygoogle"
+          <ins id="supportAdSlot" class="adsbygoogle"
                style="display:block"
                data-ad-client="ca-pub-8948405948087873"
                data-ad-slot="9684312383"
                data-ad-format="auto"
                data-full-width-responsive="true"></ins>
+          </div>
           <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
+            (function () {
+              const adBlock = document.getElementById('supportAdBlock');
+              const adSlot = document.getElementById('supportAdSlot');
+              if (!adBlock || !adSlot) {
+                return;
+              }
+
+              const collapseAdBlock = () => {
+                adBlock.classList.add('is-collapsed');
+              };
+
+              const maybeCollapseForNoFill = () => {
+                const adStatus = adSlot.getAttribute('data-ad-status');
+                const iframeCount = adSlot.querySelectorAll('iframe').length;
+                if (adStatus === 'unfilled') {
+                  collapseAdBlock();
+                  return;
+                }
+                if (iframeCount === 0 && adSlot.offsetHeight < 20) {
+                  collapseAdBlock();
+                }
+              };
+
+              const observer = new MutationObserver(maybeCollapseForNoFill);
+              observer.observe(adSlot, {
+                attributes: true,
+                attributeFilter: ['data-ad-status'],
+                childList: true,
+                subtree: true
+              });
+
+              setTimeout(maybeCollapseForNoFill, 4000);
+              try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              } catch (error) {
+                collapseAdBlock();
+              }
+            })();
           </script>
         </aside>
       </div>
